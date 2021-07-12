@@ -36,3 +36,7 @@ $colorWhite70:        rgba(255, 255, 255, .8);
 $colorWhite:          #ffffff;
 $colorYellow:         #e2ff54;
 $colorYellowLight:    #f6ff54;
+
+$bgColorAlertError: $colorRedLight;
+$bgColorAlertInfo: $colorBlue;
+$bgColorAlertSuccess: $colorGreen;

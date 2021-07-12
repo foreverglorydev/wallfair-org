@@ -38,6 +38,16 @@
         overflow:        hidden;
         animation:       scale-in .3s ease-out forwards,
                          expand .35s .25s ease-out forwards;
+        &.alertType--error {
+            background: $bgColorAlertError;
+        }
+        &.alertType--info {
+            background: $bgColorAlertInfo;
+        }
+        &.alertType--success {
+            background: $bgColorAlertSuccess;
+        }
+
 
         @media (min-width: $screen-sm)
         {

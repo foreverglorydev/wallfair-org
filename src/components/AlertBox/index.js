@@ -5,7 +5,7 @@ import React            from 'react';
 import styles           from './styles.module.scss';
 import { connect }      from 'react-redux';
 import { AlertActions } from '../../store/actions/alert';
-
+import classNames            from 'classnames';
 const AlertBox = ({ alerts, removeAlert }) => {
     const renderAlertIcon = (alert) => {
         switch (alert.type) {
@@ -48,7 +48,10 @@ const AlertBox = ({ alerts, removeAlert }) => {
     const renderAlert = (alert, index) => {
         return (
             <div
-                className={styles.alertContainer}
+                className={classNames(
+                    styles.alertContainer,
+                    styles[`alertType--${alert.type}`],
+                )}
                 key={index}
             >
                 {renderAlertIcon(alert)}
