@@ -1,8 +1,10 @@
-import update         from 'immutability-helper';
-import { EventTypes } from '../actions/event';
+import update from "immutability-helper";
+import { EventTypes } from "../actions/event";
 
 const initialState = {
     events: [],
+    testProp: ["ERER"],
+    testProp2: ["ERER"],
 };
 
 const fetchAllSucceeded = (action, state) => {
@@ -16,8 +18,10 @@ const fetchAllSucceeded = (action, state) => {
 export default function (state = initialState, action) {
     switch (action.type) {
         // @formatter:off
-        case EventTypes.FETCH_ALL_SUCCEEDED: return fetchAllSucceeded(action, state);
-        default:                             return state;
+        case EventTypes.FETCH_ALL_SUCCEEDED:
+            return fetchAllSucceeded(action, state);
+        default:
+            return state;
         // @formatter:on
     }
 }
