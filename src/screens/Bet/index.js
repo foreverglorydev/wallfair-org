@@ -400,7 +400,12 @@ const Bet = ({
           clickable: false,
         }}
         autoHeight={true}
-        onSlideChange={swiper => onBetActionSwitch(swiper.activeIndex)}
+        onSlideChange={swiper => {
+          onBetActionSwitch(swiper.activeIndex);
+        }}
+        onTransitionEnd={swiper => {
+          swiper.updateAutoHeight();
+        }}
         onSwiper={onSwiper}
       >
         <SwiperSlide className={styles.carouselSlide}>
