@@ -4,9 +4,12 @@ import styles from './styles.module.scss';
 const LandingPage = () => {
   return (
     <div className={styles.header}>
-      <h1 className={styles.mainHeading}>Betting Reimagined</h1>
-      <div className={styles.slogan}>
-        <span>Clear, Social & Fair</span>
+      <div className={styles.mainHeadline}>
+        <h1>Betting Reimagined</h1>
+        <div className={styles.slogan}>
+          Clear<span>,</span> Social <span>&</span> Fair
+          <span>.</span>
+        </div>
       </div>
       <div className={styles.video}>
         <VideoPlayer
