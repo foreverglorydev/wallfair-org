@@ -4,8 +4,8 @@ import styles from './styles.module.scss';
 const LandingPage = () => {
   return (
     <div className={styles.header}>
-      <h6 className={styles.subHeading}>Join the ride.</h6>
-      <h1 className={styles.mainHeading}>How it works for Normies</h1>
+      <h1 className={styles.mainHeading}>Betting Reimagined</h1>
+      <h6 className={styles.subHeading}>Clear, Social & Fair</h6>
       <div className={styles.video}>
         <VideoPlayer
           video="https://files.wallfair.io/wallfair.mp4"
