@@ -2,11 +2,13 @@ import * as PIXI from 'pixi.js';
 import TWEEN from '@tweenjs/tween.js';
 import { isMobileRosiGame } from './utils';
 
-const AMOUNT_TEXT_FILL_COLOR = 0xefff54;
-const AMOUN_FONT_FAMILY = 'PlusJakarta-Bold';
-const CRASH_FACTOR_FILL_COLOR = 0xffffff;
-const CRASH_FACTOR_FONT_FAMILY = 'PlusJakarta-Regular';
-const FONT_SIZE = 12;
+const AMOUNT_TEXT_FILL_COLOR = 0x00de1e;
+const AMOUNT_TEXT_FONT_FAMILY = 'Arial';
+const CRASH_FACTOR_FILL_COLOR = 0xefff54;
+const CRASH_FACTOR_FONT_FAMILY = 'Arial';
+const DESIRED_FONT_SIZE = 13;
+const FONT_SIZE = DESIRED_FONT_SIZE * 2;
+const TEXT_SCALE = DESIRED_FONT_SIZE / FONT_SIZE;
 const COIN_DEFAULT_SCALE = isMobileRosiGame ? 0.5 : 0.3;
 
 class Animation {
@@ -28,23 +30,25 @@ class Animation {
   }
 
   createAmountText() {
-    const amountText = new PIXI.Text('0', {
-      fontFamily: AMOUN_FONT_FAMILY,
-      fontSize: FONT_SIZE,
-      fill: AMOUNT_TEXT_FILL_COLOR,
+    const amountText = new PIXI.BitmapText('0W', {
+      fontName: 'AmountTextBitmapFont',
     });
 
+    amountText.defaultScale = TEXT_SCALE;
+    amountText.scale.set(amountText.defaultScale);
     amountText.anchor.set(0.5);
+    amountText.visible = false;
     this.container.addChild(amountText);
 
     const tweenTime = 900;
     const tweenData = { scale: 0 };
     const amountTextTween = new TWEEN.Tween(tweenData)
-      .to({ scale: 1 }, tweenTime)
+      .to({ scale: amountText.defaultScale }, tweenTime)
       .easing(TWEEN.Easing.Back.Out)
       .onStart(() => {
         amountText.scale.set(0);
         tweenData.scale = 0;
+        amountText.visible = true;
       })
       .onUpdate(() => {
         amountText.scale.set(tweenData.scale);
@@ -54,13 +58,12 @@ class Animation {
   }
 
   createCashFactorText() {
-    const crashFactorText = new PIXI.Text('0.00x', {
-      fontFamily: CRASH_FACTOR_FONT_FAMILY,
-      fontSize: FONT_SIZE,
-      fill: CRASH_FACTOR_FILL_COLOR,
-      fontWeight: 400,
+    const crashFactorText = new PIXI.BitmapText('0.00x', {
+      fontName: 'FactorTextBitmapFont',
     });
 
+    crashFactorText.defaultScale = TEXT_SCALE;
+    crashFactorText.scale.set(crashFactorText.defaultScale);
     crashFactorText.anchor.set(0.5);
 
     this.container.addChild(crashFactorText);
@@ -94,9 +97,6 @@ class Animation {
   }
 
   positionElements(x, y, textOrientation = 'bottom') {
-    // position texts relative to coin, which is at x: 0, y: 0
-    // this.amountText.x = this.coin.width / 2 - this.amountText.width / 2;
-
     const plusOrMinus = textOrientation === 'bottom' ? 1 : -1;
     this.amountText.y = this.coin.height * plusOrMinus;
     this.crashFactorText.y =
@@ -113,7 +113,7 @@ class Animation {
   }
 
   scaleInAnimation() {
-    this.amountText.scale.set(0);
+    this.amountText.scale.set(this.amountText.defaultScale);
     this.coin.scale.set(0);
     this.coinTween.start();
     this.amountTextTween.start();
@@ -121,6 +121,8 @@ class Animation {
   }
 
   reset() {
+    this.amountText.scale.set(this.amountText.defaultScale);
+    this.amountText.visible = false;
     this.coin.scale.set(COIN_DEFAULT_SCALE);
     this.container.visible = false;
   }
@@ -151,6 +153,28 @@ class CashedOutAnimation {
     this.currentAnims = [];
     this.cachedAnims = [];
     this.currentTextOrientation = 'bottom';
+
+    PIXI.BitmapFont.from(
+      'AmountTextBitmapFont',
+      {
+        fontFamily: AMOUNT_TEXT_FONT_FAMILY,
+        fontSize: FONT_SIZE,
+        fill: AMOUNT_TEXT_FILL_COLOR,
+        fontWeight: 'bold',
+      },
+      { chars: [...PIXI.BitmapFont.NUMERIC, '.', ',', 'W'] }
+    );
+
+    PIXI.BitmapFont.from(
+      'FactorTextBitmapFont',
+      {
+        fontFamily: CRASH_FACTOR_FONT_FAMILY,
+        fontSize: FONT_SIZE,
+        fill: CRASH_FACTOR_FILL_COLOR,
+        fontWeight: '700',
+      },
+      { chars: [...PIXI.BitmapFont.NUMERIC, '.', ',', 'x'] }
+    );
   }
 
   animate(x, y, amount, crashFactor, velocity) {
@@ -173,7 +197,9 @@ class CashedOutAnimation {
 
     anim.setTextValues(amount, crashFactor);
 
-    const isSmallDistanceBetweenCrashes = x - previousAnimX <= anim.getWidth();
+    const spaceBetween = 4;
+    const isSmallDistanceBetweenCrashes =
+      x - previousAnimX - spaceBetween <= anim.getWidth();
     if (isSmallDistanceBetweenCrashes) {
       this.currentTextOrientation =
         this.currentTextOrientation === 'bottom' ? 'top' : 'bottom';

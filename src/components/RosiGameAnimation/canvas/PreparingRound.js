@@ -48,11 +48,6 @@ class PreparingRound {
       this.container.removeChild(this.rocketAnim);
     }
     this.rocketAnim = this.createRocketAnim();
-    console.log(
-      'animation index=',
-      this.animationIndex,
-      ROSI_GAME_PLAYGROUND_ROCKET
-    );
     if (this.animationIndex === ROSI_GAME_PLAYGROUND_ROCKET) {
       this.rocketAnim.anchor.set(0.5);
 
