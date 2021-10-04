@@ -72,7 +72,7 @@ class RosiAnimationController {
     const crashFactor = Number(calcCrashFactorFromElapsedTime(elapsed)) || 1.0;
 
     TWEEN.update(this.app.ticker.lastTime);
-    this.cashedOut.update(dt, calcSpeed(crashFactor, 4));
+    this.cashedOut.update(dt, calcSpeed(crashFactor / 2, 4));
     this.background.update(dt, calcSpeed(crashFactor, 6));
   }
 
