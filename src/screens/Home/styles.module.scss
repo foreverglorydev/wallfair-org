@@ -239,3 +239,112 @@
   cursor: pointer;
   text-decoration: underline;
 }
+
+
+.roadmapSection {
+  width: 100%;
+
+  .roadmapContainer {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .roadmapEntry {
+    width: 33.33%;
+    margin-bottom: 25px;
+    padding: 0 10px;
+
+    @media (max-width: $screen-lg) {
+      width: 50%;
+    }
+
+    @media (max-width: $screen-sm) {
+      width: 100%;
+    }
+
+
+
+
+    .itemStatus {
+      //background-color: $colorDarkSlateGray;
+      //background-color: $colorYellowAdjusted;
+
+      line-height: 1;
+      display: inline-block;
+      padding: 2px 10px;
+      //margin-top: -10px;
+      border-radius: 20px;
+      //position: absolute;
+      right: 0;
+      top: -5px;
+
+
+      p {
+        margin: 0;
+        padding: 0;
+        font-size: 14.5px;
+        color: $colorWhite;
+      }
+
+    }
+
+    p {
+      width: 100%;
+      padding: 0px 36px 22px 0px;
+      font-style: normal;
+      font-weight: normal;
+      font-size: 18px;
+      line-height: 27px;
+      letter-spacing: 0.45px;
+      color: rgb(255, 255, 255);
+    }
+  }
+
+  .roadmapHeadBg {
+    //background-image: url('../../data/backgrounds/highlight-home-cta-bet.svg');
+    background-repeat: no-repeat;
+    background-size: contain;
+    z-index: 20;
+    //min-width: 250px;
+    //height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    //padding: 0 25px;
+    font-size: 18px;
+    font-family: $fontRegular;
+    //color: $colorBlack;
+    font-weight: 700;
+    margin-bottom: 10px;
+    position: relative;
+    width: 100%;
+
+    color: $colorWhite;
+
+    img {
+      padding-right: 10px;
+    }
+  }
+
+  .titleContainer {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 40px;
+
+    .title {
+      color: $colorWhite;
+      font-size: 24px;
+    }
+
+    .titleLink {
+      font-size: 14px;
+      color: $colorWhite;
+      line-height: 12px;
+      letter-spacing: 0.6px;
+      margin-left: 20px;
+    }
+  }
+}
