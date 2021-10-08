@@ -68,6 +68,7 @@ class RosiAnimationController {
   }
 
   update(dt) {
+    const coinX = this.coinAndTrajectory.getCoinCrashPosition();
     const elapsed = Date.now() - this.gameStartTime;
     const crashFactor = Number(calcCrashFactorFromElapsedTime(elapsed)) || 1.0;
     const maxElonFrames = this.coinAndTrajectory.getElonFramesCount();
@@ -94,7 +95,7 @@ class RosiAnimationController {
     }
 
     TWEEN.update(this.app.ticker.lastTime);
-    this.cashedOut.update(dt);
+    this.cashedOut.update(dt, elapsed / 1000, crashFactor, coinX);
     this.background.update(dt, speed);
   }
 
@@ -129,14 +130,18 @@ class RosiAnimationController {
   }
 
   doCashedOutAnimation(data) {
+    const elapsed = Date.now() - this.gameStartTime;
     const point = this.coinAndTrajectory.getCoinCrashPosition();
     const elonVelocity = this.coinAndTrajectory.getCurrentVelocty();
+    console.log(data.crashFactor);
+
     this.cashedOut.animate(
       point.x,
       point.y,
       data.amount,
       data.crashFactor,
-      elonVelocity
+      elonVelocity,
+      elapsed / 1000
     );
   }
 }

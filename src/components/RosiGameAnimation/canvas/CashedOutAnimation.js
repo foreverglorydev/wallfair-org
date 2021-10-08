@@ -1,6 +1,6 @@
 import * as PIXI from 'pixi.js';
 import TWEEN from '@tweenjs/tween.js';
-import { isMobileRosiGame } from './utils';
+import { isMobileRosiGame, calcPercent } from './utils';
 
 const AMOUNT_TEXT_FILL_COLOR = 0xefff54;
 const AMOUN_FONT_FAMILY = 'PlusJakarta-Bold';
@@ -18,6 +18,8 @@ class Animation {
     this.container = new PIXI.Container();
     this.textContainer = new PIXI.Container();
     this.container.addChild(this.textContainer);
+    this.crashFactor = 1.0;
+    this.logged = false;
 
     const [coin, coinTween] = this.createCoin();
     this.coin = coin;
@@ -128,6 +130,7 @@ class Animation {
     this.coin.scale.set(COIN_DEFAULT_SCALE);
     this.container.visible = false;
     this.speed = 0;
+    this.crashFactor = 1;
   }
 
   setSpeed(speed) {
@@ -140,12 +143,12 @@ class Animation {
   }
 
   update(dt) {
-    this.container.x -= this.vx * this.speed * dt;
-    this.container.y -= this.vy * this.speed * dt;
+    // this.container.x -= this.vx * this.speed * dt;
+    // this.container.y -= this.vy * this.speed * dt;
 
     const textPos = this.textContainer.getGlobalPosition();
     if (textPos.y + this.textContainer.height > this.app.renderer.height) {
-      this.positionElements(this.container.x, this.container.y, 'top');
+      // this.positionElements(this.container.x, this.container.y, 'top');
     }
   }
 
@@ -167,6 +170,10 @@ class Animation {
     return rect1.intersects(rect2);
   }
 
+  setCrashFactor(crashFactor) {
+    this.crashFactor = crashFactor;
+  }
+
   hideText() {
     this.textContainer.visible = false;
   }
@@ -181,7 +188,7 @@ class CashedOutAnimation {
     this.currentTextOrientation = 'bottom';
   }
 
-  animate(x, y, amount, crashFactor, velocity) {
+  animate(x, y, amount, crashFactor, velocity, elapsedTime) {
     const previousAnimX =
       this.currentAnims.length > 0
         ? this.currentAnims[this.currentAnims.length - 1].getX()
@@ -199,6 +206,8 @@ class CashedOutAnimation {
     anim.setVelocity(velocity.x, velocity.y);
     this.currentAnims.push(anim);
 
+    anim.elapsedTime = elapsedTime;
+    anim.setCrashFactor(crashFactor);
     anim.setTextValues(amount, crashFactor);
 
     const isSmallDistanceBetweenCrashes = x - previousAnimX <= anim.getWidth();
@@ -223,21 +232,57 @@ class CashedOutAnimation {
     }
   }
 
-  update(dt) {
+  update(dt, elapsedTime, crashFactor, coinPos) {
+    const maxFactor = crashFactor;
+    const maxTime = 68;
+    const startFactor = 1;
+
     let prevAnim;
     for (const anim of this.currentAnims) {
-      const animSpeed = anim.getX() / 1000;
+      // const animSpeed = anim.getX() / 1000;
 
-      if (
-        prevAnim &&
-        prevAnim.isTextVisible() &&
-        prevAnim.testTextIntersects(anim)
-      ) {
-        anim.hideText();
-      }
+      // if (
+      //   prevAnim &&
+      //   prevAnim.isTextVisible() &&
+      //   prevAnim.testTextIntersects(anim)
+      // ) {
+      //   anim.hideText();
+      // }
 
-      anim.setSpeed(animSpeed);
+      // anim.setSpeed(animSpeed);
+      // anim.update(dt);
+
+      // anim.container.x = this.app.renderer.width / (maxTime / (maxFactor - 1) * (crashFactor - 1));
+      // anim.container.y = this.app.renderer.height - this.app.renderer.height / ((maxFactor - 1) / maxTime * elapsedTime + 1)
+
+      // anim.container.x = (maxTime / (maxFactor - 1) * (anim.crashFactor - 1));
+      // anim.container.y = (10 - 1) / maxTime * elapsedTime + 1;
+      // anim.container.x +=  (anim.elapsedTime * this.app.renderer.width) / maxTime;
+      // anim.container.y += this.app.renderer.height - (anim.crashFactor * this.app.renderer.height) / 10;
+      //
+      anim.container.x =
+        (elapsedTime / (crashFactor - 1)) * (anim.crashFactor - 1);
+      anim.container.y = ((crashFactor - 1) / maxTime) * elapsedTime + 1;
+      anim.container.x += (anim.elapsedTime * coinPos.x) / elapsedTime;
+      anim.container.y += (anim.crashFactor * coinPos.y) / crashFactor;
+
+      anim.container.x *= dt;
+      anim.container.y *= dt;
+
       anim.update(dt);
+
+      if (anim === this.currentAnims[0] && !this.logged) {
+        console.log(`
+          elapsedTime: ${elapsedTime}
+          crashFactor: ${crashFactor}
+          animCrashFactor: ${anim.crashFactor}
+          animElapsedTime: ${anim.elapsedTime}
+          x: ${anim.container.x}
+          y: ${anim.container.y}
+        `);
+
+        this.logged = true;
+      }
 
       prevAnim = anim;
     }

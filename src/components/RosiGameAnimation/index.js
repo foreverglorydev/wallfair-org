@@ -15,6 +15,7 @@ import Counter from './Counter';
 import styles from './styles.module.scss';
 import RosiGameAnimationController from './canvas/RosiGameAnimationController';
 import { CircularProgress } from '@material-ui/core';
+import { calcCrashFactorFromElapsedTime } from './canvas/utils';
 
 const PreparingRound = ({ nextGameAt }) => (
   <div className={styles.preparingRound}>
@@ -37,6 +38,30 @@ const GameOffline = () => (
     </div>
   </div>
 );
+
+const setRandomInterval = (intervalFunction, minDelay, maxDelay) => {
+  let timeout;
+
+  const runInterval = () => {
+    const timeoutFunction = () => {
+      intervalFunction();
+      runInterval();
+    };
+
+    const delay =
+      Math.floor(Math.random() * (maxDelay - minDelay + 1)) + minDelay;
+
+    timeout = setTimeout(timeoutFunction, delay);
+  };
+
+  runInterval();
+
+  return {
+    clear() {
+      clearTimeout(timeout);
+    },
+  };
+};
 
 const RosiGameAnimation = ({ connected }) => {
   const canvasRef = useRef(null);
@@ -72,7 +97,27 @@ const RosiGameAnimation = ({ connected }) => {
       setCashedOutCount(0);
       setIsPreparingRound(false);
       RosiGameAnimationController.start(gameStartedTime);
-      return;
+
+      const interval = setRandomInterval(
+        () => {
+          RosiGameAnimationController.doCashedOutAnimation({
+            amount: 345,
+            crashFactor: calcCrashFactorFromElapsedTime(
+              Date.now() - gameStartedTime
+            ),
+          });
+        },
+        1000,
+        5000
+      );
+
+      return () => interval.clear();
+
+      // const timeout = setTimeout(() => {
+      //   RosiGameAnimationController.doCashedOutAnimation({ amount: 345, crashFactor: 1.24 });
+      // }, 2000);
+
+      // return () => clearTimeout(timeout);
     }
 
     if (!gameStarted && !isPreparingRound) {

@@ -79,8 +79,10 @@ export class CoinAnimation {
     this.setCoinDefaultPosition();
 
     /* Coin and Elon */
-    const destX = calcPercent(this.app.renderer.width, 90);
-    const destY = calcPercent(this.app.renderer.height, 35);
+    // const destX = calcPercent(this.app.renderer.width, 90);
+    // const destY = calcPercent(this.app.renderer.height, 35);
+    const destX = this.app.renderer.width;
+    const destY = 0;
     const distanceX = destX - this.elonAndCoin.x;
     const distanceY = destY - this.elonAndCoin.y;
     const length = Math.sqrt(Math.pow(distanceX, 2) + Math.pow(distanceY, 2));
@@ -90,8 +92,14 @@ export class CoinAnimation {
     // start with higher speed for the boost effect
     let speed = defaultSpeed * 150;
 
+    const maxFactor = 10;
+    const maxTime = 68;
+
+    // let x = 0;
+    // let y = this.elonAndCoin.y + this.coin.height / 2;
+
     let x = 0;
-    let y = this.elonAndCoin.y + this.coin.height / 2;
+    let y = this.app.renderer.height - (1 * this.app.renderer.height) / 10;
 
     // save for later elon flying animation after coin explosion
     this.elonAndCoin.vx = vx;
