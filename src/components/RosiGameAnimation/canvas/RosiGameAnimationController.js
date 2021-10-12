@@ -95,6 +95,7 @@ class RosiAnimationController {
     }
 
     TWEEN.update(this.app.ticker.lastTime);
+    this.coinAndTrajectory.update(dt, elapsed / 1000, crashFactor);
     this.cashedOut.update(dt, elapsed / 1000, crashFactor, coinX);
     this.background.update(dt, speed);
   }
@@ -121,6 +122,13 @@ class RosiAnimationController {
     this.coinAndTrajectory.startCoinFlyingAnimation();
     this.cashedOut.reset();
     this.gameStartTime = gameStartTime;
+
+    // for (let i = 0; i < 1; i += 0.01 ) {
+    //   const crashFactor = calcCrashFactorFromElapsedTime(i * 1000);
+    //   console.log(
+    //     `x: ${i}, y: ${crashFactor}, inc: `
+    //   );
+    // }
   }
 
   end() {
@@ -133,13 +141,20 @@ class RosiAnimationController {
     const elapsed = Date.now() - this.gameStartTime;
     const point = this.coinAndTrajectory.getCoinCrashPosition();
     const elonVelocity = this.coinAndTrajectory.getCurrentVelocty();
-    console.log(data.crashFactor);
+
+    // console.log(data.crashFactor);
+
+    // console.log(`
+    //   Elapsed: ${elapsed / 1000}
+    //   Factor: ${data.crashFactor}
+    // `)
+    // return;
 
     this.cashedOut.animate(
       point.x,
       point.y,
       data.amount,
-      data.crashFactor,
+      calcCrashFactorFromElapsedTime(elapsed),
       elonVelocity,
       elapsed / 1000
     );

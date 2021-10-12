@@ -29,7 +29,7 @@ export class CoinAnimation {
     this.setCoinDefaultPosition();
 
     this.container.visible = false;
-    this.ySegments = [];
+    this.xSegments = [];
   }
 
   getCurrentElonFrame() {
@@ -79,9 +79,9 @@ export class CoinAnimation {
     this.resetAllAnimations();
     this.setCoinDefaultPosition();
 
-    this.prevCrashFactor = 1;
-    this.prevElapsedTime = 0;
-    this.incCount = 0;
+      this.prevCrashFactor = 1;
+      this.prevElapsedTime = 0;
+      this.incCount = 0;
 
     /* Coin and Elon */
     // const destX = calcPercent(this.app.renderer.width, 90);
@@ -97,8 +97,8 @@ export class CoinAnimation {
     // start with higher speed for the boost effect
     // let speed = defaultSpeed * 170;
     let speed = 0;
-    this.elonAndCoin.x = this.app.renderer.width - this.coin.width;
-    this.elonAndCoin.y = this.elonAndCoin.height / 2;
+    this.elonAndCoin.x = this.destX - this.elonAndCoin.width * 1.5;
+    this.elonAndCoin.y = this.elonAndCoin.height /2;
 
     // save for later elon flying animation after coin explosion
     this.elonAndCoin.vx = vx;
@@ -113,7 +113,6 @@ export class CoinAnimation {
     const defaultSpeed = this.elonAndCoin.defaultSpeed;
     const coinPos = this.getCoinCrashPosition();
     // this.elonAndCoin.visible = false;
-    this.elon.visible = false;
 
     if (this.elonAndCoin.x < this.destX || this.elonAndCoin.y > this.destY) {
       this.elonAndCoin.x += vx * this.elonAndCoin.speed * dt;
@@ -161,63 +160,63 @@ export class CoinAnimation {
     //   this.elonAndCoin.speed = 0;
     // }
 
+
     // if (crashFactor - this.prevCrashFactor >= 0.01) {
     //   this.xSegments.push(elapsedTime);
     //   this.prevCrashFactor = crashFactor;
     // }
 
-    const colors = [0x7300d8, 0x7300d8];
+    const colors = [0xff0000, 0x7300d8];
 
     this.segments = this.segments || 0;
     this.prevElapsedTime = this.prevElapsedTime || 0;
 
-    let step = 0.1;
-
-    if (elapsedTime - this.prevElapsedTime >= step) {
-      console.log(
-        elapsedTime,
-        elapsedTime - this.prevElapsedTime,
-        this.segments
-      );
+    if (elapsedTime - this.prevElapsedTime >= 0.12) {
       this.segments += 1;
-      this.ySegments.push(crashFactor - this.prevCrashFactor);
       this.prevElapsedTime = elapsedTime;
-      this.prevCrashFactor = crashFactor;
     }
 
     this.trajectory.clear();
 
-    const sw = coinPos.x;
-    const sh = this.app.renderer.height;
-    const scaleY = sh / (crashFactor - 1);
     let countY = 0;
     let prevX = 0;
     let prevY = 0;
-    let prevXScreen = 0;
-    let prevYScreen = sh / 2 + coinPos.y / 2;
 
     for (let i = 0; i < this.segments; i++) {
       const segmentWidth = elapsedTime / this.segments;
       const x = prevX + segmentWidth;
-      // const y = prevY + this.ySegments[i];
       const y = prevY + 0.01;
 
+      const sw = this.app.renderer.width;
+      const sh = this.app.renderer.height;
       const Pcx = 0;
       const Pcy = 0;
-      const scaleX = (sw * 2) / (-elapsedTime - x);
+      const scaleX = sw * 2 / (-elapsedTime - x);
+      const scaleY = sh * 2 / (crashFactor - 1);
 
-      const toScreenX = (x, Pcx, scaleX) =>
-        sw / 2 + (-x - Pcx) * scaleX - sw / 2;
-      const toScreenY = (y, Pcy, scaleY) =>
-        sh / 2 - (y - Pcy) * scaleY + coinPos.y / 2;
+      const toScreenX = (x, Pcx, scaleX) => sw / 2 + (-x - Pcx) * scaleX - sw / 2;
+      const toScreenY = (y, Pcy, scaleY) => sh - (y - Pcy) * scaleY;
 
+      const prevXScreen = toScreenX(prevX, Pcx, scaleX);
+      const prevYScreen = toScreenY(prevY, Pcy, scaleY);
       const xScreen = toScreenX(x, Pcx, scaleX);
       const yScreen = toScreenY(y, Pcy, scaleY);
+
+      if (i === 0) {
+        console.log(`
+          scaleY: ${scaleY}
+          prevXScreen: ${prevXScreen}
+          prevYScreen: ${prevYScreen}
+          xScreen: ${xScreen}
+          yScreen: ${yScreen}
+        `)
+      }
+
 
       this.trajectory.lineStyle(2, colors[Math.floor(i % 2)], 1);
       this.trajectory.moveTo(prevXScreen, prevYScreen);
 
-      if (countY === 2) {
+      if (countY === 1) {
         this.trajectory.lineTo(xScreen, yScreen);
 
         prevY = y;
@@ -228,8 +227,6 @@ export class CoinAnimation {
       }
 
       prevX = x;
-      prevXScreen = toScreenX(prevX, Pcx, scaleX);
-      prevYScreen = toScreenY(prevY, Pcy, scaleY);
     }
 
     return;
@@ -253,7 +250,7 @@ export class CoinAnimation {
     //  // const scaleX = (coinPos.x) / (-elapsedTime - i);
     //  // const y = this.app.renderer.height;
     //  // const x = coinPos.x / 2 - (-elapsedTime - Pcx) * scaleX + coinPos.x / 2;
-
+      
     //  if (i === -1) {
     //    console.log(x - prevX)
     //    return;

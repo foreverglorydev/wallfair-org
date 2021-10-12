@@ -29,7 +29,7 @@ export class CoinAnimation {
     this.setCoinDefaultPosition();
 
     this.container.visible = false;
-    this.ySegments = [];
+    this.xSegments = [];
   }
 
   getCurrentElonFrame() {
@@ -79,9 +79,9 @@ export class CoinAnimation {
     this.resetAllAnimations();
     this.setCoinDefaultPosition();
 
-    this.prevCrashFactor = 1;
-    this.prevElapsedTime = 0;
-    this.incCount = 0;
+      this.prevCrashFactor = 1;
+      this.prevElapsedTime = 0;
+      this.incCount = 0;
 
     /* Coin and Elon */
     // const destX = calcPercent(this.app.renderer.width, 90);
@@ -97,8 +97,8 @@ export class CoinAnimation {
     // start with higher speed for the boost effect
     // let speed = defaultSpeed * 170;
     let speed = 0;
-    this.elonAndCoin.x = this.app.renderer.width - this.coin.width;
-    this.elonAndCoin.y = this.elonAndCoin.height / 2;
+    this.elonAndCoin.x = this.destX - this.elonAndCoin.width * 1.5;
+    this.elonAndCoin.y = this.elonAndCoin.height /2;
 
     // save for later elon flying animation after coin explosion
     this.elonAndCoin.vx = vx;
@@ -113,7 +113,6 @@ export class CoinAnimation {
     const defaultSpeed = this.elonAndCoin.defaultSpeed;
     const coinPos = this.getCoinCrashPosition();
     // this.elonAndCoin.visible = false;
-    this.elon.visible = false;
 
     if (this.elonAndCoin.x < this.destX || this.elonAndCoin.y > this.destY) {
       this.elonAndCoin.x += vx * this.elonAndCoin.speed * dt;
@@ -161,115 +160,84 @@ export class CoinAnimation {
     //   this.elonAndCoin.speed = 0;
     // }
 
-    // if (crashFactor - this.prevCrashFactor >= 0.01) {
-    //   this.xSegments.push(elapsedTime);
-    //   this.prevCrashFactor = crashFactor;
-    // }
 
-    const colors = [0x7300d8, 0x7300d8];
-
-    this.segments = this.segments || 0;
-    this.prevElapsedTime = this.prevElapsedTime || 0;
-
-    let step = 0.1;
-
-    if (elapsedTime - this.prevElapsedTime >= step) {
-      console.log(
-        elapsedTime,
-        elapsedTime - this.prevElapsedTime,
-        this.segments
-      );
-      this.segments += 1;
-      this.ySegments.push(crashFactor - this.prevCrashFactor);
-      this.prevElapsedTime = elapsedTime;
+    if (crashFactor - this.prevCrashFactor >= 0.01) {
+      this.xSegments.push(elapsedTime + 1);
       this.prevCrashFactor = crashFactor;
     }
 
+    const colors = [0xff0000, 0x7300d8];
     this.trajectory.clear();
 
-    const sw = coinPos.x;
-    const sh = this.app.renderer.height;
-    const scaleY = sh / (crashFactor - 1);
-    let countY = 0;
+    const scaleY = coinPos.y / (crashFactor - 1);
+    const segments = Math.trunc((crashFactor - 1) * 100);
     let prevX = 0;
-    let prevY = 0;
-    let prevXScreen = 0;
-    let prevYScreen = sh / 2 + coinPos.y / 2;
 
-    for (let i = 0; i < this.segments; i++) {
-      const segmentWidth = elapsedTime / this.segments;
-      const x = prevX + segmentWidth;
-      // const y = prevY + this.ySegments[i];
-      const y = prevY + 0.01;
+    if (this.xSegments.length === 0) {
+      return;
+    }
 
-      const Pcx = 0;
+    for (let i = 0; i < segments; i++) {
+      const segmentTime = this.xSegments[i];
       const Pcy = 0;
-      const scaleX = (sw * 2) / (-elapsedTime - x);
-
-      const toScreenX = (x, Pcx, scaleX) =>
-        sw / 2 + (-x - Pcx) * scaleX - sw / 2;
-      const toScreenY = (y, Pcy, scaleY) =>
-        sh / 2 - (y - Pcy) * scaleY + coinPos.y / 2;
-
-      const xScreen = toScreenX(x, Pcx, scaleX);
-      const yScreen = toScreenY(y, Pcy, scaleY);
-
-      this.trajectory.lineStyle(2, colors[Math.floor(i % 2)], 1);
-      this.trajectory.moveTo(prevXScreen, prevYScreen);
-
-      if (countY === 2) {
-        this.trajectory.lineTo(xScreen, yScreen);
-
-        prevY = y;
-        countY = 0;
-      } else {
-        this.trajectory.lineTo(xScreen, prevYScreen);
-        countY += 1;
+      const Pcx = (-elapsedTime) / 2;
+      const scaleX = (coinPos.x) / (-elapsedTime - i);
+      const y = coinPos.y / 2 - ((1 + i * 0.01) - Pcy) * scaleY + scaleY + coinPos.y;
+      const x = coinPos.x / 2 - (-elapsedTime - Pcx) * scaleX + coinPos.x / 2;
+      //
+      // const scaleX = (coinPos.x) / (-elapsedTime - i);
+      // const y = this.app.renderer.height;
+      // const x = coinPos.x / 2 - (-elapsedTime - Pcx) * scaleX + coinPos.x / 2;
+      
+      if (i === -1) {
+        console.log(x - prevX)
+        return;
+        console.log(`
+          y: ${y}
+          scaleY: ${scaleY}
+          segmentTime: ${segmentTime}
+        `)
       }
 
+      this.trajectory.lineStyle(4, colors[Math.floor(i % 2)], 1);
+      this.trajectory.moveTo(prevX, y);
+      this.trajectory.lineTo(x, y);
+
       prevX = x;
-      prevXScreen = toScreenX(prevX, Pcx, scaleX);
-      prevYScreen = toScreenY(prevY, Pcy, scaleY);
     }
 
     return;
 
-    //const colors = [0xff0000, 0x7300d8];
+    if (crashFactor - this.prevCrashFactor >= 0.01) {
+      const segments = (crashFactor - 1) * 100;
+      // console.log(crashFactor, elapsedTime, crashFactor - this.prevCrashFactor)
 
-    //this.trajectory.clear();
+      const prevX = this.prevElapsedTime;
+      const prevY = crashFactor;
+      const x = elapsedTime;
+      const y = crashFactor;
 
-    //const scaleY = coinPos.y / (crashFactor - 1);
-    //const segments = Math.trunc((crashFactor - 1) * 100);
-    //let prevX = 0;
+      const sw = coinPos.x;
+      const sh = this.app.renderer.height - coinPos.y;
 
-    //for (let i = 0; i < segments; i++) {
-    //  const segmentTime = this.xSegments[i];
-    //  const Pcy = 0;
-    //  const Pcx = (-elapsedTime) / 2;
-    //  const scaleX = (coinPos.x) / (-elapsedTime - i);
-    //  const y = coinPos.y / 2 - ((1 + i * 0.01) - Pcy) * scaleY + scaleY + coinPos.y;
-    //  const x = coinPos.x / 2 - (-elapsedTime - Pcx) * scaleX + coinPos.x / 2;
-    //  //
-    //  // const scaleX = (coinPos.x) / (-elapsedTime - i);
-    //  // const y = this.app.renderer.height;
-    //  // const x = coinPos.x / 2 - (-elapsedTime - Pcx) * scaleX + coinPos.x / 2;
+      const scaleX = sw * 2 / (-elapsedTime - x);
+      const scaleY = sh / (crashFactor - 1);
+      const Pcx = 0;
+      const Pcy = (crashFactor - 1) / 2;
 
-    //  if (i === -1) {
-    //    console.log(x - prevX)
-    //    return;
-    //    console.log(`
-    //      y: ${y}
-    //      scaleY: ${scaleY}
-    //      segmentTime: ${segmentTime}
-    //    `)
-    //  }
+      const oldX = sw / 2 + (-prevX - Pcx) * scaleX - coinPos.x / 2;
+      const oldY = sh / 2 - (prevY - Pcy) * scaleY + scaleY + coinPos.y;
+      const newX = sw / 2 + (-x - Pcx) * scaleX - coinPos.x / 2;
+      const newY = sh / 2 - (y - Pcy) * scaleY + scaleY + coinPos.y;
 
-    //  this.trajectory.lineStyle(4, colors[Math.floor(i % 2)], 1);
-    //  this.trajectory.moveTo(prevX, y);
-    //  this.trajectory.lineTo(x, y);
+      this.trajectory.clear();
+      this.trajectory.lineStyle(2, 0x7300d8, 1);
+      this.trajectory.moveTo(0, this.app.renderer.height);
+      this.trajectory.lineTo(newX, newY);
 
-    //  prevX = x;
-    //}
+      this.prevCrashFactor = crashFactor;
+      this.prevElapsedTime = elapsedTime;
+    }
   }
 
   endCoinFlyingAnimation() {

@@ -69,7 +69,8 @@ const RosiGameAnimation = ({ connected }) => {
   const gameStarted = useSelector(selectHasStarted);
   const cashedOut = useSelector(selectCashedOut);
   const nextGameAtTimeStamp = useSelector(selectNextGameAt);
-  const gameStartedTimeStamp = useSelector(selectTimeStarted);
+  // const gameStartedTimeStamp = useSelector(selectTimeStarted);
+  const gameStartedTimeStamp = Date.now();
   const gameStartedTime = new Date(gameStartedTimeStamp).getTime();
 
   const [cashedOutCount, setCashedOutCount] = useState(0);
@@ -98,6 +99,15 @@ const RosiGameAnimation = ({ connected }) => {
       setIsPreparingRound(false);
       RosiGameAnimationController.start(gameStartedTime);
 
+      setTimeout(() => {
+        RosiGameAnimationController.doCashedOutAnimation({
+          amount: 345,
+          crashFactor: calcCrashFactorFromElapsedTime(
+            Date.now() - gameStartedTime
+          ),
+        });
+      }, 100);
+
       const interval = setRandomInterval(
         () => {
           RosiGameAnimationController.doCashedOutAnimation({
@@ -107,11 +117,11 @@ const RosiGameAnimation = ({ connected }) => {
             ),
           });
         },
-        1000,
-        5000
+        2500,
+        6500
       );
 
-      return () => interval.clear();
+      // return () => interval.clear();
 
       // const timeout = setTimeout(() => {
       //   RosiGameAnimationController.doCashedOutAnimation({ amount: 345, crashFactor: 1.24 });

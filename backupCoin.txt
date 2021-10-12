@@ -79,7 +79,7 @@ class Animation {
     const coin = new PIXI.Sprite(this.app.loader.resources.coin.texture);
     coin.x = 0;
     coin.y = 0;
-    coin.anchor.set(0.5);
+    // coin.anchor.set(1);
     coin.scale.set(COIN_DEFAULT_SCALE);
     this.container.addChild(coin);
 
@@ -254,10 +254,10 @@ class CashedOutAnimation {
       const sw = coinPos.x;
       const sh = this.app.renderer.height - coinPos.y;
 
-      const scaleX = (sw * 2) / (-elapsedTime - x);
+      const scaleX = sw * 2 / (-elapsedTime - x);
       const scaleY = sh / (crashFactor - 1);
       const Pcx = 0;
-      const Pcy = 0;
+      const Pcy = (crashFactor - 1) / 2;
 
       anim.container.x = 0;
       anim.container.x = sw / 2 + (-x - Pcx) * scaleX - coinPos.x / 2;

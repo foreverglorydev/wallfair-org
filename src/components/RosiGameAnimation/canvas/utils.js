@@ -16,7 +16,7 @@ export function calcCrashFactorFromElapsedTime(timeDiff) {
   var offsetFactor = 0;
   var speed = 1;
 
-  if (timeDiff > 0 && timeDiff < 18000) {
+  if (timeDiff >= 0 && timeDiff < 18000) {
     offsetTime = 0;
     offsetFactor = 1;
     speed = 120;
