@@ -20,8 +20,9 @@ const UsernamePopup = ({
   updateUser,
   user,
   initialReward,
+  prefilledUsername,
 }) => {
-  const [username, setUsername] = useState('');
+  const [username, setUsername] = useState(prefilledUsername || '');
   const [errorMessage, setErrorMessage] = useState();
   const [profileErrorMessage, setProfileErrorMessage] = useState();
 

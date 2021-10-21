@@ -18,6 +18,7 @@ import Referrals from 'components/Referrals';
 import Textarea from 'components/Textarea';
 import { Link } from 'react-router-dom';
 import { checkUsername } from '../../api';
+import { useAuth0 } from '@auth0/auth0-react';
 
 const MainMenu = ({
   opened,
@@ -47,6 +48,8 @@ const MainMenu = ({
   const [profileErrorMessage, setProfileErrorMessage] = useState();
 
   const profilePictureRefName = useRef(null);
+
+  const { logout } = useAuth0();
 
   useEffect(() => {
     if (editVisible) return;
@@ -383,7 +386,7 @@ const MainMenu = ({
             onReferralsClick={() => onReferralsClick()}
             onEmailNotificationClick={() => onEmailNotificationClick()}
             onPreferencesClick={() => onPreferencesClick()}
-            onLogoutClick={() => onClickGoToRoute(Routes.logout)}
+            onLogoutClick={() => logout()}
             onCloseProfile={() => close()}
           />
         </div>

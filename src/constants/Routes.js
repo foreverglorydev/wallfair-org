@@ -44,4 +44,5 @@ export default {
   rewards: '/rewards',
   resetPassword: '/reset-password',
   user: '/user/:userId?',
+  auth: '/auth',
 };

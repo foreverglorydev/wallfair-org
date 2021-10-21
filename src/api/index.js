@@ -436,8 +436,8 @@ const signUp = payload => {
     .catch(error => ({ error: error.response.data }));
 };
 
-const login = payload => {
-  return Api.post(ApiUrls.API_AUTH_LOGIN, payload)
+const verify = payload => {
+  return Api.post(ApiUrls.API_AUTH_VERIFY, payload)
     .then(response => ({ response }))
     .catch(error => ({ error: error.response.data }));
 };
@@ -519,7 +519,7 @@ export {
   resolveBet,
   cancelBet,
   deleteBet,
-  login,
+  verify,
   signUp,
   forgotPassword,
   resetPassword,

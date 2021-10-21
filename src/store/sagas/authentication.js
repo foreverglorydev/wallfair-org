@@ -13,6 +13,7 @@ import { WebsocketsActions } from '../actions/websockets';
 import PopupTheme from '../../components/Popup/PopupTheme';
 import { AlertActions } from 'store/actions/alert';
 import { RosiGameActions } from '../actions/rosi-game';
+import { auth0 } from '../../config/auth0';
 
 const afterLoginRoute = Routes.home;
 
@@ -229,7 +230,8 @@ const authenticationSucceeded = function* (action) {
         PopupActions.show({
           popupType: PopupTheme.username,
           options: {
-            initialReward: action?.initialReward,
+            username: action.username,
+            initialReward: action.initialReward,
           },
         })
       );
@@ -380,15 +382,31 @@ const signUp = function* (action) {
   const { response, error } = yield call(Api.signUp, payload);
 
   if (response) {
-    const initialReward = response?.data?.initialReward;
-    yield put(
-      AuthenticationActions.login({
-        email: action.email,
-        password: action.password,
-        newUser: true,
-        initialReward,
-      })
-    );
+    // auth0.client.login(
+    //   {
+    //     realm: 'Username-Password-Authentication',
+    //     username: action.email,
+    //     password: action.password,
+    //     audience: process.env.REACT_APP_AUTH0_AUDIENCE || '',
+    //     scope: 'openid email'
+    //     // responseType: 'code',
+    //     // redirectUri: `${window.location.origin}/auth`,
+    //   },
+    //   (err, result) => {
+    //     debugger;
+    //   }
+    // );
+
+    auth0.loginWithRedirect();
+
+    // yield put(
+    //   AuthenticationActions.login({
+    //     email: action.email,
+    //     password: action.password,
+    //     newUser: true,
+    //     initialReward: response.data.initialReward,
+    //   })
+    // );
   } else {
     yield put(
       AuthenticationActions.signUpFail({
@@ -400,24 +418,25 @@ const signUp = function* (action) {
 
 const login = function* (action) {
   const payload = {
-    userIdentifier: action.email,
-    password: action.password,
+    userIdentifier: action.auth0Id,
+    email: action.email,
   };
 
-  const { response, error } = yield call(Api.login, payload);
+  const { response, error } = yield call(Api.verify, payload);
 
   if (response) {
     const data = response.data;
 
-    Api.setToken(data.session);
-    crashGameApi.setToken(data.session);
+    Api.setToken(action.token);
+    crashGameApi.setToken(action.token);
 
     yield put(
       AuthenticationActions.loginSuccess({
         userId: data.userId,
-        session: data.session,
-        newUser: action.newUser,
-        initialReward: action?.initialReward,
+        newUser: data.newUser,
+        session: action.token,
+        username: action.username,
+        initialReward: action.initialReward,
       })
     );
   } else {

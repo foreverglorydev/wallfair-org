@@ -1,4 +1,3 @@
-import React from 'react';
 import { AlertActions } from '../../store/actions/alert';
 import { GeneralActions } from '../../store/actions/general';
 import { AuthenticationActions } from '../../store/actions/authentication';

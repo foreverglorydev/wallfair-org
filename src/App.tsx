@@ -28,6 +28,7 @@ import Games from './screens/Games';
 import Activities from './screens/Activities';
 import ResetPassword from './screens/ResetPassword';
 import UserProfile from './screens/UserProfile';
+import AuthCallback from './screens/AuthCallback';
 import { initTagManager } from './config/gtm';
 import AudioContent from './components/AudioContent';
 import ScrollToTop from 'utils/ScrollToTop';
@@ -57,6 +58,7 @@ const App = () => {
             <DisclaimerPopupContainer />
             <TypeformController />
             <Switch>
+              <Route exact path={Routes.auth} component={AuthCallback} />
               <Route exact path={Routes.logout} component={Logout} />
               <Route
                 exact

@@ -25,13 +25,25 @@ import YellowButton from 'components/YellowButton';
 import AlphaPlatformCards from 'components/AlphaPlatformCards';
 import { ALPHA_PLATFORMS } from 'constants/AlphaPlatform';
 import { GeneralActions } from '../../store/actions/general';
+import { useHistory, useLocation } from 'react-router';
+import { AuthenticationActions } from 'store/actions/authentication';
 
-const Home = ({ tags, setOpenDrawer, fetchTags, showPopup, events, users }) => {
+const Home = ({ tags, setOpenDrawer, fetchTags, showPopup, events, login }) => {
   const isMount = useIsMount();
   const { eventId, betId, tradeId } = useParams();
-  const userLoggedIn = useSelector(
-    state => state.authentication.authState === 'LOGGED_IN'
-  );
+  const location = useLocation();
+  const history = useHistory();
+
+  useEffect(() => {
+    if (isMount) {
+      if (location.state?.auth) {
+        login(location.state.auth);
+        history.replace({ ...location, state: {} });
+      }
+      fetchTags();
+      renderBetApprovePopup();
+    }
+  }, []);
 
   const renderBetApprovePopup = async () => {
     if (isMount) {
@@ -61,13 +73,6 @@ const Home = ({ tags, setOpenDrawer, fetchTags, showPopup, events, users }) => {
       }
     }
   };
-
-  useEffect(() => {
-    if (isMount) {
-      fetchTags();
-      renderBetApprovePopup();
-    }
-  }, []);
 
   const renderHeadline = () => {
     return (
@@ -229,6 +234,9 @@ const mapDispatchToProps = dispatch => {
           options,
         })
       );
+    },
+    login: payload => {
+      dispatch(AuthenticationActions.login(payload));
     },
   };
 };

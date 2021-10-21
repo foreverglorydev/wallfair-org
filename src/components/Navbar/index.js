@@ -28,6 +28,7 @@ import { selectUser } from 'store/selectors/authentication';
 import { formatToFixed } from 'helper/FormatNumbers';
 import AuthenticationType from '../Authentication/AuthenticationType';
 import TimeLeftCounter from '../TimeLeftCounter';
+import { useAuth0 } from '@auth0/auth0-react';
 
 const Navbar = ({
   user,
@@ -50,6 +51,7 @@ const Navbar = ({
   });
 
   const { balance, currency, toNextRank } = useSelector(selectUser);
+  const { loginWithRedirect } = useAuth0();
 
   useEffect(() => {
     if (leaderboardOpen) {
@@ -218,7 +220,7 @@ const Navbar = ({
         <Button
           className={style.loginButton}
           withoutBackground={true}
-          onClick={() => showPopupForUnauthenticated(AuthenticationType.login)}
+          onClick={() => loginWithRedirect()}
         >
           Login
         </Button>

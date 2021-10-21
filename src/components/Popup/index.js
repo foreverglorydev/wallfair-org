@@ -217,7 +217,12 @@ const Popup = ({ type, visible, options = {}, hidePopup }) => {
       case PopupTheme.disclaimer:
         return <DisclaimerPopupView />;
       case PopupTheme.username:
-        return <UsernamePopup initialReward={options.initialReward} />;
+        return (
+          <UsernamePopup
+            initialReward={options.initialReward}
+            prefilledUsername={options.username}
+          />
+        );
       case PopupTheme.requestTokens:
         return <RequestTokensPopup />;
     }

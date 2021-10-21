@@ -199,9 +199,10 @@ const signUpFail = makeActionCreator(AuthenticationTypes.SIGN_UP_FAIL, {
 });
 
 const login = makeActionCreator(AuthenticationTypes.LOGIN, {
+  auth0Id: null,
   email: null,
-  password: null,
-  showWelcome: false,
+  username: null,
+  token: null,
   initialReward: 0,
 });
 
