@@ -102,7 +102,7 @@ jobs:
           kustomize: 4.2.0
           command: |
             cd infra/environments/auth0
-            kustomize edit set image registry.digitalocean.com/wallfair/frontend_k8s=registry.digitalocean.com/wallfair/frontend_k8s_develop:${GITHUB_SHA::6}
+            kustomize edit set image registry.digitalocean.com/wallfair/frontend_k8s=registry.digitalocean.com/wallfair/frontend_k8s_auth0:${GITHUB_SHA::6}
             kustomize build .
       - name: Edit deployment image (production)
         if: github.ref == 'refs/heads/production'
