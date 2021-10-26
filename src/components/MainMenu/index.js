@@ -18,7 +18,6 @@ import Referrals from 'components/Referrals';
 import Textarea from 'components/Textarea';
 import { Link } from 'react-router-dom';
 import { checkUsername } from '../../api';
-import { useAuth0 } from '@auth0/auth0-react';
 import { logout } from '../../config/auth0';
 
 const MainMenu = ({
@@ -49,8 +48,6 @@ const MainMenu = ({
   const [profileErrorMessage, setProfileErrorMessage] = useState();
 
   const profilePictureRefName = useRef(null);
-
-  // const { logout } = useAuth0();
 
   useEffect(() => {
     if (editVisible) return;

@@ -40,6 +40,7 @@ export const AuthenticationTypes = {
   RESET_PASSWORD: 'Authentication/RESET_PASSWORD',
   RESET_PASSWORD_FAIL: 'Authentication/RESET_PASSWORD_FAIL',
   UPDATE_STATUS: 'Authentication/UPDATE_STATUS',
+  REFRESH_TOKEN: 'Authentication/REFRESH_TOKEN',
 };
 
 const fetchReferrals = makeActionCreator(AuthenticationTypes.FETCH_REFERRALS);
@@ -240,6 +241,10 @@ const updateStatus = makeActionCreator(AuthenticationTypes.UPDATE_STATUS, {
   status: null,
 });
 
+const refreshToken = makeActionCreator(AuthenticationTypes.REFRESH_TOKEN, {
+  token: null,
+});
+
 export const AuthenticationActions = {
   fetchReferrals,
   fetchReferralsFailed,
@@ -279,4 +284,5 @@ export const AuthenticationActions = {
   resetPassword,
   resetPasswordFail,
   updateStatus,
+  refreshToken,
 };

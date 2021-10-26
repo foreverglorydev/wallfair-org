@@ -144,6 +144,7 @@ const root = function* () {
     takeLatest([REHYDRATE], WebsocketsSagas.idleCheck),
     takeEvery([LOCATION_CHANGE], WebsocketsSagas.joinOrLeaveRoomOnRouteChange),
     takeLatest([REHYDRATE], AuthenticationSagas.restoreToken),
+    takeLatest([REHYDRATE], AuthenticationSagas.checkAuthSession),
     takeLatest(
       [REHYDRATE, AuthenticationTypes.LOGIN_SUCCESS],
       AuthenticationSagas.refreshImportantData

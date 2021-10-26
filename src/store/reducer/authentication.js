@@ -425,6 +425,14 @@ const onVerify = (action, state) => {
   };
 };
 
+const refreshToken = (action, state) => {
+  return update(state, {
+    token: {
+      $set: action.token,
+    },
+  });
+};
+
 export default function (state = initialState, action) {
   switch (action.type) {
     // @formatter:off
@@ -490,6 +498,8 @@ export default function (state = initialState, action) {
       return forgotPasswordFail(action, state);
     case AuthenticationTypes.RESET_PASSWORD_FAIL:
       return resetPasswordFail(action, state);
+    case AuthenticationTypes.REFRESH_TOKEN:
+      return refreshToken(action, state);
     default:
       return cleanErrors(action, state);
     // @formatter:on

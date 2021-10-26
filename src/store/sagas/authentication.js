@@ -13,9 +13,15 @@ import { WebsocketsActions } from '../actions/websockets';
 import PopupTheme from '../../components/Popup/PopupTheme';
 import { AlertActions } from 'store/actions/alert';
 import { RosiGameActions } from '../actions/rosi-game';
-import { webAuth, auth0Config, loginWithPassword } from '../../config/auth0';
+import {
+  checkSession,
+  loginWithPassword,
+  authorizeApp,
+  logout as closeSession,
+} from '../../config/auth0';
 
 const afterLoginRoute = Routes.home;
+const tokenTimeout = process.env.REACT_APP_AUTH0_TOKEN_TIMEOUT || 300;
 
 const requestSms = function* (action) {
   const country = yield select(state => state.authentication.country);
@@ -255,6 +261,8 @@ const forcedLogout = function* () {
   yield put(
     AlertActions.showError({ message: 'Session expired. Please log in again.' })
   );
+  yield delay(2 * 1000);
+  yield call(closeSession);
 };
 
 const restoreToken = function* () {
@@ -295,17 +303,6 @@ const restoreToken = function* () {
 };
 
 const refreshImportantData = function* () {
-  // webAuth.checkSession(
-  //   {
-  //     audience: auth0Config.audience,
-  //     scope: auth0Config.scope,
-  //     responseType: 'id_token',
-  //   },
-  //   (err, authResult) => {
-  //     console.log(authResult, err);
-  //   }
-  // );
-
   const authState = yield select(state => state.authentication.authState);
 
   if (authState === AuthState.LOGGED_IN) {
@@ -378,6 +375,38 @@ const updateUserData = function* (action) {
     }
   } catch (error) {
     yield put(AuthenticationActions.updateUserDataFailed());
+  }
+};
+
+const checkAuthSession = function* () {
+  const auth = yield select(state => state.authentication);
+  const pathname = yield select(state => state.router.location.pathname);
+
+  if (auth.authState === AuthState.LOGGED_IN && pathname !== Routes.logout) {
+    try {
+      const result = yield call(checkSession);
+
+      if (result) {
+        const { accessToken } = result;
+        Api.setToken(accessToken);
+        crashGameApi.setToken(accessToken);
+        yield put(
+          AuthenticationActions.refreshToken({
+            token: accessToken,
+          })
+        );
+      }
+    } catch (e) {
+      console.error('Refresh token error', e.description);
+      if (e.code === 'consent_required') {
+        yield call(authorizeApp);
+      } else {
+        yield put(AuthenticationActions.forcedLogout());
+      }
+    }
+
+    yield delay(tokenTimeout * 1000);
+    yield call(checkAuthSession);
   }
 };
 
@@ -519,6 +548,7 @@ export default {
   verifyEmail,
   firstSignUpPopup,
   updateUserData,
+  checkAuthSession,
   signUp,
   login,
   forgotPassword,

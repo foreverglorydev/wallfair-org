@@ -1,4 +1,3 @@
-import { Auth0Client } from '@auth0/auth0-spa-js';
 import { WebAuth } from 'auth0-js';
 
 export const auth0Config = {
@@ -8,10 +7,6 @@ export const auth0Config = {
   redirect_uri: `${window.location.origin}/auth`,
   scope: 'openid email profile offline_access',
 };
-
-export const auth0 = new Auth0Client({
-  ...auth0Config,
-});
 
 export const webAuth = new WebAuth({
   domain: auth0Config.domain,
@@ -50,19 +45,21 @@ export const authorizeApp = () => {
 };
 
 export const checkSession = () => {
-  webAuth.checkSession(
-    {
-      audience: auth0Config.audience,
-      scope: auth0Config.scope,
-      responseType: 'id_token',
-    },
-    (err, authResult) => {
-      if (err?.code === 'consent_required') {
-        authorizeApp();
+  return new Promise((resolve, reject) => {
+    webAuth.checkSession(
+      {
+        audience: auth0Config.audience,
+        scope: auth0Config.scope,
+        responseType: 'id_token token',
+      },
+      (err, authResult) => {
+        if (err) {
+          return reject(err);
+        }
+        return resolve(authResult);
       }
-      console.log(authResult, err);
-    }
-  );
+    );
+  });
 };
 
 export const logout = () => {
