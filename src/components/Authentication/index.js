@@ -12,13 +12,13 @@ import HighlightType from 'components/Highlight/HighlightType';
 import AuthenticationType from './AuthenticationType';
 import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 import { selectTotalUsers } from '../../store/selectors/leaderboard';
+import { loginWithPassword, loginWithProvider } from '../../config/auth0';
 
 const Authentication = ({
   loading,
   errorState,
   authenticationType,
   signUp,
-  login,
   initForgotPassword,
   popupVisible,
 }) => {
@@ -144,10 +144,7 @@ const Authentication = ({
             ref: urlParams.get('ref'),
             recaptchaToken,
           })
-        : login({
-            email,
-            password,
-          });
+        : loginWithPassword(email, password);
     }
   };
 
@@ -256,6 +253,19 @@ const Authentication = ({
         >
           <span>{forgotPassword ? 'Send' : action}</span>
         </Button>
+
+        {!isSignUp() && !forgotPassword && (
+          <div className={styles.socialLogin}>
+            <Button
+              onClick={() => loginWithProvider('google-oauth2')}
+              withoutBackground={true}
+              highlightType={HighlightType.highlightAuthButton}
+              className={styles.submitButton}
+            >
+              <span>Login with google</span>
+            </Button>
+          </div>
+        )}
       </form>
     );
   };
@@ -330,9 +340,6 @@ const mapDispatchToProps = dispatch => {
   return {
     signUp: payload => {
       dispatch(AuthenticationActions.signUp(payload));
-    },
-    login: payload => {
-      dispatch(AuthenticationActions.login(payload));
     },
     initForgotPassword: email => {
       dispatch(AuthenticationActions.forgotPassword({ email }));

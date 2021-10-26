@@ -102,6 +102,25 @@
       margin: 10px 0;
     }
   }
+
+  .socialLogin {
+    width: 100%;
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 1px solid $colorGrayLight2;
+    position: relative;
+
+    &::before {
+      content: 'OR';
+      position: absolute;
+      left: calc(50% - 20px);
+      top: -20px;
+      padding: 10px;
+      color: $colorGrayLight2;
+      background-color: $colorWhite;
+      font-size: 14px;
+    }
+  }
 }
 
 .authenticationTermsAgreement {

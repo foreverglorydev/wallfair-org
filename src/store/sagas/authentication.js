@@ -13,7 +13,7 @@ import { WebsocketsActions } from '../actions/websockets';
 import PopupTheme from '../../components/Popup/PopupTheme';
 import { AlertActions } from 'store/actions/alert';
 import { RosiGameActions } from '../actions/rosi-game';
-import { auth0 } from '../../config/auth0';
+import { webAuth, auth0Config, loginWithPassword } from '../../config/auth0';
 
 const afterLoginRoute = Routes.home;
 
@@ -295,6 +295,17 @@ const restoreToken = function* () {
 };
 
 const refreshImportantData = function* () {
+  // webAuth.checkSession(
+  //   {
+  //     audience: auth0Config.audience,
+  //     scope: auth0Config.scope,
+  //     responseType: 'id_token',
+  //   },
+  //   (err, authResult) => {
+  //     console.log(authResult, err);
+  //   }
+  // );
+
   const authState = yield select(state => state.authentication.authState);
 
   if (authState === AuthState.LOGGED_IN) {
@@ -382,31 +393,7 @@ const signUp = function* (action) {
   const { response, error } = yield call(Api.signUp, payload);
 
   if (response) {
-    // auth0.client.login(
-    //   {
-    //     realm: 'Username-Password-Authentication',
-    //     username: action.email,
-    //     password: action.password,
-    //     audience: process.env.REACT_APP_AUTH0_AUDIENCE || '',
-    //     scope: 'openid email'
-    //     // responseType: 'code',
-    //     // redirectUri: `${window.location.origin}/auth`,
-    //   },
-    //   (err, result) => {
-    //     debugger;
-    //   }
-    // );
-
-    auth0.loginWithRedirect();
-
-    // yield put(
-    //   AuthenticationActions.login({
-    //     email: action.email,
-    //     password: action.password,
-    //     newUser: true,
-    //     initialReward: response.data.initialReward,
-    //   })
-    // );
+    loginWithPassword(action.email, action.password);
   } else {
     yield put(
       AuthenticationActions.signUpFail({

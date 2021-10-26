@@ -220,7 +220,7 @@ const Navbar = ({
         <Button
           className={style.loginButton}
           withoutBackground={true}
-          onClick={() => loginWithRedirect()}
+          onClick={() => showPopupForUnauthenticated(AuthenticationType.login)}
         >
           Login
         </Button>
