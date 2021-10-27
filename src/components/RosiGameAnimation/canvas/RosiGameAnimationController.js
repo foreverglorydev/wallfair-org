@@ -315,6 +315,9 @@ class RosiAnimationController {
     const point = this.coinAndTrajectory.getCoinCrashPosition();
     const elapsed = Date.now() - this.gameStartTime;
     this.cashedOut.animate(point.x, data.amount, data.crashFactor, elapsed);
+  }
+
+  playFireworks() {
     if (!this.coinAndTrajectory.fireworks.playing) {
       this.coinAndTrajectory.fireworks.gotoAndPlay(0);
       this.audio.playFireworksSound();

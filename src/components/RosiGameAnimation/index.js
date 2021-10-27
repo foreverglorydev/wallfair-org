@@ -9,6 +9,7 @@ import {
   selectLastCrash,
   selectCashedOut,
   selectNextGameAt,
+  isCashedOut as selectIsCashedOut,
 } from 'store/selectors/rosi-game';
 import Timer from './Timer';
 import Counter from './Counter';
@@ -58,6 +59,7 @@ const RosiGameAnimation = ({
   const lastCrashValue = useSelector(selectLastCrash);
   const gameStarted = useSelector(selectHasStarted);
   const cashedOut = useSelector(selectCashedOut);
+  const isCashedOut = useSelector(selectIsCashedOut);
   const nextGameAtTimeStamp = useSelector(selectNextGameAt);
   const gameStartedTimeStamp = useSelector(selectTimeStarted);
   const gameStartedTime = new Date(gameStartedTimeStamp).getTime();
@@ -125,6 +127,13 @@ const RosiGameAnimation = ({
       RosiGameAnimationController.doCashedOutAnimation(cashOut);
     }
   }, [isAnimationReady, gameStarted, cashedOut]); // eslint-disable-line
+
+  useEffect(() => {
+    /* player's cashout */
+    if (isCashedOut) {
+      RosiGameAnimationController.playFireworks();
+    }
+  }, [isCashedOut]);
 
   function render() {
     if (!connected) return <GameOffline />;
