@@ -15,12 +15,12 @@ import { selectTotalUsers } from '../../store/selectors/leaderboard';
 import { loginWithPassword, loginWithProvider } from '../../config/auth0';
 
 const Authentication = ({
-  loading,
   errorState,
   authenticationType,
   signUp,
   initForgotPassword,
   popupVisible,
+  loginFail,
 }) => {
   const location = useLocation();
   let urlParams = new URLSearchParams(location.search);
@@ -135,16 +135,18 @@ const Authentication = ({
 
     if (forgotPassword) {
       initForgotPassword(email);
+    } else if (isSignUp()) {
+      signUp({
+        email,
+        password,
+        passwordConfirm: passwordConfirmation,
+        ref: urlParams.get('ref'),
+        recaptchaToken,
+      });
     } else {
-      isSignUp()
-        ? signUp({
-            email,
-            password,
-            passwordConfirm: passwordConfirmation,
-            ref: urlParams.get('ref'),
-            recaptchaToken,
-          })
-        : loginWithPassword(email, password);
+      loginWithPassword(email, password).catch(e => {
+        loginFail(e.description);
+      });
     }
   };
 
@@ -330,7 +332,6 @@ const Authentication = ({
 
 const mapStateToProps = state => {
   return {
-    loading: state.authentication.loading,
     errorState: state.authentication.error,
     popupVisible: state.popup.visible,
   };
@@ -343,6 +344,9 @@ const mapDispatchToProps = dispatch => {
     },
     initForgotPassword: email => {
       dispatch(AuthenticationActions.forgotPassword({ email }));
+    },
+    loginFail: message => {
+      dispatch(AuthenticationActions.loginFail({ message }));
     },
   };
 };

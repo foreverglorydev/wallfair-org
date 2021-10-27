@@ -65,7 +65,6 @@ const root = function* () {
       AuthenticationSagas.authenticationSucceeded
     ),
     takeLatest([AuthenticationTypes.SIGN_UP], AuthenticationSagas.signUp),
-    takeLatest([AuthenticationTypes.LOGIN], AuthenticationSagas.login),
     takeLatest(
       [AuthenticationTypes.FORGOT_PASSWORD],
       AuthenticationSagas.forgotPassword

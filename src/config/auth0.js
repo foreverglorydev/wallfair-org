@@ -17,17 +17,23 @@ export const webAuth = new WebAuth({
 });
 
 export const loginWithPassword = (email, password) => {
-  webAuth.login(
-    {
-      realm: 'Username-Password-Authentication',
-      username: email,
-      password: password,
-      responseType: 'id_token token',
-    },
-    err => {
-      console.error('Authentication failed', err);
-    }
-  );
+  return new Promise((resolve, reject) => {
+    webAuth.login(
+      {
+        realm: 'Username-Password-Authentication',
+        username: email,
+        password: password,
+        responseType: 'id_token token',
+      },
+      err => {
+        console.error('Authentication failed', err);
+        if (err) {
+          return reject(err);
+        }
+        return resolve(true);
+      }
+    );
+  });
 };
 
 export const loginWithProvider = provider => {

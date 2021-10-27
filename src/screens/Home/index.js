@@ -28,7 +28,14 @@ import { GeneralActions } from '../../store/actions/general';
 import { useHistory, useLocation } from 'react-router';
 import { AuthenticationActions } from 'store/actions/authentication';
 
-const Home = ({ tags, setOpenDrawer, fetchTags, showPopup, events, login }) => {
+const Home = ({
+  tags,
+  setOpenDrawer,
+  fetchTags,
+  showPopup,
+  events,
+  loginSuccess,
+}) => {
   const isMount = useIsMount();
   const { eventId, betId, tradeId } = useParams();
   const location = useLocation();
@@ -37,7 +44,7 @@ const Home = ({ tags, setOpenDrawer, fetchTags, showPopup, events, login }) => {
   useEffect(() => {
     if (isMount) {
       if (location.state?.auth) {
-        login(location.state.auth);
+        loginSuccess(location.state.auth);
         history.replace({ ...location, state: {} });
       }
       fetchTags();
@@ -235,8 +242,8 @@ const mapDispatchToProps = dispatch => {
         })
       );
     },
-    login: payload => {
-      dispatch(AuthenticationActions.login(payload));
+    loginSuccess: payload => {
+      dispatch(AuthenticationActions.loginSuccess(payload));
     },
   };
 };

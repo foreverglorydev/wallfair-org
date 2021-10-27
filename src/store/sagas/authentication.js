@@ -225,6 +225,9 @@ const authenticationSucceeded = function* (action) {
   const userId = yield select(state => state.authentication.userId);
 
   if (authState === AuthState.LOGGED_IN) {
+    Api.setToken(action.session);
+    crashGameApi.setToken(action.session);
+
     yield put(UserActions.fetch({ userId, forceFetch: true }));
     yield put(EventActions.fetchAll());
     yield put(AuthenticationActions.fetchReferrals());
@@ -241,8 +244,6 @@ const authenticationSucceeded = function* (action) {
           },
         })
       );
-    } else {
-      yield put(PopupActions.hide());
     }
   }
 };
@@ -422,42 +423,18 @@ const signUp = function* (action) {
   const { response, error } = yield call(Api.signUp, payload);
 
   if (response) {
-    loginWithPassword(action.email, action.password);
+    try {
+      yield call(loginWithPassword, action.email, action.password);
+    } catch (e) {
+      yield put(
+        AuthenticationActions.loginFail({
+          message: e.description,
+        })
+      );
+    }
   } else {
     yield put(
       AuthenticationActions.signUpFail({
-        message: error.message,
-      })
-    );
-  }
-};
-
-const login = function* (action) {
-  const payload = {
-    userIdentifier: action.auth0Id,
-    email: action.email,
-  };
-
-  const { response, error } = yield call(Api.verify, payload);
-
-  if (response) {
-    const data = response.data;
-
-    Api.setToken(action.token);
-    crashGameApi.setToken(action.token);
-
-    yield put(
-      AuthenticationActions.loginSuccess({
-        userId: data.userId,
-        newUser: data.newUser,
-        session: action.token,
-        username: action.username,
-        initialReward: action.initialReward,
-      })
-    );
-  } else {
-    yield put(
-      AuthenticationActions.loginFail({
         message: error.message,
       })
     );
@@ -550,7 +527,6 @@ export default {
   updateUserData,
   checkAuthSession,
   signUp,
-  login,
   forgotPassword,
   resetPassword,
   updateStatus,
