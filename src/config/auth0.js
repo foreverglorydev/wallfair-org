@@ -16,7 +16,7 @@ export const webAuth = new WebAuth({
   redirectUri: auth0Config.redirect_uri,
 });
 
-export const loginWithPassword = (email, password) => {
+export const loginWithPassword = (email, password, appState) => {
   return new Promise((resolve, reject) => {
     webAuth.login(
       {
@@ -24,6 +24,7 @@ export const loginWithPassword = (email, password) => {
         username: email,
         password: password,
         responseType: 'id_token token',
+        appState,
       },
       err => {
         console.error('Authentication failed', err);

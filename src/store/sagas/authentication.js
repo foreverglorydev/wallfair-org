@@ -233,7 +233,6 @@ const authenticationSucceeded = function* (action) {
     yield put(AuthenticationActions.fetchReferrals());
     yield put(WebsocketsActions.init());
     yield put(RosiGameActions.clearGuestData());
-    yield put(AlertActions.showSuccess({ message: 'Successfully logged in' }));
     if (action.newUser) {
       yield put(
         PopupActions.show({
@@ -424,7 +423,10 @@ const signUp = function* (action) {
 
   if (response) {
     try {
-      yield call(loginWithPassword, action.email, action.password);
+      yield call(loginWithPassword, action.email, action.password, {
+        newUser: true,
+        initialReward: response.data.initialReward,
+      });
     } catch (e) {
       yield put(
         AuthenticationActions.loginFail({

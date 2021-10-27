@@ -15,11 +15,13 @@ const AuthCallback = () => {
 
     if (hashFromLocation.id_token) {
       webAuth.parseHash({ hash: history.location.hash }, (err, authResult) => {
-        if (err) {
+        if (err || !authResult) {
           history.push(Routes.home);
         }
 
         const user = authResult.idTokenPayload;
+
+        debugger;
 
         Api.verify({
           userIdentifier: user.sub,
@@ -33,10 +35,10 @@ const AuthCallback = () => {
               state: {
                 auth: {
                   userId: data.userId,
-                  newUser: data.newUser,
+                  newUser: authResult.appState?.newUser || data.newUser,
                   session: authResult.accessToken,
                   username: user.nickname,
-                  initialReward: 5000,
+                  initialReward: authResult.appState?.initialReward || 5000,
                 },
               },
             });

@@ -27,6 +27,7 @@ import { ALPHA_PLATFORMS } from 'constants/AlphaPlatform';
 import { GeneralActions } from '../../store/actions/general';
 import { useHistory, useLocation } from 'react-router';
 import { AuthenticationActions } from 'store/actions/authentication';
+import authState from 'constants/AuthState';
 
 const Home = ({
   tags,
@@ -35,6 +36,7 @@ const Home = ({
   showPopup,
   events,
   loginSuccess,
+  authStatus,
 }) => {
   const isMount = useIsMount();
   const { eventId, betId, tradeId } = useParams();
@@ -43,9 +45,8 @@ const Home = ({
 
   useEffect(() => {
     if (isMount) {
-      if (location.state?.auth) {
+      if (location.state?.auth && authStatus === authState.LOGGED_OUT) {
         loginSuccess(location.state.auth);
-        history.replace({ ...location, state: {} });
       }
       fetchTags();
       renderBetApprovePopup();
@@ -223,6 +224,7 @@ const mapStateToProps = state => {
   return {
     tags: state.event.tags,
     events: state.event.events,
+    authStatus: state.authentication.authState,
   };
 };
 
