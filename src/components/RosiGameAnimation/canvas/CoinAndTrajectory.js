@@ -251,7 +251,7 @@ export class CoinAnimation {
     this.fireworks.loop = false;
     this.fireworks.x = this.app.renderer.width / 2;
     this.fireworks.y = this.app.renderer.width / 3;
-    this.fireworks.animationSpeed = 0.25;
+    this.fireworks.animationSpeed = 0.2;
 
     this.container.addChild(this.fireworks);
   }

@@ -52,6 +52,10 @@ class AudioController {
           url: '/sounds/elon/sfx_cashout3.mp3',
           loop: false,
         },
+        fireworks: {
+          url: '/sounds/elon/fireworks2.mp3',
+          loop: false,
+        },
         placebet: {
           url: '/sounds/elon/sfx_placebet.mp3',
           loop: false,
@@ -145,6 +149,10 @@ class AudioController {
 
   playBetSound() {
     this.playSound('placebet');
+  }
+
+  playFireworksSound() {
+    this.playSound('fireworks');
   }
 }
 
@@ -309,6 +317,7 @@ class RosiAnimationController {
     this.cashedOut.animate(point.x, data.amount, data.crashFactor, elapsed);
     if (!this.coinAndTrajectory.fireworks.playing) {
       this.coinAndTrajectory.fireworks.gotoAndPlay(0);
+      this.audio.playFireworksSound();
     }
   }
 }
