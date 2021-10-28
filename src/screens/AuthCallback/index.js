@@ -1,14 +1,12 @@
 import Routes from 'constants/Routes';
 import { useEffect } from 'react';
 import { useHistory } from 'react-router';
-import { webAuth } from '../../config/auth0';
+import { webAuth, checkSession } from '../../config/auth0';
 import qs from 'query-string';
-import { useDispatch } from 'react-redux';
 import * as Api from '../../api';
 
 const AuthCallback = () => {
   const history = useHistory();
-  const dispatch = useDispatch();
 
   useEffect(() => {
     const hashFromLocation = qs.parse(history.location.hash);
@@ -28,19 +26,40 @@ const AuthCallback = () => {
         })
           .then(result => {
             const data = result.response.data;
-
-            history.push({
-              pathname: Routes.home,
-              state: {
-                auth: {
-                  userId: data.userId,
-                  newUser: authResult.appState?.newUser || data.newUser,
-                  session: authResult.accessToken,
-                  username: user.nickname,
-                  initialReward: authResult.appState?.initialReward || 5000,
-                },
+            const state = {
+              auth: {
+                userId: data.userId,
+                newUser: authResult.appState?.newUser || data.newUser,
+                session: authResult.accessToken,
+                username: user.nickname,
+                initialReward: authResult.appState?.initialReward || 5000,
               },
-            });
+            };
+
+            if (data.userLinked) {
+              checkSession()
+                .then(result => {
+                  history.push({
+                    pathname: Routes.home,
+                    state: {
+                      ...state,
+                      auth: {
+                        ...state.auth,
+                        session: result.accessToken,
+                      },
+                    },
+                  });
+                })
+                .catch(e => {
+                  console.error('User link error', e.description);
+                  history.push(Routes.home);
+                });
+            } else {
+              history.push({
+                pathname: Routes.home,
+                state,
+              });
+            }
           })
           .catch(error => {
             console.error('Verification error', error.message);
