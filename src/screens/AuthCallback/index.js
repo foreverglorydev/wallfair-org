@@ -1,5 +1,6 @@
 import Routes from 'constants/Routes';
-import { useEffect } from 'react';
+import styles from './styles.module.scss';
+import { useEffect, useState } from 'react';
 import { useHistory } from 'react-router';
 import { webAuth, checkSession } from '../../config/auth0';
 import qs from 'query-string';
@@ -7,71 +8,81 @@ import * as Api from '../../api';
 
 const AuthCallback = () => {
   const history = useHistory();
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const hashFromLocation = qs.parse(history.location.hash);
+    setIsLoading(true);
 
-    if (hashFromLocation.id_token) {
-      webAuth.parseHash({ hash: history.location.hash }, (err, authResult) => {
-        if (err || !authResult) {
-          console.error('Authentication error', err);
-          history.push(Routes.home);
-        }
-
-        const user = authResult.idTokenPayload;
-
-        Api.verify({
-          userIdentifier: user.sub,
-          email: user.email,
-        })
-          .then(result => {
-            const data = result.response.data;
-            const state = {
-              auth: {
-                userId: data.userId,
-                newUser: authResult.appState?.newUser || data.newUser,
-                session: authResult.accessToken,
-                username: user.nickname,
-                initialReward: authResult.appState?.initialReward || 5000,
-              },
-            };
-
-            if (data.userLinked) {
-              checkSession()
-                .then(result => {
-                  history.push({
-                    pathname: Routes.home,
-                    state: {
-                      ...state,
-                      auth: {
-                        ...state.auth,
-                        session: result.accessToken,
-                      },
-                    },
-                  });
-                })
-                .catch(e => {
-                  console.error('User link error', e.description);
-                  history.push(Routes.home);
-                });
-            } else {
-              history.push({
-                pathname: Routes.home,
-                state,
-              });
-            }
-          })
-          .catch(error => {
-            console.error('Verification error', error.message);
-            history.push(Routes.home);
-          });
-      });
-    } else {
+    if (!hashFromLocation.id_token) {
       history.push(Routes.home);
     }
+
+    webAuth.parseHash({ hash: history.location.hash }, (err, authResult) => {
+      if (err || !authResult) {
+        console.error('Authentication error', err);
+        history.push(Routes.home);
+      }
+
+      const user = authResult.idTokenPayload;
+
+      Api.verify({
+        userIdentifier: user.sub,
+        email: user.email,
+      })
+        .then(result => {
+          const data = result.response.data;
+          const state = {
+            auth: {
+              userId: data.userId,
+              newUser: authResult.appState?.newUser || data.newUser,
+              session: authResult.accessToken,
+              username: user.nickname,
+              initialReward: authResult.appState?.initialReward || 5000,
+            },
+          };
+
+          if (data.userLinked) {
+            checkSession()
+              .then(result => {
+                history.push({
+                  pathname: Routes.home,
+                  state: {
+                    ...state,
+                    auth: {
+                      ...state.auth,
+                      session: result.accessToken,
+                    },
+                  },
+                });
+              })
+              .catch(e => {
+                console.error('User link error', e.description);
+                history.push(Routes.home);
+              });
+          } else {
+            history.push({
+              pathname: Routes.home,
+              state,
+            });
+          }
+        })
+        .catch(error => {
+          console.error('Verification error', error.message);
+          history.push(Routes.home);
+        });
+    });
   }, []);
 
-  return <></>;
+  return (
+    <>
+      {isLoading && (
+        <div className={styles.loadingAnimationContainer}>
+          <div className={styles.loadingAnimation}></div>
+        </div>
+      )}
+    </>
+  );
 };
 
 export default AuthCallback;
