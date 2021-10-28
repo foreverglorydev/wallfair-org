@@ -16,12 +16,11 @@ const AuthCallback = () => {
     if (hashFromLocation.id_token) {
       webAuth.parseHash({ hash: history.location.hash }, (err, authResult) => {
         if (err || !authResult) {
+          console.error('Authentication error', err);
           history.push(Routes.home);
         }
 
         const user = authResult.idTokenPayload;
-
-        debugger;
 
         Api.verify({
           userIdentifier: user.sub,
@@ -44,7 +43,7 @@ const AuthCallback = () => {
             });
           })
           .catch(error => {
-            console.error('Authentication error', error.message);
+            console.error('Verification error', error.message);
             history.push(Routes.home);
           });
       });
