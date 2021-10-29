@@ -75,6 +75,8 @@ const UniversalVideoEmbed = props => {
     'staging.wallfair.io',
     'demo.wallfair.io',
     'play.wallfair.io',
+    'auth0.wallfair.io',
+    'dev.wallfair.io',
     'localhost',
   ];
 
