@@ -254,6 +254,9 @@ const logout = function* () {
 };
 
 const forcedLogout = function* () {
+  const authState = yield select(state => state.authentication.authState);
+  if (authState === AuthState.LOGGED_OUT) return;
+
   Api.setToken(null);
   crashGameApi.setToken(null);
 
