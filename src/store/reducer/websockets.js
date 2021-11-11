@@ -14,9 +14,11 @@ const close = (action, state) => {
   return { ...state, init: false, connected: false };
 };
 const connected = (action, state) => {
+  console.log('state change CONNECTED:true');
   return { ...state, connected: true };
 };
 const disconnected = (action, state) => {
+  console.log('state change CONNECTED:false');
   return { ...state, connected: false };
 };
 const joinRoom = (action, state) => ({

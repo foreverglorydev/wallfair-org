@@ -226,12 +226,12 @@ const authenticationSucceeded = function* (action) {
     yield put(RosiGameActions.clearGuestData());
     yield put(AlertActions.showSuccess({ message: 'Successfully logged in' }));
 
-    yield put(
-      WebsocketsActions.joinRoom({
-        userId,
-        roomId: UserMessageRoomId,
-      })
-    );
+    // yield put(
+    //   WebsocketsActions.joinRoom({
+    //     userId,
+    //     roomId: UserMessageRoomId,
+    //   })
+    // );
     yield put(ChatActions.fetchByRoom({ roomId: UserMessageRoomId }));
 
     if (action.newUser) {

@@ -16,150 +16,163 @@ import { EventActions } from '../actions/event';
 import trackedActivities from '../../components/ActivitiesTracker/trackedActivities';
 import { GAMES } from '../../constants/Games';
 
+/**
+ *  creates an event Channel from the events happening on the websocket
+ *  */
 function createSocketChannel(socket) {
   return eventChannel(emit => {
-    const connectHandler = () => {
-      const message = {
-        type: 'connect',
-      };
+    // const connectHandler = () => {
+    //   const message = {
+    //     type: 'connect',
+    //   };
 
-      emit(message);
-    };
-    const chatMessageHandler = event => {
-      const message = {
-        ...event,
-      };
+    //   emit(message);
+    // };
+    // const chatMessageHandler = event => {
+    //   const message = {
+    //     ...event,
+    //   };
 
-      emit(message);
-    };
-    const addBetCreatedHandler = event => {
-      const message = {
-        ...event,
-      };
+    //   emit(message);
+    // };
+    // const addBetCreatedHandler = event => {
+    //   const message = {
+    //     ...event,
+    //   };
 
-      emit(message);
-    };
+    //   emit(message);
+    // };
 
-    const addNewBetPlaceHandler = event => {
-      const message = {
-        ...event,
-      };
+    // const addNewBetPlaceHandler = event => {
+    //   const message = {
+    //     ...event,
+    //   };
 
-      emit(message);
-    };
+    //   emit(message);
+    // };
 
-    const addNewBetPullOutHandler = event => {
-      const message = {
-        ...event,
-      };
+    // const addNewBetPullOutHandler = event => {
+    //   const message = {
+    //     ...event,
+    //   };
 
-      emit(message);
-    };
+    //   emit(message);
+    // };
 
-    const notificationHandler = notification => {
+    // const notificationHandler = notification => {
+    //   emit({
+    //     type: 'notification',
+    //     ...notification,
+    //   });
+    // };
+
+    // const errorHandler = errorEvent => {
+    //   // create an Error object and put it into the channel
+    //   emit(new Error(errorEvent.reason));
+    // };
+
+    // const casinoStartHandler = event => {
+    //   const message = {
+    //     type: ChatMessageType.casinoStart,
+    //     ...event,
+    //   };
+
+    //   emit(message);
+    // };
+
+    // const casinoEndHandler = event => {
+    //   const message = {
+    //     type: ChatMessageType.casinoEnd,
+    //     ...event,
+    //   };
+
+    //   emit(message);
+    // };
+
+    // const casinoTradeHandler = event => {
+    //   const message = {
+    //     type: ChatMessageType.casinoTrade,
+    //     ...event,
+    //   };
+
+    //   emit(message);
+    // };
+
+    // const casinoRewardHandler = event => {
+    //   const message = {
+    //     type: ChatMessageType.casinoReward,
+    //     ...event,
+    //   };
+
+    //   emit(message);
+    // };
+
+    // const casinoBetCanceledHandler = data => {
+    //   const message = {
+    //     ...data,
+    //     type: ChatMessageType.casinoCancel,
+    //   };
+
+    //   emit(message);
+    // };
+
+    // const betStartedHandler = data => {
+    //   const message = {
+    //     ...data,
+    //     type: UserNotificationTypes.BET_STARTED,
+    //   };
+
+    //   emit(message);
+    // };
+
+    // const onAnyListener = (eventName, data) => {
+    //   const message = {
+    //     type: 'any',
+    //     eventName,
+    //     data,
+    //   };
+    //   console.log('onAnyListener', eventName, data)
+    //   emit(message);
+    // };
+
+    socket.onEvent = (eventName, msg) => {
+      console.log('a new event was raised', eventName, msg);
       emit({
-        type: 'notification',
-        ...notification,
+        type: eventName,
+        ...msg,
       });
     };
 
-    const errorHandler = errorEvent => {
-      // create an Error object and put it into the channel
-      emit(new Error(errorEvent.reason));
-    };
-
-    const casinoStartHandler = event => {
-      const message = {
-        type: ChatMessageType.casinoStart,
-        ...event,
-      };
-
-      emit(message);
-    };
-
-    const casinoEndHandler = event => {
-      const message = {
-        type: ChatMessageType.casinoEnd,
-        ...event,
-      };
-
-      emit(message);
-    };
-
-    const casinoTradeHandler = event => {
-      const message = {
-        type: ChatMessageType.casinoTrade,
-        ...event,
-      };
-
-      emit(message);
-    };
-
-    const casinoRewardHandler = event => {
-      const message = {
-        type: ChatMessageType.casinoReward,
-        ...event,
-      };
-
-      emit(message);
-    };
-
-    const casinoBetCanceledHandler = data => {
-      const message = {
-        ...data,
-        type: ChatMessageType.casinoCancel,
-      };
-
-      emit(message);
-    };
-
-    const betStartedHandler = data => {
-      const message = {
-        ...data,
-        type: UserNotificationTypes.BET_STARTED,
-      };
-
-      emit(message);
-    };
-
-    const onAnyListener = (eventName, data) => {
-      const message = {
-        type: 'any',
-        eventName,
-        data,
-      };
-      emit(message);
-    };
-
     // setup the subscription
-    socket.on('connect', connectHandler);
-    socket.on('chatMessage', chatMessageHandler);
-    socket.on('betCreated', addBetCreatedHandler);
-    socket.on('betPlaced', addNewBetPlaceHandler);
-    socket.on('betPulledOut', addNewBetPullOutHandler);
-    socket.on('notification', notificationHandler);
-    socket.on('error', errorHandler);
-    socket.on('CASINO_START', casinoStartHandler);
-    socket.on('CASINO_END', casinoEndHandler);
-    socket.on('CASINO_TRADE', casinoTradeHandler);
-    socket.on('CASINO_REWARD', casinoRewardHandler);
-    socket.on('EVENT_BET_STARTED', betStartedHandler);
-    socket.on('CASINO_CANCEL', casinoBetCanceledHandler);
-    socket.onAny(onAnyListener);
+    // socket.on('connect', connectHandler);
+    // socket.on('chatMessage', chatMessageHandler);
+    // socket.on('betCreated', addBetCreatedHandler);
+    // socket.on('betPlaced', addNewBetPlaceHandler);
+    // socket.on('betPulledOut', addNewBetPullOutHandler);
+    // socket.on('notification', notificationHandler);
+    // socket.on('error', errorHandler);
+    // socket.on('CASINO_START', casinoStartHandler);
+    // socket.on('CASINO_END', casinoEndHandler);
+    // socket.on('CASINO_TRADE', casinoTradeHandler);
+    // socket.on('CASINO_REWARD', casinoRewardHandler);
+    // socket.on('EVENT_BET_STARTED', betStartedHandler);
+    // socket.on('CASINO_CANCEL', casinoBetCanceledHandler);
+    // socket.onAny(onAnyListener);
 
     const unsubscribe = () => {
-      socket.off('chatMessage', chatMessageHandler);
-      socket.off('betCreated', addBetCreatedHandler);
-      socket.off('betPlaced', addNewBetPlaceHandler);
-      socket.off('betPulledOut', addNewBetPullOutHandler);
-      socket.off('notification', notificationHandler);
-      socket.off('CASINO_START', casinoStartHandler);
-      socket.off('CASINO_END', casinoEndHandler);
-      socket.off('CASINO_TRADE', casinoTradeHandler);
-      socket.off('CASINO_REWARD', casinoRewardHandler);
-      socket.off('EVENT_BET_STARTED', betStartedHandler);
-      socket.off('CASINO_CANCEL', casinoBetCanceledHandler);
-      socket.offAny(onAnyListener);
+      socket.onEvent = null;
+      // socket.off('chatMessage', chatMessageHandler);
+      // socket.off('betCreated', addBetCreatedHandler);
+      // socket.off('betPlaced', addNewBetPlaceHandler);
+      // socket.off('betPulledOut', addNewBetPullOutHandler);
+      // socket.off('notification', notificationHandler);
+      // socket.off('CASINO_START', casinoStartHandler);
+      // socket.off('CASINO_END', casinoEndHandler);
+      // socket.off('CASINO_TRADE', casinoTradeHandler);
+      // socket.off('CASINO_REWARD', casinoRewardHandler);
+      // socket.off('EVENT_BET_STARTED', betStartedHandler);
+      // socket.off('CASINO_CANCEL', casinoBetCanceledHandler);
+      // socket.offAny(onAnyListener);
     };
 
     return unsubscribe;
@@ -176,63 +189,53 @@ const notificationTypes = {
 export function* init() {
   const token = yield select(state => state.authentication.token);
   try {
-    const socket = yield call(createSocket, token);
-    const socketChannel = yield call(createSocketChannel, socket);
+    console.log('init sockets');
+    //createSocket(token);
+    //let socket = websocket;
+    yield call(createSocket, token);
+    const socketChannel = yield call(createSocketChannel, websocket);
     yield put(WebsocketsActions.initSucceeded());
     while (true) {
       try {
         const payload = yield take(socketChannel);
         const type = _.get(payload, 'type');
-        let uid;
+        console.log('socket eventChannel: new event with type ', type);
+        const uid = yield select(state => state.authentication.userId);
         switch (type) {
+          case 'close':
+          case 'error':
+            console.log(`on ${type} from eventChannel`);
+            yield put(WebsocketsActions.disconnected());
+            break;
           case 'connect':
-            if (socket && socket.connected) {
-              yield put(WebsocketsActions.connected());
-              const userId = yield select(state => state.authentication.userId);
-              const rooms = yield select(state => state.websockets.rooms);
-              if (rooms) {
-                for (let roomId of rooms) {
-                  yield put(
-                    WebsocketsActions.joinRoom({
-                      userId,
-                      roomId: roomId,
-                    })
-                  );
-                }
-              }
-            } else {
-              yield put(WebsocketsActions.disconnected());
-            }
+            console.log(`on ${type} from eventChannel`);
+            yield put(WebsocketsActions.connected());
             break;
           case ChatMessageType.casinoStart:
             yield put(RosiGameActions.setHasStarted(payload));
             yield put(RosiGameActions.resetCashedOut());
             break;
           case ChatMessageType.casinoEnd:
-            const userId = yield select(state => state.authentication.userId);
             yield put(
               RosiGameActions.addLastCrash({
                 nextGameAt: payload.nextGameAt,
                 crashFactor: payload.crashFactor,
                 gameHash: payload.gameId,
-                userId,
+                userId: uid,
               })
             );
             break;
           case ChatMessageType.casinoTrade:
-            const u = yield select(state => state.authentication.userId);
             yield put(
-              RosiGameActions.addInGameBet({ ...payload, clientUserId: u })
+              RosiGameActions.addInGameBet({ ...payload, clientUserId: uid })
             );
             break;
           case ChatMessageType.casinoReward:
-            uid = yield select(state => state.authentication.userId);
             yield put(
               RosiGameActions.addReward({ ...payload, clientUserId: uid })
             );
             break;
           case ChatMessageType.casinoCancel:
-            uid = yield select(state => state.authentication.userId);
             yield put(
               RosiGameActions.handleCancelBet({ ...payload, clientUserId: uid })
             );
@@ -252,7 +255,6 @@ export function* init() {
           case ChatMessageType.placeBet:
             const events = yield select(state => state.event.events);
             const event = events.find(e => e._id === payload.roomId);
-
             if (event?.type === 'non-streamed') {
               const chartParams = yield select(
                 state => state.event.chartParams
@@ -316,21 +318,33 @@ const isGamePage = (currentAction, pathSlugs) =>
   (currentAction[0] === 'games' || pathSlugs[0] === 'games') &&
   (pathSlugs.length > 1 || currentAction.length > 1);
 
-export function* joinOrLeaveRoomOnRouteChange(action) {
+/**
+ * Initializes the websocket connection or join/leave rooms based on current state
+ * @returns
+ */
+export function* checkWsRoomsWithCurrentState() {
   const ready = yield select(state => state.websockets.init);
-  const connected = yield select(state => state.websockets.connected);
-
-  if (!ready && !connected) {
+  if (!ready) {
+    console.log('on route load the sockets arent ready, init and skip');
     return yield call(init);
-    // @TODO: we need to call/fork from init to join-or-leave
+  }
+
+  const connected = yield select(state => state.websockets.connected);
+  if (!connected) {
+    console.log('on route load the sockets arent connected, simply skip');
+    return;
   }
 
   const userId = yield select(state => state.authentication.userId);
   const currentRooms = yield select(state => state.websockets.rooms) || [];
   const pathname = yield select(state => state.router.location.pathname);
-  const currentAction = action.payload.location.pathname.slice(1).split('/');
+  const currentAction = pathname.slice(1).split('/');
   const pathSlugs = pathname.slice(1).split('/');
   let newRoomsToJoin = [];
+
+  if (userId) {
+    newRoomsToJoin.push(UserMessageRoomId);
+  }
 
   if (currentAction[0] === 'trade' || pathSlugs[0] === 'trade') {
     const eventSlug = pathSlugs[1];
@@ -386,57 +400,24 @@ export function* joinOrLeaveRoomOnRouteChange(action) {
   }
 }
 
-export function* connected() {
-  const location = yield select(state => state.router.location);
-  const matchesTradeRoute = matchPath(location.pathname, Routes.bet);
-
-  if (matchesTradeRoute) {
-    const { params } = yield select(state =>
-      createMatchSelector({ path: Routes.bet })(state)
-    );
-    const { eventId } = params;
-
-    if (eventId) {
-      const userId = yield select(state => state.authentication.userId);
-      yield put(
-        WebsocketsActions.joinRoom({
-          userId,
-          roomId: eventId,
-        })
-      );
-    }
-  }
-}
-
 export function* joinRoom(action) {
-  const init = yield select(state => state.websockets.init);
-  const connected = yield select(state => state.websockets.connected);
-
-  if (init && websocket && connected) {
-    websocket.emit('joinRoom', action);
-  }
+  yield call(websocket.emit, 'joinRoom', action);
 }
 
 export function* leaveRoom(action) {
-  const init = yield select(state => state.websockets.init);
-
-  if (init && websocket) {
-    websocket.emit('leaveRoom', action);
-  }
+  yield call(websocket.emit, 'leaveRoom', action);
 }
 
 export function* sendChatMessage(action) {
-  const init = yield select(state => state.websockets.init);
-  const connected = yield select(state => state.websockets.connected);
   const token = yield select(state => state.authentication.token);
-
-  if (init && websocket && connected && token) {
-    websocket.emit('chatMessage', action.messageObject);
+  if (token) {
+    yield call(websocket.emit, 'chatMessage', action.messageObject);
   }
 }
 
 export function* idleCheck() {
-  if (websocket && !websocket.connected) {
+  const connected = yield select(state => state.websockets.connected);
+  if (!connected) {
     yield put(WebsocketsActions.disconnected());
   }
 
@@ -446,10 +427,9 @@ export function* idleCheck() {
 
 export default {
   init,
-  connected,
   joinRoom,
   leaveRoom,
   sendChatMessage,
-  joinOrLeaveRoomOnRouteChange,
+  checkWsRoomsWithCurrentState,
   idleCheck,
 };

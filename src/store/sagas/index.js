@@ -142,8 +142,18 @@ const root = function* () {
     takeEvery([ChatTypes.ADD_MESSAGE], ChatSagas.addMessage),
     takeEvery([ChatTypes.SET_MESSAGE_READ], ChatSagas.setMessageRead),
     takeEvery([ChatTypes.FETCH_BY_ROOM], ChatSagas.fetchByRoom),
-    takeLatest([WebsocketsTypes.INIT], WebsocketsSagas.init),
-    takeLatest([WebsocketsTypes.CONNECTED], WebsocketsSagas.connected),
+    takeLatest(
+      [WebsocketsTypes.INIT],
+      WebsocketsSagas.checkWsRoomsWithCurrentState
+    ),
+    takeLatest(
+      [WebsocketsTypes.CONNECTED],
+      WebsocketsSagas.checkWsRoomsWithCurrentState
+    ),
+    takeLatest(
+      [WebsocketsTypes.DISCONNECTED],
+      WebsocketsSagas.checkWsRoomsWithCurrentState
+    ),
     takeEvery([WebsocketsTypes.JOIN_ROOM], WebsocketsSagas.joinRoom),
     takeEvery([WebsocketsTypes.LEAVE_ROOM], WebsocketsSagas.leaveRoom),
     takeEvery(
@@ -151,7 +161,7 @@ const root = function* () {
       WebsocketsSagas.sendChatMessage
     ),
     takeLatest([REHYDRATE], WebsocketsSagas.idleCheck),
-    takeEvery([LOCATION_CHANGE], WebsocketsSagas.joinOrLeaveRoomOnRouteChange),
+    takeEvery([LOCATION_CHANGE], WebsocketsSagas.checkWsRoomsWithCurrentState),
     takeLatest([REHYDRATE], AuthenticationSagas.restoreToken),
     takeLatest(
       [REHYDRATE, AuthenticationTypes.LOGIN_SUCCESS],
@@ -204,12 +214,6 @@ const preLoading = function* () {
   const userId = yield select(state => state.authentication.userId);
 
   if (userId) {
-    yield put(
-      WebsocketsActions.joinRoom({
-        userId,
-        roomId: UserMessageRoomId,
-      })
-    );
     yield put(ChatActions.fetchByRoom({ roomId: UserMessageRoomId }));
   }
 };

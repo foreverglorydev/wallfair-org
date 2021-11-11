@@ -1,6 +1,6 @@
 import { makeActionCreator } from '../../helper/Store';
 
-export const UserMessageRoomId = 'undefinedRoom';
+export const UserMessageRoomId = 'USER_MESSAGE_ROOM_ID';
 
 export const WebsocketsTypes = {
   INIT: 'Websockets/INIT',
@@ -12,7 +12,6 @@ export const WebsocketsTypes = {
   JOIN_ROOM: 'Websockets/JOIN_ROOM',
   LEAVE_ROOM: 'Websockets/LEAVE_ROOM',
   SEND_CHAT_MESSAGE: 'Websockets/SEND_CHAT_MESSAGE',
-  SEND_NOTIFICATION: 'Websockets/SEND_NOTIFICATION',
 };
 // initialize websockets and open event channel
 const init = makeActionCreator(WebsocketsTypes.INIT);
@@ -34,9 +33,6 @@ const leaveRoom = makeActionCreator(WebsocketsTypes.LEAVE_ROOM, {
 const sendChatMessage = makeActionCreator(WebsocketsTypes.SEND_CHAT_MESSAGE, {
   messageObject: null,
 });
-const sendNotification = makeActionCreator(WebsocketsTypes.SEND_NOTIFICATION, {
-  notificationObject: null,
-});
 export const WebsocketsActions = {
   init,
   initSucceeded,
@@ -47,5 +43,4 @@ export const WebsocketsActions = {
   joinRoom,
   leaveRoom,
   sendChatMessage,
-  sendNotification,
 };

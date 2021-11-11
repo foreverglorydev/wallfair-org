@@ -6,7 +6,7 @@ const TypeformController = () => {
 
   useEffect(() => {
     if (!pathname.includes('elon-game')) {
-      console.log('NOT ELON');
+      //console.log('NOT ELON');
       document.getElementById('game-feedback-elon').style = 'display: none';
       document.getElementById('typeform-feedback').style = 'display: block';
       return;
