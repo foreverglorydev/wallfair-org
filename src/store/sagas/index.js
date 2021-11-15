@@ -190,9 +190,9 @@ const root = function* () {
       RosiGameSagas.fetchLuckyData
     ),
     takeLatest(
-      [RosiGameTypes.FETCH_SERVER_TIME],
+      [REHYDRATE],
       RosiGameSagas.fetchServerTime
-    ),
+    )
     // @formatter:on
   ]);
 };

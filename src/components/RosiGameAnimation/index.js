@@ -42,6 +42,7 @@ const RosiGameAnimation = ({
   animationIndex,
   onInit,
 }) => {
+  const serverTime = useSelector(state => state.rosiGame.serverTime);
   const canvasRef = useRef(null);
   const lastCrashValue = useSelector(selectLastCrash);
   const gameStarted = useSelector(selectHasStarted);
@@ -50,17 +51,21 @@ const RosiGameAnimation = ({
   const gameStartedTimeStamp = useSelector(selectTimeStarted);
   const gameStartedTime = new Date(gameStartedTimeStamp).getTime();
 
+
   const [isPreparingRound, setIsPreparingRound] = useState(!gameStarted);
   const [isAnimationReady, setAnimationReady] = useState(false);
   const [audio, setAudio] = useState(null);
 
   useEffect(() => {
+    if(serverTime) {
     let audioInstance = null;
+
     if (canvasRef.current) {
       const { audio } = RosiGameAnimationController.init(canvasRef.current, {
         animationIndex,
         volumeLevel,
         musicIndex,
+        serverTime
       });
       setAudio(audio);
       audioInstance = audio;
@@ -73,7 +78,8 @@ const RosiGameAnimation = ({
       });
     }
     return () => audioInstance.stopBgm();
-  }, []);
+    }
+  }, [serverTime]);
 
   useEffect(() => {
     if (!isAnimationReady) {

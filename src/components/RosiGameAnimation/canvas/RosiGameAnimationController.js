@@ -195,7 +195,6 @@ class RosiAnimationController {
       resolution: 1,
       antialias: true,
     });
-
     this.audioReady = false;
     let volumeLevel = '1.0';
     try {
@@ -211,6 +210,7 @@ class RosiAnimationController {
     this.lastCrashFactor = 1.0;
     this.currentIntervalIndex = -1;
     this.animationIndex = options.animationIndex;
+    this.clientServerOffsetMs = options.serverTime?.clientServerOffsetMs || 0;
     return {
       audio: this.audio,
     };
