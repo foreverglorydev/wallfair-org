@@ -74,6 +74,7 @@ const RosiGame = ({
   const game = Object.values(GAMES).find(g => g.slug === slug);
   const GAME_TYPE_ID = game.id;
   const Api = new GameApi(game.url, token);
+  const serverTime = useSelector(state => state.rosiGame.serverTime);
 
   useEffect(() => {
     Api.getCurrentGameInfo()
@@ -278,11 +279,17 @@ const RosiGame = ({
   );
 
   const renderAnimation = () => {
+    const clientServerOffsetMs = serverTime?.clientServerOffsetMs;
+    if(!clientServerOffsetMs) {
+      return null;
+    }
+
     if (slug === GAMES['elonGame'].slug) {
       return (
         <GameAnimation
           inGameBets={inGameBets}
           onInit={audio => setAudio(audio)}
+          clientServerOffsetMs={clientServerOffsetMs}
         />
       );
     }
