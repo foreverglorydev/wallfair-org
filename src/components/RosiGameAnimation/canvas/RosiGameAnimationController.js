@@ -210,7 +210,7 @@ class RosiAnimationController {
     this.lastCrashFactor = 1.0;
     this.currentIntervalIndex = -1;
     this.animationIndex = options.animationIndex;
-    this.clientServerOffsetMs = options.serverTime?.clientServerOffsetMs || 0;
+    this.clientServerOffsetMs = options.clientServerOffsetMs || 0;
     return {
       audio: this.audio,
     };
