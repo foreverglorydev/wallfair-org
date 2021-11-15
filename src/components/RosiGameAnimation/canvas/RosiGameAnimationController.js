@@ -10,6 +10,7 @@ import { calcCrashFactorFromElapsedTime, isMobileRosiGame } from './utils';
 import CashedOutAnimation from './CashedOutAnimation';
 import PreparingRound from './PreparingRound';
 import { ROSI_GAME_INTERVALS } from 'constants/RosiGame';
+import {getClientNow} from "../../../helper/Time";
 import { isString } from 'lodash/lang';
 
 // hide PIXI welcome messege in console
@@ -103,9 +104,9 @@ class AudioController {
     try {
       if (this.ready) {
         Sound.sound.volume(name, this.volume);
-        Sound.sound.play(name, {
-          loop: loop,
-        });
+        // Sound.sound.play(name, {
+        //   loop: loop,
+        // });
       }
     } catch (e) {
       console.error('Audio output error');
@@ -228,7 +229,7 @@ class RosiAnimationController {
 
   update(dt) {
     const coinPos = this.coinAndTrajectory.getCoinCrashPosition();
-    const elapsed = Date.now() - this.gameStartTime;
+    const elapsed = getClientNow(this.clientServerOffsetMs) - this.gameStartTime;
     const crashFactor = Number(calcCrashFactorFromElapsedTime(elapsed)) || 1.0;
     const maxElonFrames = this.coinAndTrajectory.getElonFramesCount();
 
@@ -304,7 +305,7 @@ class RosiAnimationController {
 
   doCashedOutAnimation(data) {
     const point = this.coinAndTrajectory.getCoinCrashPosition();
-    const elapsed = Date.now() - this.gameStartTime;
+    const elapsed = getClientNow(this.clientServerOffsetMs) - this.gameStartTime;
     this.cashedOut.animate(point.x, data.amount, data.crashFactor, elapsed);
   }
 }
