@@ -50,3 +50,7 @@ export const getServerTime = async () => {
 
   return output;
 }
+
+export const getClientNow = (serverTimeOffset) => {
+  return new Date(Date.now + serverTimeOffset);
+}

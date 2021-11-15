@@ -24,7 +24,7 @@ import {
 } from '../actions/websockets';
 import { LOCATION_CHANGE } from 'connected-react-router';
 import { LeaderboardTypes } from '../actions/leaderboard';
-import { RosiGameTypes } from '../actions/rosi-game';
+import {RosiGameActions, RosiGameTypes} from '../actions/rosi-game';
 import * as RosiGameSagas from './rosi-game';
 
 const root = function* () {
@@ -190,7 +190,7 @@ const root = function* () {
       RosiGameSagas.fetchLuckyData
     ),
     takeLatest(
-      [REHYDRATE],
+      [RosiGameTypes.FETCH_SERVER_TIME],
       RosiGameSagas.fetchServerTime
     ),
     // @formatter:on
@@ -204,6 +204,7 @@ const rehydrationDone = function* () {
 const preLoading = function* () {
   yield put(EventActions.fetchAll());
   yield put(WebsocketsActions.init());
+  // yield put(RosiGameActions.fetchServerTime());
 
   const userId = yield select(state => state.authentication.userId);
 
