@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState, memo } from 'react';
-import { connect, useDispatch } from 'react-redux';
+import {connect, useDispatch, useSelector} from 'react-redux';
 import { Link } from 'react-router-dom';
 import Grid from '@material-ui/core/Grid';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
@@ -74,6 +74,8 @@ const RosiGame = ({
   const game = Object.values(GAMES).find(g => g.slug === slug);
   const GAME_TYPE_ID = game.id;
   const Api = new GameApi(game.url, token);
+  const serverTime = useSelector(state => state.rosiGame.serverTime);
+
   useEffect(() => {
     Api.getCurrentGameInfo()
       .then(response => {

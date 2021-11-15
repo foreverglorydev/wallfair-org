@@ -27,6 +27,7 @@ export const RosiGameTypes = {
   FETCH_HIGH_DATA_STARTED: 'RosiGame/FETCH_HIGH_DATA_STARTED',
   FETCH_HIGH_DATA_COMPLETE: 'RosiGame/FETCH_HIGH_DATA_COMPLETE',
   FETCH_HIGH_DATA_ERROR: 'RosiGame/FETCH_HIGH_DATA_ERROR',
+  FETCH_SERVER_TIME: 'RosiGame/FETCH_SERVER_TIME'
 };
 
 const initializeState = payload => ({
@@ -82,6 +83,11 @@ const cashOutGuest = () => ({
 const addReward = payload => ({
   type: RosiGameTypes.ADD_REWARD,
   payload,
+});
+
+const fetchServerTime = payload => ({
+  type: RosiGameTypes.FETCH_SERVER_TIME,
+  payload
 });
 
 const muteButtonClick = payload => ({
@@ -187,4 +193,5 @@ export const RosiGameActions = {
   fetchHighData,
   fetchHighDataComplete,
   fetchHighDataError,
+  fetchServerTime
 };

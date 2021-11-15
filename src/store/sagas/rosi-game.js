@@ -19,6 +19,11 @@ export const fetchLuckyData = function* (action) {
   }
 };
 
+export const fetchServerTime = function* (action) {
+  const output = yield call(Api.getCurrentServerTime, action.data);
+  yield put(RosiGameActions.fetchServerTime(output));
+};
+
 export const fetchHighData = function* (action) {
   try {
     const { data } = yield call(Api.getHighUsers, action.data);

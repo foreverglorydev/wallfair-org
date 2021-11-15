@@ -92,3 +92,5 @@ export const API_AUTH_RESET_PASSWORD = 'api/auth/reset-password';
 export const TINYURL_SHORTENER = 'https://tinyurl.com/api-create.php';
 export const CRASH_GAME_API_GET_GAME_DETAILS = 'api/elon-game/matches/:gameId';
 export const CRASH_GAME_GET_VOLUME_BETS = 'api/globalstats/:range';
+export const CASINO_GAMES_GET_SERVER_TIME = 'api/servertime';
+

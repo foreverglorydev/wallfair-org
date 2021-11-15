@@ -2,6 +2,7 @@ import * as ApiUrls from '../constants/Api';
 import axios from 'axios';
 import ContentTypes from '../constants/ContentTypes';
 import {API_CURRENT_ELON, CRASH_GAME_GET_VOLUME_BETS} from '../constants/Api';
+import {getServerTime} from "../helper/Time";
 
 const createInstance = (host, apiPath) => {
   return axios.create({
@@ -159,6 +160,12 @@ const getLuckyUsers = data => {
   );
 };
 
+const getCurrentServerTime = data => {
+  return getServerTime().catch(error => {
+    console.log('[API Error] called: getServerTime', error);
+  });
+};
+
 const getHighUsers = data => {
   const { gameId } = data;
 
@@ -186,4 +193,5 @@ export {
   getLuckyUsers,
   getHighUsers,
   getTotalBetsVolumeByRange,
+  getCurrentServerTime
 };

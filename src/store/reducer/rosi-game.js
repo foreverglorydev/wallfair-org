@@ -20,6 +20,7 @@ const initialState = {
   bgIndex: 0,
   highData: [],
   luckyData: [],
+  serverTime: {}
 };
 
 const initializeState = (action, state) => {
@@ -332,6 +333,15 @@ const fetchLuckyData = ({ data }, state) => ({
   luckyData: data,
 });
 
+const updateServerTime = (data, state) => {
+  const {payload} = data;
+
+  return  {
+    ...state,
+    serverTime: payload
+  }
+};
+
 export default function (state = initialState, action) {
   switch (action.type) {
     case RosiGameTypes.INITIALIZE_STATE:
@@ -374,6 +384,8 @@ export default function (state = initialState, action) {
       return fetchHighData(action, state);
     case RosiGameTypes.FETCH_LUCKY_DATA_COMPLETE:
       return fetchLuckyData(action, state);
+    case RosiGameTypes.FETCH_SERVER_TIME:
+      return updateServerTime(action, state);
     default:
       return state;
   }

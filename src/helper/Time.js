@@ -1,3 +1,5 @@
+import { getServerTimeApi } from '../api/casino-games';
+
 export const calculateTimeLeft = date => {
   if (!date) {
     return null;
@@ -23,3 +25,28 @@ export const nextDayweek = (d, weekday, time) => {
   d.setUTCHours(time.hour, time.minute, time.second);
   return d;
 };
+
+export const getServerTime = async () => {
+  const startTime = Date.now();
+  const time = await getServerTimeApi().catch((err)=> {
+    console.error(err);
+  });
+  const endTime = Date.now();
+  const requestDiff = endTime - startTime;
+
+  const utcTime = new Date(time?.data?.utc).getTime();
+
+  const serverTimestamp = utcTime + requestDiff;
+
+  const finalServerTime = new Date(serverTimestamp);
+  const clientNow = new Date();
+  const clientServerDiff = clientNow - finalServerTime;
+
+  const output = {
+    serverPrecised: finalServerTime,
+    clientServerOffsetMs: clientServerDiff,
+    clientServerOffsetMin: clientServerDiff / 1000 / 60
+  }
+
+  return output;
+}

@@ -150,6 +150,12 @@ const getTotalBetsVolumeByRange = (range = '24h') => {
   return Api.get(url);
 };
 
+const getServerTimeApi = () => {
+  const Api = new GameApi(process.env.REACT_APP_CASINO_GAMES_BACKEND_URL);
+  const url = ApiUrls.CASINO_GAMES_GET_SERVER_TIME;
+  return Api.api.get(url);
+}
+
 export {
   GameApi,
   Api,
@@ -160,4 +166,5 @@ export {
   getLuckyUsers,
   getHighUsers,
   getTotalBetsVolumeByRange,
+  getServerTimeApi
 };
