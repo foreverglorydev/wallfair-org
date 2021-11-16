@@ -333,6 +333,13 @@ const fetchLuckyData = ({ data }, state) => ({
   luckyData: data,
 });
 
+const fetchMyBetsData = ({ data }, state) => {
+  return {
+    ...state,
+    myBetsData: data,
+  };
+};
+
 const updateServerTime = (data, state) => {
   const {payload} = data;
 
@@ -384,6 +391,8 @@ export default function (state = initialState, action) {
       return fetchHighData(action, state);
     case RosiGameTypes.FETCH_LUCKY_DATA_COMPLETE:
       return fetchLuckyData(action, state);
+    case RosiGameTypes.FETCH_MY_BETS_DATA_COMPLETE:
+      return fetchMyBetsData(action, state);
     case RosiGameTypes.FETCH_SERVER_TIME:
       return updateServerTime(action, state);
     default:

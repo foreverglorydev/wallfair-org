@@ -190,6 +190,10 @@ const root = function* () {
       RosiGameSagas.fetchLuckyData
     ),
     takeLatest(
+      [RosiGameTypes.FETCH_MY_BETS_DATA_STARTED],
+      RosiGameSagas.fetchMyBetsData
+    ),
+    takeLatest(
       [REHYDRATE],
       RosiGameSagas.fetchServerTime
     )
@@ -204,7 +208,6 @@ const rehydrationDone = function* () {
 const preLoading = function* () {
   yield put(EventActions.fetchAll());
   yield put(WebsocketsActions.init());
-  // yield put(RosiGameActions.fetchServerTime());
 
   const userId = yield select(state => state.authentication.userId);
 
