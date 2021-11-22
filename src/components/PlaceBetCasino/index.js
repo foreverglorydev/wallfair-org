@@ -143,6 +143,10 @@ const PlaceBetCasino = ({
       }
       if(game.profit >= 0 && game.profit > acc && game.loss >= 0 && game.loss > -acc){
         const newamount = bet.profit > 0 ? Math.floor(winbutton ? amount : game.amount*(1+game.wincrease)) : Math.floor(lossbutton ? amount : game.amount*(1+game.lincrease))
+        if(newamount < 1) {
+          setGame({ngame: 0})
+          return;
+        }
         setGame({...game, amount: newamount, ngame: game.ngame ? game.ngame -1 : game.ngame})
         await onBet({...game, amount: newamount, ngame: game.ngame ? game.ngame -1 : game.ngame});
       }
@@ -249,7 +253,9 @@ const PlaceBetCasino = ({
         origin={{ x: 0.4, y: 0.45 }}
       />
       <div className={styles.inputContainer}>
-        {switchButton(styles)}
+        <div className={styles.placeBetContainer}>
+          {switchButton(styles)}
+        </div>
         {selector === 'manual' ?
           <div className={styles.sliderContainer}>
             <label className={styles.label}>Bet Amount</label>
@@ -313,7 +319,7 @@ const PlaceBetCasino = ({
                 </div>
               </div>
             )}
-            <RiskInput disable={bet?.ball>0} number={gameName==='plinko'?3:7} risk={risk} setRisk={setRisk} />
+            <RiskInput disable={bet?.ball > 0} number={gameName==='plinko'?3:7} risk={risk} setRisk={setRisk} />
             {gameName!=='plinko' &&<NgamesInput text={'Number of Spins'} ngame={ngame} setNgame={setNgame} game={game} />}
           </div>
           :
@@ -379,7 +385,7 @@ const PlaceBetCasino = ({
                 </div>
               </div>
             )}
-            <RiskInput number={gameName==='plinko'?3:7} risk={risk} setRisk={setRisk} />
+            <RiskInput disable={bet.autobet || bet?.ball > 0} number={gameName==='plinko'?3:7} risk={risk} setRisk={setRisk} />
             <StandardInput title={'Stop on Profit'} setValue={setProfit} value={profit} />
             <StandardInput title={'Stop on Loss'} setValue={setLoss} value={loss} />
             <ToggleInput title={'On Win'} setValue={setWincrease} value={wincrease} setToggle={setWinbutton} toggle={winbutton} />
