@@ -59,7 +59,7 @@ const RosiGame = ({
   }, []);
   const game = Object.values(GAMES).find(g => g.slug === slug);
   const GAME_TYPE_ID = game.id;
-  const Api = new GameApi(game.url, token);
+  const Api = new GameApi(game.url, token, game.id);
   useEffect(() => {
     Api.getCurrentGameInfo()
       .then(response => {
@@ -226,7 +226,12 @@ const RosiGame = ({
       );
     }
     if (slug === GAMES['pumpDump'].slug) {
-      return <PumpDumpAnimation />;
+      return (
+        <PumpDumpAnimation
+          inGameBets={inGameBets}
+          onInit={audio => setAudio(audio)}
+        />
+      );
     }
   };
 

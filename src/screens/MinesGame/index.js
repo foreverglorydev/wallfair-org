@@ -2,12 +2,13 @@ import * as PIXI from 'pixi.js-legacy';
 import { useCallback, useEffect, useState } from 'react';
 import { getSpinsAlpacaWheel, GameApi } from 'api/casino-games';
 //import * as ApiUser from 'api/crash-game';
-import { connect, useDispatch } from 'react-redux';
+import {connect, useDispatch, useSelector} from 'react-redux';
 import { Link } from 'react-router-dom';
 import Grid from '@material-ui/core/Grid';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import BaseContainerWithNavbar from 'components/BaseContainerWithNavbar';
 import PlaceBetMines from 'components/PlaceBetMines';
+import { selectUser } from 'store/selectors/authentication';
 import BackLink from 'components/BackLink';
 import LastCashouts from 'components/LastCashouts';
 import GameAnimation from 'components/MinesGameAnimation';
@@ -33,6 +34,8 @@ import EventActivitiesTabs from 'components/EventActivitiesTabs'
 import {getLastCashoutsMines} from "../../api/casino-games";
 import {roundToTwo} from "../../helper/FormatNumbers";
 
+import {trackMinesCashout} from "../../config/gtm";
+
 const Game = ({
   showPopup,
   connected,
@@ -52,10 +55,11 @@ const Game = ({
     hasStarted,
     isEndgame,
   } = useRosiData();
+  const user = useSelector(selectUser);
   const [audio, setAudio] = useState(null);
   const [cashouts, setCashouts] = useState([]);
   const [gameInProgress, setGameInProgress] = useState(false);
-  const [mines, setMines] = useState(1);
+  const [mines, setMines] = useState(5);
   const [currentStep, setCurrentStep] = useState(0);
   const [bet, setBet] = useState({
     pending: false,
@@ -66,6 +70,8 @@ const Game = ({
   const [amount, setAmount] = useState(50);
   const [multiplier, setMultiplier] = useState('0.00');
   const [profit, setProfit] = useState();
+  const [gameInstance, setGameInstance] = useState();
+  const [confetti, setConfetti] = useState();
 
   const isMiddleOrLargeDevice = useMediaQuery('(min-width:769px)');
   const [chatTabIndex, setChatTabIndex] = useState(0);
@@ -115,7 +121,7 @@ const Game = ({
         dispatch(AlertActions.showError(error.message));
       });
 
-  }, [])
+  }, [user.isLoggedIn])
 
   useEffect(() => {
     dispatch(ChatActions.fetchByRoom({ roomId: GAME_TYPE_ID }));
@@ -143,34 +149,59 @@ const Game = ({
   };
 
   async function handleBet(payload) {
-    // audio.playBetSound();
+    audio.playBetSound();
     if (!payload) return;
     try {
       if(payload.demo) {
-        // setBet({...payload })
-        // trackAlpacaWheelPlaceBetGuest({ amount: payload.amount, multiplier: risk });
+        setDemoCount((count) => {
+          return count+1;
+        })
       } else {
         const { data } = await gameApi.createTradeMines(payload);
         setOutcomes(data?.outcomes)
         updateUserBalance(userId);
+        gameInstance.game.controller.view.gameOver("lose");
+
+        setGameInProgress(true);
+        setCurrentStep(0);
+        setBet({
+          ...bet,
+          done: true
+        })
+
         return data;
       }
     } catch (e) {
       dispatch(
         AlertActions.showError({
-          message: `${GAME_NAME}: Place Bet failed`,
+          message: `${GAME_NAME}: ${e.response.data || 'Place Bet failed'}`
         })
       );
     }
   }
 
-  async function handleCashout(payload) {
-    audio.playWinSound();
+  async function handleCashout() {
+    setGameInProgress(false);
+    setCurrentStep(0);
+
     try {
-      const { data } = await gameApi.cashoutMines(payload);
+      const { data } = await gameApi.cashoutMines();
       getLastCashout(data.profit);
       setGameOver(true);
       updateUserBalance(userId);
+      setConfetti(true);
+      setBet({
+        pending:false,
+        done: false
+      });
+
+      trackMinesCashout({ 
+        amount: data.reward,
+        multiplier: data.crashFactor,
+        profit: data.profit,
+      });
+
+      audio.playWinSound();
     } catch (e) {
       dispatch(
         AlertActions.showError({
@@ -216,32 +247,6 @@ const Game = ({
     </Grid>
   );
 
-  const renderBets = () => (
-    <GameBets
-      label="Cashed Out"
-      bets={[
-        ...inGameBets.map(b => ({
-          ...b,
-          cashedOut: false,
-        })),
-        ...cashedOut.map(b => ({
-          ...b,
-          cashedOut: true,
-        })),
-      ]}
-      gameRunning={hasStarted}
-      endGame={isEndgame}
-    />
-  );
-
-  const renderWallpaperBanner = () => {
-    return (
-      <Link data-tracking-id="alpacawheel-wallpaper" to={Routes.elonWallpaper}>
-        <div className={styles.banner}></div>
-      </Link>
-    );
-  };
-
   return (
     <BaseContainerWithNavbar withPaddingTop={true}>
       <div className={styles.container}>
@@ -281,6 +286,9 @@ const Game = ({
                 setOutcomes={setOutcomes}
                 setDemoCount={setDemoCount}
                 demoCount={demoCount}
+                gameInstance={gameInstance}
+                setGameInstance={setGameInstance}
+                onCashout={handleCashout}
               />
               <LastCashouts text="My Cashouts" spins={cashouts} />
             </div>
@@ -303,6 +311,10 @@ const Game = ({
                   multiplier={multiplier}
                   profit={profit}
                   outcomes={outcomes}
+                  demoCount={demoCount}
+                  setDemoCount={setDemoCount}
+                  confetti={confetti}
+                  setConfetti={setConfetti}
                 />
               </div>
             </div>

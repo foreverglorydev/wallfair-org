@@ -45,8 +45,6 @@ const gameConfigBase = {
   initialReveal: []
 };
 
-let GAME = null;
-
 const MinesGameAnimation = ({
   connected,
   muteButtonClick,
@@ -70,7 +68,10 @@ const MinesGameAnimation = ({
   outcomes,
   setOutcomes,
   demoCount,
-  setDemoCount
+  setDemoCount,
+  gameInstance,
+  setGameInstance,
+  onCashout
 }) => {
   const dispatch = useDispatch();
   const canvasRef = useRef(null);
@@ -80,7 +81,7 @@ const MinesGameAnimation = ({
   const [gameConfig, setGameConfig] = useState({});
   const [audio, setAudio] = useState(null);
 
-  const getTranslatedReveal = (clientBoard) => {
+  const getTranslatedReveal = (clientBoard, result = 0) => {
       let col = 0;
       let row = 0;
 
@@ -94,7 +95,7 @@ const MinesGameAnimation = ({
           row: row-1,
           col: col,
           isMine: false,
-          isRevealed: entry === 0 ? true : false,
+          isRevealed: entry === result ? true : false,
           isEmpty: true,
           isFlagged: false,
           text: ""
@@ -122,6 +123,7 @@ const MinesGameAnimation = ({
 
   const checkSelectedCell = async (props) => {
     const {row, col} = props;
+    let allMinesPos = null;
 
     setCurrentStep((step) => step+1);
 
@@ -134,10 +136,22 @@ const MinesGameAnimation = ({
         dispatch(AlertActions.showError(err.message));
       });
 
-      const isMine = checkMine.data.result === 0 ? false : true;
+      const isMine = checkMine?.data?.result === 0 ? false : true;
 
       if(isMine) {
+        allMinesPos = getTranslatedReveal(checkMine?.data?.board, 1);
         handleLost()
+      }
+
+      const hiddenFields = checkMine?.data.clientBoard.filter((item)=> {
+        return item === 2;
+      }).length;
+
+      if(hiddenFields === mines) {
+        //wait for animation
+        setTimeout(()=> {
+          document.getElementById('mines-cashout-btn').click();
+        }, 500)
       }
 
       return {
@@ -147,7 +161,8 @@ const MinesGameAnimation = ({
         isFlagged: false,
         isMine,
         isRevealed: true,
-        text: ""
+        text: "",
+        allMinesPos
       }
     } else {
       //handle demo
@@ -157,10 +172,6 @@ const MinesGameAnimation = ({
 
   const handleLost = () => {
     setGameInProgress(false);
-    setBet({
-      pending: false,
-      done: false
-    });
     setCurrentStep(0);
 
     const prepareObj = {
@@ -168,6 +179,13 @@ const MinesGameAnimation = ({
       value: '-' + amount
     };
     setCashouts((cashouts) => [prepareObj, ...cashouts]);
+
+    setTimeout(()=> {
+      setBet({
+        pending: false,
+        done: false
+      });
+    }, 3000)
   }
 
   useEffect(() => {
@@ -193,6 +211,10 @@ const MinesGameAnimation = ({
             setCurrentStep(tries);
           } else {
             setGameInProgress(false);
+            setBet({
+              pending: false,
+              done: false
+            });
           }
 
           setGameConfig({
@@ -202,28 +224,26 @@ const MinesGameAnimation = ({
         dispatch(AlertActions.showError(error.message));
       });
     } else {
-      //init demo rounds
-
+      //init demo rounds / show grid
       configBase.setGridManually = false;
-      // configBase.defaultGrid.mines = mines;
 
       setGameConfig({
         ...configBase
       })
-
-      setBet({
-        pending: false,
-        done: true
-      });
     }
 
 
-  }, [])
+  }, [user.isLoggedIn])
 
   useEffect(()=> {
     let audioInstance = null;
 
     if(!_.isEmpty(gameConfig)) {
+      //avoid attaching multiple click events, when re-init
+      if(gameInstance) {
+        gameInstance.game.controller.removeListeners();
+      }
+
       const applicationConfig = {
         width: backgroundRef.current.clientWidth,
         height: backgroundRef.current.clientHeight,
@@ -243,7 +263,7 @@ const MinesGameAnimation = ({
         cellClickHandler,
         checkSelectedCell
       });
-      GAME = that.game;
+      setGameInstance(that);
       setAudio(audio);
       audioInstance = audio;
       onInit(audio);
@@ -259,13 +279,24 @@ const MinesGameAnimation = ({
 
   useEffect(()=> {
     if(gameOver) {
-      GAME.controller.view.gameOver("win");
+      gameInstance.game.controller.view.gameOver("win");
       setGameOver(false);
-      setDemoCount((count) => {
-        return count+1;
-      })
     }
   },[gameOver])
+
+
+  useEffect(()=> {
+    if(demoCount > 0) {
+      const gameConfigDemo = _.cloneDeep(gameConfigBase);
+      gameConfigDemo.setGridManually = false;
+      gameConfigDemo.grid = [];
+      gameConfigDemo.defaultGrid.minesAmount = mines;
+
+      setGameConfig({
+          ...gameConfigDemo
+      })
+    }
+  },[demoCount])
 
   return (
     <div
@@ -276,11 +307,14 @@ const MinesGameAnimation = ({
       )}
     >
       <div className={styles.audioControls}>
-        {audio && <GameAudioControlsLocal audio={audio} muteButtonClick={muteButtonClick}/>}
+        {audio && <GameAudioControlsLocal audio={audio} muteButtonClick={muteButtonClick} color={'#e72d89'}/>}
       </div>
 
       <div>
-        <canvas className={classNames(styles.canvas, {
+        {(!bet.done) && <div className={classNames(styles.notBetYetScreen)}>
+          <div className={classNames(styles.notBetYetText)}>Place a bet in order to start the game!</div>
+        </div>}
+        <canvas id="mines-canvas" className={classNames(styles.canvas, {
           [styles.notClickable]: !bet.done
         })} ref={canvasRef}></canvas>
       </div>
