@@ -40,6 +40,7 @@ export default {
   plinkoGame: '/games/plinko',
   elonGame: '/games/elon-game',
   rouletteGame: '/games/alpaca-wheel',
+  cannonGame: '/games/cannon',
   elonWallpaper: '/games/elon-wallpaper',
   verify: '/verify',
   chart: 'event/bet/:betId/history/chart',
