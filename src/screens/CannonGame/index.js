@@ -9,7 +9,7 @@ import PlaceBet from 'components/PlaceBet';
 import PlaceBetCasino from 'components/PlaceBetCasino';
 import BackLink from 'components/BackLink';
 import Spins from 'components/Spins';
-import GameAnimation from 'components/RouletteGameAnimation';
+import GameAnimation from 'components/CannonGameAnimation';
 import GameBets from 'components/GameBets';
 import Chat from 'components/Chat';
 import useRosiData from 'hooks/useRosiData';
@@ -37,7 +37,7 @@ import {
 import { UserActions } from 'store/actions/user';
 import EventActivitiesTabs from 'components/EventActivitiesTabs'
 
-const RouletteGame = ({
+const CannonGame = ({
   showPopup,
   connected,
   userId,
@@ -255,4 +255,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(RouletteGame);
+export default connect(mapStateToProps, mapDispatchToProps)(CannonGame);

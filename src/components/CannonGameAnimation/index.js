@@ -17,7 +17,7 @@ import GameAudioControlsLocal from '../GameAudioControlsLocal';
 import AnimationController from './AnimationController';
 import { isMobile } from 'react-device-detect';
 
-const RouletteGameAnimation = ({
+const CannonGameAnimation = ({
   connected,
   muteButtonClick,
   setSpins,
@@ -140,4 +140,4 @@ const mapDispatchToProps = dispatch => {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(RouletteGameAnimation);
+)(CannonGameAnimation);

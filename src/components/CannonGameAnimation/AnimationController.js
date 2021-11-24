@@ -6,6 +6,8 @@ import { init } from 'store/sagas/websockets';
 //import * as Sound from '@pixi/sound';
 import { isMobile } from 'react-device-detect';
 import { AudioController } from '../AudioController';
+import * as PIXI from 'pixi.js';
+
 
 let sectionsArray = [[0.5, 1.22, 1.25, 0.3, 2, 1.22, 0.5, 1.25, 1.5, 0.42, 0.5, 1.22],
   [0, 1.22, 1.5, 0.3, 2, 1.22, 0, 1.5, 2, 0.42, 0.5, 1.22],
@@ -33,11 +35,15 @@ let img = new Image();
 
 class AnimationController {
   init(canvas, options, typeSel) {
+    
     this.canvas = canvas;
     this.canvas.width = options.width;
     this.canvas.height = options.height;
     this.audio = new AudioController(0);
     this.audio.startBgm();
+    var renderer = PIXI.autoDetectRenderer(800, 600, { backgroundColor: 0x1099bb });
+    document.body.appendChild(renderer.view);
+    return;
     this.gameStartTime = 0;
     this.gameStartTime = new Date();
 
@@ -152,6 +158,7 @@ class AnimationController {
   }
 
   reinit(canvas, options) {
+    return;
     this.changeValues()
     this.risk = options.risk
     this.amount = options.amount
@@ -237,6 +244,7 @@ class AnimationController {
   }
   //when calling repaint pass to the method the new index image from riskImages
   repaint(angle, play, idle) {
+    return
     let sections = sectionsArray[this.risk-1]
     /*const elapsed = Date.now() - this.gameStartTime;
     if (this.audio) {
@@ -282,6 +290,7 @@ class AnimationController {
     }
   }
   spinTo(winnerIndex, duration = 5000, idle = false) {
+    return;
     this.idle = idle
     let sections = sectionsArray[this.risk-1]
     return new Promise(resolve => {
