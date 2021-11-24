@@ -180,7 +180,16 @@ const MinesGameAnimation = ({
             document.getElementById('mines-cashout-btn').click();
           }, 500)
         }
-
+        console.log("seria", {
+          col,
+          row,
+          isEmpty: true,
+          isFlagged: false,
+          isMine,
+          isRevealed: true,
+          text: "",
+          allMinesPos
+        })
         resolve( {
           col,
           row,
@@ -198,7 +207,8 @@ const MinesGameAnimation = ({
     })
   }
   async function nextMine(array, automine){
-    const { value } = await checkSelectedCell(array[automine])
+    console.log("aaa")
+    const value = await checkSelectedCell(array[automine])
     console.log("value", value)
   /*
   if(!value) {

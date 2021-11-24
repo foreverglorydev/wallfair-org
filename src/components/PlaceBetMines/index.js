@@ -108,8 +108,28 @@ const PlaceBetMines = ({
   }
 
   const placeAutoBet = async () => {
-    return;
-  }
+    if (userUnableToBet) return;
+    if (amount > userBalance) return;
+    setConfetti(false);
+    const payload = {
+      amount,
+      cleared,
+      autobet: true,
+      profitStop: Number(profit1),
+      lossStop: Number(loss),
+      wincrease: winbutton?0:Number(wincrease)/100,
+      lincrease: lossbutton?0:Number(lincrease)/100,
+      minesCount: mines,
+      accumulated
+    };
+    setAccumulated(0)
+    setBet({
+      ...bet,
+      ...payload,
+      done: true
+    })
+    onBet(payload);
+}
 
 
   const placeGuestBet = async () => {
@@ -159,7 +179,7 @@ const PlaceBetMines = ({
   const renderButton = () => {
     if (!gameInProgress) {
       return (
-        (selector === 'manual') && (<span
+        <span
           role="button"
           tabIndex="0"
           className={classNames(styles.button, {
@@ -174,7 +194,7 @@ const PlaceBetMines = ({
           onClick={bet?.pending ? null : user.isLoggedIn ? (selector === 'manual' ? placeABet : placeAutoBet) : placeGuestBet }
         >
           {user.isLoggedIn ? (selector === 'manual' ? 'Place Bet' : 'Start Auto Bet') : 'Play Demo'}
-        </span>)
+        </span>
       );
     } else {
       return (
