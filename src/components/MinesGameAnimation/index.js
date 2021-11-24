@@ -19,6 +19,31 @@ import AnimationController from "../MinesGameAnimation/AnimationController";
 import {AlertActions} from "../../store/actions/alert";
 import { selectUser } from '../../store/selectors/authentication';
 
+const originalArray = [{row: 0, col: 0}, {row: 0, col: 1}, {row: 0, col: 2}, {row: 0, col: 3}, {row: 0, col: 4},
+      {row: 1, col: 0}, {row: 1, col: 1}, {row: 1, col: 2}, {row: 1, col: 3}, {row: 1, col: 4},
+      {row: 2, col: 0}, {row: 2, col: 1}, {row: 2, col: 2}, {row: 2, col: 3}, {row: 2, col: 4},
+      {row: 3, col: 0}, {row: 3, col: 1}, {row: 3, col: 2}, {row: 3, col: 3}, {row: 3, col: 4},
+      {row: 4, col: 0}, {row: 4, col: 1}, {row: 4, col: 2}, {row: 4, col: 3}, {row: 4, col: 4}]
+
+function shuffle(array) {
+    var i = array.length,
+        j = 0,
+        temp;
+
+    while (i--) {
+
+        j = Math.floor(Math.random() * (i+1));
+
+        // swap randomly chosen element with current element
+        temp = array[i];
+        array[i] = array[j];
+        array[j] = temp;
+
+    }
+
+    return array;
+}
+
 const gameConfigBase = {
   "name": "Minesweeper",
   "debuggerMode": true,
@@ -80,6 +105,7 @@ const MinesGameAnimation = ({
 
   const [gameConfig, setGameConfig] = useState({});
   const [audio, setAudio] = useState(null);
+  const [running, setRunning] = useState(false);
 
   const getTranslatedReveal = (clientBoard, result = 0) => {
       let col = 0;
@@ -122,53 +148,83 @@ const MinesGameAnimation = ({
   }
 
   const checkSelectedCell = async (props) => {
-    const {row, col} = props;
-    let allMinesPos = null;
+    return new Promise(async (resolve, reject) => {
+      const {row, col} = props;
+      let allMinesPos = null;
 
-    setCurrentStep((step) => step+1);
+      setCurrentStep((step) => step+1);
 
-    const queryPayload = {
-      position: getCellPosition(row, col) //0-24
-    }
-
-    if(user.isLoggedIn) {
-      const checkMine = await gameApi.checkCellMines(queryPayload).catch((err)=> {
-        dispatch(AlertActions.showError(err.message));
-      });
-
-      const isMine = checkMine?.data?.result === 0 ? false : true;
-
-      if(isMine) {
-        allMinesPos = getTranslatedReveal(checkMine?.data?.board, 1);
-        handleLost()
+      const queryPayload = {
+        position: getCellPosition(row, col) //0-24
       }
 
-      const hiddenFields = checkMine?.data.clientBoard.filter((item)=> {
-        return item === 2;
-      }).length;
+      if(user.isLoggedIn) {
+        const checkMine = await gameApi.checkCellMines(queryPayload).catch((err)=> {
+          dispatch(AlertActions.showError(err.message));
+        });
 
-      if(hiddenFields === mines) {
-        //wait for animation
-        setTimeout(()=> {
-          document.getElementById('mines-cashout-btn').click();
-        }, 500)
-      }
+        const isMine = checkMine?.data?.result === 0 ? false : true;
 
-      return {
-        col,
-        row,
-        isEmpty: true,
-        isFlagged: false,
-        isMine,
-        isRevealed: true,
-        text: "",
-        allMinesPos
+        if(isMine) {
+          allMinesPos = getTranslatedReveal(checkMine?.data?.board, 1);
+          handleLost()
+        }
+
+        const hiddenFields = checkMine?.data.clientBoard.filter((item)=> {
+          return item === 2;
+        }).length;
+
+        if(hiddenFields === mines) {
+          //wait for animation
+          setTimeout(()=> {
+            document.getElementById('mines-cashout-btn').click();
+          }, 500)
+        }
+
+        resolve( {
+          col,
+          row,
+          isEmpty: true,
+          isFlagged: false,
+          isMine,
+          isRevealed: true,
+          text: "",
+          allMinesPos
+        })
+      } else {
+        //handle demo
+        resolve(null);
       }
-    } else {
-      //handle demo
-      return null;
-    }
+    })
   }
+  async function nextMine(array, automine){
+    const { value } = await checkSelectedCell(array[automine])
+    console.log("value", value)
+  /*
+  if(!value) {
+    setRunning(false)
+    console.log("lose")
+    //handleLost()
+    //setBet((bet) => {console.log("FINAL");return {...bet, done: false}})
+  }
+  else if(automine >= bet.cleared-1){
+    //setBet((bet) => {console.log("FINAL BUENO");return {...bet, done: false, win: true}})
+    console.log("win")
+    setRunning(false)
+  }
+  else if(value) {
+    setTimeout(() => nextMine(array, automine + 1), 500)
+  }
+  */
+}
+
+
+  useEffect(() => {
+    if(bet.autobet && bet.done && !running){
+      setRunning(true)
+      setTimeout(() => nextMine(shuffle(originalArray), 0), 300)
+    }
+  }, [bet.autobet, bet.done, running])
 
   const handleLost = () => {
     setGameInProgress(false);

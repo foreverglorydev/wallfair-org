@@ -25,7 +25,8 @@ import IconType from '../Icon/IconType';
 import AuthenticationType from 'components/Authentication/AuthenticationType';
 import Timer from '../RosiGameAnimation/Timer';
 import { TOKEN_NAME } from 'constants/Token';
-import {MinesInput} from "./MinesInput";
+import { MinesInput, ClearedInput} from "./MinesInput";
+import { StandardInput, ToggleInput } from '../PlaceBetCasino/components';
 import { trackMinesPlaceBet, trackMinesPlaceBetGuest } from "../../config/gtm"
 
 import {
@@ -58,6 +59,14 @@ const PlaceBetMines = ({
   const dispatch = useDispatch();
   const user = useSelector(selectUser);
   const userBalance = parseInt(user?.balance || 0, 10);
+  const [wincrease, setWincrease] = useState(0)
+  const [lincrease, setLincrease] = useState(0)
+  const [lossbutton, setLossbutton] = useState(false)
+  const [winbutton, setWinbutton] = useState(false)
+  const [profit1, setProfit1] = useState(0);
+  const [loss, setLoss] = useState(0);
+  const [accumulated, setAccumulated] = useState(0)
+  const [cleared, setCleared] = useState(0)
 
   const gameOffline = false//useSelector(selectGameOffline);
 
@@ -330,8 +339,117 @@ const PlaceBetMines = ({
             </div>
           </div>
           :
-          <div className={classNames(styles.sliderContainer, styles.autoBetContainer)}>
-            Coming Soon
+          <div className={styles.sliderContainer}>
+            <label className={styles.label}>Bet Amount</label>
+            {user?.isLoggedIn ? (
+              <TokenNumberInput
+                value={amount}
+                currency={user?.currency}
+                setValue={(v)=>setAmount(v)}
+                minValue={1}
+                decimalPlaces={0}
+                maxValue={formatToFixed(
+                  user.balance > 10000 ? 10000 : user.balance
+                )}
+                dataTrackingIds={{
+                  inputFieldHalf: 'alpacawheel-input-field-half',
+                  inputFieldDouble: 'alpacawheel-input-field-double',
+                  inputFieldAllIn: 'alpacawheel-input-field-allin',
+                }}
+              />
+            ) : (
+              <div
+                className={classNames(
+                  styles.cashedOutInputContainer,
+                  styles.demoInput
+                )}
+              >
+                <Input
+                  className={classNames(styles.input)}
+                  type={'number'}
+                  value={amount}
+                  onChange={onGuestAmountChange}
+                  step={0.01}
+                  min="1"
+                  max={'10000'}
+                />
+                <span className={styles.eventTokenLabel}>
+                  <span>{TOKEN_NAME}</span>
+                </span>
+                <div className={styles.buttonWrapper}>
+                  <span
+                    className={styles.buttonItem}
+                    data-tracking-id="alpacawheel-input-field-half"
+                    onClick={() => onBetAmountChanged(0.5)}
+                  >
+                    ½
+                  </span>
+                  <span
+                    className={styles.buttonItem}
+                    data-tracking-id="alpacawheel-input-field-double"
+                    onClick={() => onBetAmountChanged(2)}
+                  >
+                    2x
+                  </span>
+                  <span
+                    className={styles.buttonItem}
+                    data-tracking-id="alpacawheel-input-field-allin"
+                    onClick={() => setAmount(10000)}
+                  >
+                    Max
+                  </span>
+                </div>
+              </div>
+            )}
+            <div className={styles.inputContainer}>
+              <label
+                className={classNames(
+                  styles.label,
+                )}
+              >
+                Random Cards to Pick
+              </label>
+              <div className={styles.riskSelection}>
+                <ClearedInput mines={cleared} setMines={setCleared} min={1} max={25-mines} />
+              </div>
+            </div>
+            <div className={styles.inputContainer}>
+              <label
+                className={classNames(
+                  styles.label,
+                )}
+              >
+                Mines
+              </label>
+              <div className={styles.riskSelection}>
+                <MinesInput mines={mines} setMines={(m)=>{setMines(m);m > 25-cleared && setCleared(25-m)}}/>
+              </div>
+            </div>
+            <StandardInput title={'Stop on Profit'} setValue={setProfit1} value={profit1} />
+            <StandardInput title={'Stop on Loss'} setValue={setLoss} value={loss} />
+            <ToggleInput title={'On Win'} setValue={setWincrease} value={wincrease} setToggle={setWinbutton} toggle={winbutton} />
+            <ToggleInput title={'On Loss'} setValue={setLincrease} value={lincrease} setToggle={setLossbutton} toggle={lossbutton} />
+            {bet.autobet &&
+              <div className={styles.spinsleft}>
+                <span className={accumulated > 0 ? styles.reward : styles.lost}>
+                {Math.floor(accumulated)} PFAIR
+                </span>
+                accumulated
+              </div>
+            }
+            {bet.autobet && bet.amount &&
+              <div className={styles.spinsleft}>
+                Current bet:
+                <span className={styles.neutral}>
+                {Math.floor(bet.amount)} PFAIR
+                </span>
+              </div>
+            }
+            {bet.ngame > 0 &&
+              <div className={styles.spinsleft}>
+                {bet.ngame} spins left
+              </div>
+            }
           </div>
         }
       </div>
