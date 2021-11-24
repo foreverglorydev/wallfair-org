@@ -180,16 +180,6 @@ const MinesGameAnimation = ({
             document.getElementById('mines-cashout-btn').click();
           }, 500)
         }
-        console.log("seria", {
-          col,
-          row,
-          isEmpty: true,
-          isFlagged: false,
-          isMine,
-          isRevealed: true,
-          text: "",
-          allMinesPos
-        })
         resolve( {
           col,
           row,
@@ -207,24 +197,23 @@ const MinesGameAnimation = ({
     })
   }
   async function nextMine(array, automine){
-    console.log("aaa")
     const value = await checkSelectedCell(array[automine])
     console.log("value", value)
   /*
-  if(!value) {
-    setRunning(false)
-    console.log("lose")
-    //handleLost()
-    //setBet((bet) => {console.log("FINAL");return {...bet, done: false}})
-  }
-  else if(automine >= bet.cleared-1){
-    //setBet((bet) => {console.log("FINAL BUENO");return {...bet, done: false, win: true}})
-    console.log("win")
-    setRunning(false)
-  }
-  else if(value) {
-    setTimeout(() => nextMine(array, automine + 1), 500)
-  }
+    if(!value) {
+      console.log("lose")
+      setRunning(false)
+      setBet((bet) => {console.log("FINAL");return {...bet, done: false}})
+    }
+    else if(automine >= bet.cleared-1){
+      console.log("win")
+      setRunning(false)
+      setBet((bet) => {console.log("FINAL BUENO");return {...bet, done: false, win: true}})
+
+    }
+    else if(value) {
+      setTimeout(() => nextMine(array, automine + 1), 500)
+    }
   */
 }
 

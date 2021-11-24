@@ -130,6 +130,33 @@ const PlaceBetMines = ({
     })
     onBet(payload);
 }
+useEffect(() => {
+  if(bet.autobet && !bet.done){
+    let prof = 0
+    /*
+    TO DO: If you won cashout and update accumulate
+    if(bet.win) {
+      prof = profit
+      handleCashout()
+    }
+    */
+    //win handleCashout
+    const acc = prof + accumulated
+    console.log("acc", acc)
+    setAccumulated(acc)
+    if(bet.profitStop >= 0 && bet.profitStop > acc && bet.lossStop >= 0 && bet.lossStop > -acc){
+      const newamount = bet.profitStop > 0 ? Math.floor(winbutton ? amount : bet.amount*(1+bet.wincrease)) : Math.floor(lossbutton ? amount : bet.amount*(1+bet.lincrease))
+      if(newamount < 1) setBet({autobet: false, pending: false})
+      else onBet({...bet, amount: newamount, done: true})
+    }
+    else {
+      setBet({autobet: false, pending: false})
+    }
+
+
+  }
+}, [bet.autobet, bet.done])
+
 
 
   const placeGuestBet = async () => {
