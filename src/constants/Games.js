@@ -268,7 +268,19 @@ export const GAMES = {
   }
 };
 
-
+export const EVOPLAY_GAMES = [
+  {
+  GameName: 'Penalty Shoot Out',
+  TechnicalName: 'penaltyshootout',
+  TechnicalCategory: 'instant game',
+  GameCategory: 'Casino Games'
+  },{
+  GameName: 'High Striker',
+  TechnicalName: 'highstriker',
+  TechnicalCategory: 'instant game',
+  GameCategory: 'Casino Games'
+  }
+]
 export const EXTERNAL_GAMES = [
   {
   TechnicalName: 'JetX',

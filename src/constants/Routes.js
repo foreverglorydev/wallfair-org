@@ -34,6 +34,7 @@ export default {
   wallet: '/wallet',
   externalGames: '/external-games/',
   externalGame: '/external-game/:game/:category',
+  evoplayGame: '/evoplay-game/:game',
   home: '/',
   liveEvents: '/live-events/:category?',
   newLiveEvent: '/live-events/new',
