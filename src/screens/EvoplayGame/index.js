@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { GameApi, setInitialEvoplaySession } from 'api/casino-games';
+import { GameApi, setInitialEvoplaySession, getUrlgame } from 'api/casino-games';
 import { connect, useDispatch, useSelector } from 'react-redux';
 import { Link, useLocation } from 'react-router-dom';
 import Grid from '@material-ui/core/Grid';
@@ -70,21 +70,25 @@ const EvoplayGame = ({
   //  if(!user.isLoggedIn){
       //setInit('faebb4a9-eca3-4720-b6fd-82540f55486a')
   //  }else{
-      setInitialEvoplaySession({UserId: userId, GameName: gameName, Provider: 'evoplay' })
+      getUrlgame({UserId: userId, GameName: gameName, Provider: 'evoplay' })
         .then(({data}) => {
-          console.log("data", data)
-          /*
-          if(isMobile) {
-            window.open(`https://eu-staging.ssgportal.com/GameLauncher/Loader.aspx?GameCategory=${gameCategory}&GameName=${gameName}&Token=${data.TokenID}&PortalName=wallfair`)
-            history.push('/games')
-          }else{
-            setInit(data.TokenID)
-          }
-          */
+          if(data?.url) setInit(data?.url)
+
         })
         .catch(error => {
           dispatch(AlertActions.showError(error.message));
         });
+
+
+/*
+      setInitialEvoplaySession({UserId: userId, GameName: gameName, Provider: 'evoplay' })
+        .then(({data}) => {
+          console.log("data", data)
+        })
+        .catch(error => {
+          dispatch(AlertActions.showError(error.message));
+        });
+        */
   //  }
     return () => {
     //  setInit(null)
@@ -137,9 +141,9 @@ const EvoplayGame = ({
   );
 
 
-  const url = `https://eu-staging.ssgportal.com/GameLauncher/Loader.aspx?&GameName=${gameName}&Token=${init}&PortalName=wallfair&ReturnUrl=${window.location.origin}`
+  //const url = `https://eu-staging.ssgportal.com/GameLauncher/Loader.aspx?&GameName=${gameName}&Token=${init}&PortalName=wallfair&ReturnUrl=${window.location.origin}`
 
-  const urltest = `https://server.ssg-public.com/GameLauncher/Loader.aspx?Token=DEMO&GameName=${gameName}&ReturnUrl=${window.location.origin}&Lang=en&PortalName=DEMO`
+  //const urltest = `https://server.ssg-public.com/GameLauncher/Loader.aspx?Token=DEMO&GameName=${gameName}&ReturnUrl=${window.location.origin}&Lang=en&PortalName=DEMO`
 
   return (
     <BaseContainerWithNavbar withPaddingTop={true}>
@@ -157,7 +161,7 @@ const EvoplayGame = ({
               onClick={handleHelpClick}
             />
           </div>
-          {init && false && <iframe className={styles.mainContainer} src={user.isLoggedIn?url:urltest}/>}
+          {init && <iframe className={styles.mainContainer} src={user.isLoggedIn?init:null}/>}
           {isMiddleOrLargeDevice ? (
             <div className={styles.bottomWrapper}>
               {renderChat()}

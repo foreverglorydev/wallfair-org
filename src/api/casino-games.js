@@ -123,6 +123,14 @@ const setInitialEvoplaySession = (payload) => {
   });
 };
 
+const getUrlgame = (payload) => {
+  const callThis = ApiUrls.API_GET_EVOPLAY_URLGAME;
+
+  return Api.get(callThis, payload).catch(error => {
+    console.log('[API Error] called: getCurrentGameInfo', error);
+  });
+};
+
 const setInitialSession = (payload) => {
   const callThis = ApiUrls.API_SET_SESSION;
 
@@ -194,6 +202,7 @@ export {
   Api,
   setToken,
   setInitialSession,
+  getUrlgame,
   setInitialEvoplaySession,
   createTrade,
   getSpinsAlpacaWheel,
