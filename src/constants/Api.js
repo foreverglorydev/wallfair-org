@@ -75,6 +75,7 @@ export const API_BET_DELETE = 'api/event/bet/:id/delete';
 export const API_SET_SESSION = 'new-session';
 export const API_SET_EVOPLAY_SESSION = '/api/evoplay/new-session';
 export const API_GET_EVOPLAY_URLGAME = '/api/evoplay/urlgame';
+export const API_GET_EVOPLAY_GAMES = '/api/evoplay/listgames';
 
 export const API_TRADE_CREATE_ELON = 'api/elon-game/trade';
 export const API_WHEEL_BET = 'api/simple-games/trade/wheel';

@@ -50,7 +50,8 @@ const EvoplayGame = ({
 }) => {
   const user = useSelector(selectUser);
   const gameName = match?.params?.game
-  console.log("gameName", gameName)
+  const gameCategory = match?.params?.category
+  const gameNumber = match?.params?.number
   const EXTERNAL_GAME_EVENT_ID = ObjectId(gameName)//game.id;
   const dispatch = useDispatch();
   const [demo, setDemo] = useState(true);
@@ -70,10 +71,10 @@ const EvoplayGame = ({
   //  if(!user.isLoggedIn){
       //setInit('faebb4a9-eca3-4720-b6fd-82540f55486a')
   //  }else{
-      getUrlgame({UserId: userId, GameName: gameName, Provider: 'evoplay' })
+      getUrlgame({UserId: userId, GameType: gameCategory, GameName: gameName, GameNumber: gameNumber.length === 2 ? '000' + gameNumber : gameNumber.length === 3 ? '00' + gameNumber : gameNumber.length === 4 ? '0' + gameNumber : gameNumber, Provider: 'evoplay' })
         .then(({data}) => {
+          console.log("data", data)
           if(data?.url) setInit(data?.url)
-
         })
         .catch(error => {
           dispatch(AlertActions.showError(error.message));
