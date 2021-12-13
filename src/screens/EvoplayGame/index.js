@@ -52,7 +52,8 @@ const EvoplayGame = ({
   const gameName = match?.params?.game
   const gameCategory = match?.params?.category
   const gameNumber = match?.params?.number
-  const EXTERNAL_GAME_EVENT_ID = ObjectId(gameName)//game.id;
+  const EXTERNAL_GAME_EVENT_ID = ObjectId(gameNumber)//game.id;
+  console.log("EXTERNAL_GAME_EVENT_ID", EXTERNAL_GAME_EVENT_ID)
   const dispatch = useDispatch();
   const [demo, setDemo] = useState(true);
   const [amount, setAmount] = useState(50);
