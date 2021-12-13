@@ -57,6 +57,7 @@ const RouletteGame = ({
   const gameCategory = match?.params?.category
 
   const EXTERNAL_GAME_EVENT_ID = ObjectId(gameName)//game.id;
+
   const Api = new GameApi(game.url, token);
   const dispatch = useDispatch();
   const [audio, setAudio] = useState(null);
