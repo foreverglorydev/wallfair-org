@@ -1,4 +1,4 @@
-REACT_APP_BACKEND_URL=https://rm-api.wallfair.io/
+REACT_APP_BACKEND_URL=https://rm-api.alpacasino.io/
 REACT_APP_CASINO_GAMES_BACKEND_URL=https://rm-casino-api.alpacasino.io/
 REACT_APP_ACCOUNT_MAPPER_URL=https://rm-account-mapper.alpacasino.io
 REACT_APP_SOCKET_URL=https://rm-comm-api.alpacasino.io/
