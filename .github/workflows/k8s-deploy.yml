@@ -104,6 +104,12 @@ jobs:
                             --build-arg REACT_APP_DEPOSIT_WALLET_ETHEREUM=0xtemp9Ac4e7a8568d7806Fe08bcFF936C42d44E659\
                             --build-arg REACT_APP_DEPOSIT_WALLET_LITECOIN=TEmPtNea1nQhx7rrQfXCAGrzajJMzqRVum\
                             --build-arg REACT_APP_TOKEN_NAME=WFAIR\
+                            --build-arg REACT_APP_TRANSAK_API_KEY=ce5e4fe3-9a4b-4b9e-bbcd-d0f52460ee90\
+                            --build-arg REACT_APP_TRANSAK_ENVIROMENT=PRODUCTION\
+                            --build-arg REACT_APP_TRANSAK_DEFAULT_CRYPTO_CURRENCY=MATIC\
+                            --build-arg REACT_APP_TRANSAK_CRYPTO_CURRENCY_CODE=MATIC\
+                            --build-arg REACT_APP_TRANSAK_WALLET_ADDRESS=0x864AF3c31E519e1F01fF2C6C8eBb9Dd2e3603818\
+                            --build-arg REACT_APP_TRANSAK_NETWORK=ethereum,mainnet,polygon\
                             -t registry.digitalocean.com/wallfair/frontend_k8s_prod:${GITHUB_SHA::6}
           docker push registry.digitalocean.com/wallfair/frontend_k8s_prod:${GITHUB_SHA::6}
       - name: Build the docker image (alpa production)
