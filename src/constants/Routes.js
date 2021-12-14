@@ -40,6 +40,7 @@ export default {
   leaderboard: '/leaderboard',
   logout: '/logout',
   rosiGame: '/games/:slug',
+  squidGame: '/games/squid',
   plinkoGame: '/games/plinko',
   alpacannonGame: '/games/alpacannon',
   elonGame: '/games/elon-game',

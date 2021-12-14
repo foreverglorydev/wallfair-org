@@ -18,6 +18,7 @@ import Events from './screens/Events';
 // import LiveEvents from './screens/LiveEvents';
 import RosiGame from './screens/RosiGame';
 import PlinkoGame from './screens/PlinkoGame';
+import SquidGame from './screens/SquidGame';
 import AlpacannonGame from './screens/AlpacannonGame';
 import RouletteGame from './screens/RouletteGame';
 import MinesGame from './screens/MinesGame';
@@ -84,6 +85,7 @@ const App = () => {
               />
               <Route exact path={Routes.minesGame} component={MinesGame} />
               <Route exact path={Routes.plinkoGame} component={PlinkoGame} />
+              <Route exact path={Routes.squidGame} component={SquidGame} />
               <Route exact path={Routes.alpacannonGame} component={AlpacannonGame} />
               <Route exact path={Routes.rosiGame} component={RosiGame} />
               <Route exact path={Routes.activities} component={Activities} />
