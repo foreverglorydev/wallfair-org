@@ -51,6 +51,10 @@
   margin-top: 20px;
   font-family: $fontOmnes;
   text-transform: uppercase;
+
+  &.forgotPassword {
+    padding: 50px 20px;
+  }
   .rowContainer {
     width: 100%;
     display: flex;
@@ -207,6 +211,20 @@
   padding-top: 20px;
 }
 
+.recaptchaInfo {
+  width: 100%;
+  font-size: 13px;
+  text-align: center;
+  padding-top: 10px;
+  opacity: 0.8;
+  text-transform: none;
+
+  a {
+    color: #ffd401;
+    text-decoration: underline;
+  }
+}
+
 .submitButton,
 .signInButton {
   overflow: hidden;
@@ -237,6 +255,13 @@
     @media (max-width: $screen-sm) {
       display: none;
     }
+  }
+
+  svg {
+    width: 24px;
+    max-width: 24px;
+    height: 24px;
+    max-height: 24px;
   }
 }
 .signInButton {
@@ -305,7 +330,7 @@
   text-align: center;
   @media (max-width: $screen-sm) {
     position: static;
-    margin-top: 25px;
+    margin-top: 14px;
     text-align: center;
   }
 
@@ -317,40 +342,27 @@
   }
   p {
     font-size: 18px;
-  }
-  svg {
-    width: 24px;
-    max-width: 24px;
-    height: 24px;
-    max-height: 24px;
+    font-weight: 600;
   }
 }
-.dontHaveAnAccountLogin {
+
+.socialContainer {
   display: flex;
-  flex-direction: column;
-  // justify-content: center;
-  margin-top: 25px;
-  text-align: center;
-  padding: 0 20px;
-  width: 690px;
-  @media (max-width: $screen-sm) {
-    width: auto;
-    padding: 0;
-  }
-  .socialContainer {
-    margin-top: 10px;
-  }
-  button {
-    @extend .unstyledButton;
-    font-size: 14px;
-  }
-  p {
-    font-size: 18px;
-  }
-  svg {
+  gap: 20px;
+  justify-content: center;
+  margin: 20px 0;
+  .socialIcon {
     width: 24px;
-    max-width: 24px;
     height: 24px;
-    max-height: 24px;
+  }
+  &.verticalContainer {
+    flex-direction: column;
+    gap: 8px;
+    margin: 14px 0 20px;
+  }
+  .socialButton {
+    width: 60px;
+    height: 60px;
+    cursor: pointer;
   }
 }
