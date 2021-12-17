@@ -49,6 +49,7 @@ import Routes from 'constants/Routes';
 const PlaceBet = ({ connected, onBet, onCashout, onCancel }) => {
   const dispatch = useDispatch();
   const history = useHistory();
+
   const user = useSelector(selectUser);
   const userBalance = parseInt(user?.balance || 0, 10);
   const sliderMinAmount = 50;
