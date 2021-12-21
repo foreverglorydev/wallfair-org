@@ -73,7 +73,7 @@
   .formGroup {
     position: relative;
     width: 100%;
-    margin: 12px 0;
+    margin: 20px 0 0;
 
     @media (max-width: $screen-sm) {
       margin: 10px 0;
@@ -119,6 +119,7 @@
     text-decoration: underline;
     font-family: $fontOmnes;
     cursor: pointer;
+    color: $colorButton;
 
     @media (max-width: $screen-sm) {
       margin: 10px 0;
@@ -155,9 +156,9 @@
 
 .errorBox {
   position: relative;
-  height: 60px;
+  height: 30px;
   width: 100%;
-  padding: 30px 10px;
+  padding: 10px 10px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -207,6 +208,9 @@
   a {
     color: #ea9c00;
     text-decoration: underline;
+  }
+  @media screen and (max-width: $screen-sm-max) {
+    padding-top: 0;
   }
 }
 
@@ -345,6 +349,10 @@
   justify-content: space-around;
   margin: 20px 0;
 
+  @media screen and (max-width: $screen-sm-max) {
+    margin: 10px 0;
+  }
+
   &.verticalContainer {
     flex-direction: column;
     align-items: center;
@@ -363,6 +371,13 @@
     svg {
       width: 30px;
       height: 30px;
+    }
+    &[disabled] {
+      opacity: 0.7;
+    }
+    @media screen and (max-width: $screen-xs-max) {
+      width: 45px;
+      height: 45px;
     }
   }
 }

@@ -8,8 +8,8 @@ import LegalCheckbox from 'components/LegalCheckbox';
 import Button from '../../Button';
 import ReactTooltip from 'react-tooltip';
 import { RECAPTCHA_KEY } from 'constants/Api';
-import { Link } from 'react-router-dom';
 import classNames from 'classnames';
+import AuthState from '../../../constants/AuthState';
 
 const EmailSignUp = ({
   styles,
@@ -18,6 +18,7 @@ const EmailSignUp = ({
   hidePopup,
   username,
   renderSocialLogin,
+  authState,
 }) => {
   const fooRef = useRef(null);
   let emailRef = useRef(null);
@@ -34,20 +35,26 @@ const EmailSignUp = ({
   const [error, setError] = useState(null);
   const [submitInProgress, setSubmitInProgress] = useState(false);
 
+
   useEffect(() => {
     ReactTooltip.rebuild();
 
-    if (errorState) {
+    if (error) {
+      ReactTooltip.show(fooRef.current);
       setSubmitInProgress(false);
-      fooRef.current = genericRef;
-      setError(errorState);
-      ReactTooltip.show(fooRef.current);
-    } else if (error) {
-      ReactTooltip.show(fooRef.current);
     } else {
       ReactTooltip.hide();
     }
   }, [errorState, fooRef, error]);
+
+  useEffect(() => {
+    console.log(authState);
+    if (authState === AuthState.LOGGED_IN) {
+      hidePopup();
+      setSubmitInProgress(false);
+    }
+  }, [authState]);
+  
 
   const handleReCaptchaVerify = () => {
     return new Promise((resolve, _) => {
@@ -56,7 +63,7 @@ const EmailSignUp = ({
           .execute(RECAPTCHA_KEY, { action: 'join' })
           .then(token => {
             resolve(token);
-          });
+          })
       });
     });
   };
@@ -78,6 +85,7 @@ const EmailSignUp = ({
     const error = validateInput();
     if (error) return;
     setSubmitInProgress(true);
+    
     handleReCaptchaVerify().then(recaptchaToken => {
       const refLocalStorage = localStorage.getItem('urlParam_ref');
       signUp({
@@ -89,13 +97,23 @@ const EmailSignUp = ({
         recaptchaToken,
       });
 
-      hidePopup();
     });
   };
 
   const validateInput = options => {
     let formError = null;
     let fieldRef = null;
+
+    //Used by Social Login buttons
+    if (options && options.tosOnly && !legalAuthorizationAgreed) {
+      formError = 'Confirm that you agree with Terms and Conditions';
+      fieldRef = acceptRef.current;
+
+      setError(formError);
+      fooRef.current = fieldRef;
+
+      return formError;
+    }
 
     if (!emailIsValid()) {
       formError = 'Not a valid email address';
@@ -123,7 +141,7 @@ const EmailSignUp = ({
   return (
     <form
       className={styles.authenticationInputBoxContainer}
-      onSubmit={onConfirm}
+      // onSubmit={onConfirm}
     >
       {errorState && (
         <div
@@ -163,10 +181,10 @@ const EmailSignUp = ({
               value={email}
               disabled={submitInProgress}
               setValue={(e) => {
+                setError(null);
                 setInputEmail(e.trim().toLowerCase());
               }}
               onConfirm={onConfirm}
-              onBlur={() => validateInput({ emailOnly: true })}
             />
           </FormGroup>
           <FormGroup
@@ -182,7 +200,10 @@ const EmailSignUp = ({
               className={styles.inputBox}
               placeholder="***********"
               value={password}
-              setValue={setPassword}
+              setValue={(e) => {
+                setError(null);
+                setPassword(e);
+              }}
               disabled={submitInProgress}
               onConfirm={onConfirm}
             />
@@ -202,34 +223,47 @@ const EmailSignUp = ({
               className={styles.inputBox}
               placeholder="***********"
               value={passwordConfirmation}
-              setValue={setPasswordConfirmation}
+              setValue={(e) => {
+                setError(null);
+                setPasswordConfirmation(e);
+              }}
               disabled={submitInProgress}
               onConfirm={onConfirm}
             />
           </FormGroup>
         </div>
         <div>
-          <LegalCheckbox
-            ref={(ref) => (acceptRef.current = ref)}
-            checked={legalAuthorizationAgreed}
-            setChecked={setLegalAuthorizationAgreed}
-          />
+          <FormGroup
+            className={styles.formGroup}
+            data-tip
+            rootRef={(ref) => (acceptRef.current = ref)}
+            data-event="none"
+            data-event-off="dblclick"
+          >
+            <LegalCheckbox
+              checked={legalAuthorizationAgreed}
+              setChecked={(e) => {
+                setError(null);
+                setLegalAuthorizationAgreed(e)
+              }}
+            />
+          </FormGroup>
           <Button
             onClick={onConfirm}
             className={classNames([styles.submitButton, styles.mobile])}
-            disabled={submitInProgress || !legalAuthorizationAgreed}
+            disabled={submitInProgress}
             disabledWithOverlay={false}
             data-action="submit"
           >
             Sign Up with E-mail
           </Button>
-          {renderSocialLogin(submitInProgress || !legalAuthorizationAgreed)}
+          {renderSocialLogin(submitInProgress || !legalAuthorizationAgreed, validateInput)}
         </div>
       </div>
       <Button
         onClick={onConfirm}
         className={classNames([styles.submitButton, styles.desktop])}
-        disabled={submitInProgress || !legalAuthorizationAgreed}
+        disabled={submitInProgress}
         disabledWithOverlay={false}
       >
         Sign Up with E-mail
@@ -263,6 +297,7 @@ const mapStateToProps = state => {
     errorState: state.authentication.error,
     popupVisible: state.popup.visible,
     username: state.onboarding.username,
+    authState: state.authentication.authState,
   };
 };
 

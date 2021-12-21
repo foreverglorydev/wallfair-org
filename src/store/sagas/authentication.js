@@ -15,6 +15,7 @@ import { AlertActions } from 'store/actions/alert';
 import { RosiGameActions } from '../actions/rosi-game';
 import { ChatActions } from 'store/actions/chat';
 import { OnboardingActions } from 'store/actions/onboarding';
+import { trackSignup } from 'config/gtm';
 
 const afterLoginRoute = Routes.home;
 
@@ -278,6 +279,7 @@ const authenticationSucceeded = function* (action) {
 const logout = function* () {
   Api.setToken(null);
   crashGameApi.setToken(null);
+  yield put(WebsocketsActions.close());
   yield put(push(Routes.home));
 };
 
@@ -424,6 +426,9 @@ const signUp = function* (action) {
         initialReward
       })
     );
+
+    trackSignup({ method: 'Email' });
+
     localStorage.removeItem('urlParam_ref');
   } else {
     yield put(
