@@ -8,6 +8,7 @@ import {
   EXTERNAL_GAMES,
   NEW_SLOTS_GAMES,
   SLOTS_GAMES,
+  TOP_GAMES,
 } from '../../constants/Games';
 import BaseContainerWithNavbar from '../../components/BaseContainerWithNavbar';
 import Lightbox from '../../components/Lightbox/Lightbox';
@@ -70,6 +71,7 @@ import { TOKEN_NAME } from 'constants/Token';
 import AmbassadorBanner from 'components/AmbassadorBanner';
 import NftBanner from 'components/NftBanner';
 import GameCards from 'components/GameCards';
+import LimitedOfferBanner from 'components/LimitedOfferBanner';
 
 const Home = ({
   authState,
@@ -133,11 +135,25 @@ const Home = ({
     }
   };
 
+  const handleVoluumPersistent = () => {
+    const sid = urlParams.get('sid');
+    const cid = urlParams.get('cid');
+
+    if (sid) {
+      localStorage.setItem('urlParam_sid', sid);
+    }
+
+    if (cid) {
+      localStorage.setItem('urlParam_cid', cid);
+    }
+  };
+
   useEffect(() => {
     if (isMount) {
       // fetchTags();
       renderBetApprovePopup();
       handleRefPersistent();
+      handleVoluumPersistent();
     }
   }, []);
 
@@ -253,9 +269,7 @@ const Home = ({
   };
 
   const renderSlogGames = () => {
-    const externalGames = EXTERNAL_GAMES.filter(
-      (game, i) => game.GameCategory === 'Slot Games'
-    ).filter((g, i) => i < 18);
+    const externalGames = TOP_GAMES;
     return (
       <div className={classNames(styles.allGamesContiner)}>
         <GameSmartsoft gameTitle games={externalGames} category="Slot Games" />
@@ -358,27 +372,27 @@ const Home = ({
               <br /> <span>Alpacasino</span>
             </p>
 
-            <LimitedOffer />
+            <LimitedOfferBanner />
             <span className={styles.limitedOfferDescription}>
-              <span>Join today and receive</span>
+              <span className={styles.highlighted}>500</span>
               <br />
-              <span className={styles.highlighted}>50%</span>
-              <br />
-              <span>cashback up to</span>
-              <br />
-              <span className={styles.highlighted}>25 000</span>
-              <p>WFAIRs</p>
+              <p>WFAIRS FOR <span className={styles.red}>FREE</span></p>
+              <div className={styles.conditionsWrapper}>
+                <span className={styles.conditions}>- no hidden conditions</span>
+                <span className={styles.conditions}>- start playing in 1 min</span>
+                <span className={styles.conditions}>- limited to first 1000 users</span>
+              </div>
             </span>
 
             <button
               className={styles.startButton}
               onClick={showPopupForUnauthenticated}
             >
-              Start here!
+              Register for free
             </button>
             <img className={styles.topFront} src={TopFront} alt="" />
             <img className={styles.topBack} src={TopBack} alt="" />
-            <img className={styles.bottomFront} src={BottomFront} alt="" />
+            {/* <img className={styles.bottomFront} src={BottomFront} alt="" /> */}
             <img className={styles.bottomBack} src={BottomBack} alt="" />
           </div>
         </div>

@@ -88,6 +88,8 @@ const EmailSignUp = ({
     
     handleReCaptchaVerify().then(recaptchaToken => {
       const refLocalStorage = localStorage.getItem('urlParam_ref');
+      const sidLocalStorage = localStorage.getItem('urlParam_sid');
+      const cidLocalStorage = localStorage.getItem('urlParam_cid');
       signUp({
         username,
         email,
@@ -95,6 +97,8 @@ const EmailSignUp = ({
         passwordConfirm: passwordConfirmation,
         ref: refLocalStorage,
         recaptchaToken,
+        sid: sidLocalStorage,
+        cid: cidLocalStorage,
       });
 
     });
@@ -244,26 +248,29 @@ const EmailSignUp = ({
               checked={legalAuthorizationAgreed}
               setChecked={(e) => {
                 setError(null);
-                setLegalAuthorizationAgreed(e)
+                setLegalAuthorizationAgreed(e);
               }}
             />
           </FormGroup>
           <Button
             onClick={onConfirm}
             className={classNames([styles.submitButton, styles.mobile])}
-            disabled={submitInProgress}
+            disabled={submitInProgress || !legalAuthorizationAgreed}
             disabledWithOverlay={false}
             data-action="submit"
           >
             Sign Up with E-mail
           </Button>
-          {renderSocialLogin(submitInProgress || !legalAuthorizationAgreed, validateInput)}
+          {renderSocialLogin(
+            submitInProgress || !legalAuthorizationAgreed,
+            validateInput
+          )}
         </div>
       </div>
       <Button
         onClick={onConfirm}
         className={classNames([styles.submitButton, styles.desktop])}
-        disabled={submitInProgress}
+        disabled={submitInProgress || !legalAuthorizationAgreed}
         disabledWithOverlay={false}
       >
         Sign Up with E-mail
