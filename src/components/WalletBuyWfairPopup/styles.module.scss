@@ -61,13 +61,13 @@
   justify-content: center;
 
   @media (max-width: $screen-md) {
-    margin-left: 0px;
-    margin-right: 0px;
     font-size: 11px;
     line-height: 14px;
   }
   & > div > div {
-    padding: 8px 22px !important;
+    @media (min-width: $screen-xs) {
+      padding: 8px 22px !important;
+    }
   }
 }
 
