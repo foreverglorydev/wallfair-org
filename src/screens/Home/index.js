@@ -22,15 +22,12 @@ import State from '../../helper/State';
 import { getTradeById } from '../../api';
 import SocialIcons from 'components/SocialIcons';
 import GameSmartsoft from 'components/GameSmartsoft';
+import Icon from 'components/Icon';
+import IconType from 'components/Icon/IconType';
 import { GeneralActions } from '../../store/actions/general';
 import howTokenWorkPToken from '../../data/images/token/PToken.png';
 import howTokenWorkWToken from '../../data/images/token/WToken.png';
 import EloneWithPhone from '../../data/images/elon-with-phone.png';
-import gameCardWheel from '../../data/images/house-games/card-wheel.png';
-import gameCardElon from '../../data/images/house-games/card-elon.png';
-import gameCardPlinko from '../../data/images/house-games/card-plinko.png';
-import gameCardPumpDump from '../../data/images/house-games/card-pumpdump.png';
-import gameCardMines from '../../data/images/house-games/card-mines.png';
 import MagentaAlpaca from '../../data/images/alpaca-dopter/magenta-alpaca.png';
 import MagentaChip from '../../data/images/alpaca-dopter/magenta-chip.png';
 import MagentaThumbnail from '../../data/images/candy-1.png';
@@ -39,6 +36,8 @@ import BlueChip from '../../data/images/alpaca-dopter/blue-chip.png';
 import YellowAlpaca from '../../data/images/alpaca-dopter/yellow-alpaca.png';
 import YellowChip from '../../data/images/alpaca-dopter/yellow-chip.png';
 import YellowThumbnail from '../../data/images/candy-3.png';
+import { ReactComponent as DiscordMarker } from '../../data/images/home/discord-mark.svg';
+import AlpacaWithShavolImage from '../../data/images/home/alpaca-with-shavol.png'
 import AlphaLogo from '../../data/images/alpaca-dopter/alpha.png';
 import { ReactComponent as LimitedOffer } from '../../data/images/limited-offer.svg';
 
@@ -92,6 +91,7 @@ const Home = ({
   const isSmall = useMediaQuery(theme.breakpoints.down('sm'));
   const showUpcoming = process.env.REACT_APP_SHOW_UPCOMING_FEATURES || 'false';
   let alpacaGames = showUpcoming ? NEW_SLOTS_GAMES : SLOTS_GAMES;
+  const [showDiscordBanner, setShowDiscordBanner] = useState(false);
 
   useOAuthCallback();
 
@@ -155,27 +155,56 @@ const Home = ({
       renderBetApprovePopup();
       handleRefPersistent();
       handleVoluumPersistent();
+      setShowDiscordBanner(!checkdDiscordBanner());
     }
   }, []);
 
-  const renderHeadline = () => {
-    return (
-      <div className={styles.mainHeadline}>
-        <h1>Betting Reimagined</h1>
-
-        <div className={styles.slogan}>Clear, Social &amp; Fair</div>
-
-        <SocialIcons
-          className={styles.socialIcons}
-          dataTrackingIds={{
-            telegram: 'home-telegram',
-            instagram: 'home-instagram',
-            twitter: 'home-twitter',
-          }}
-        />
-      </div>
-    );
+  const checkdDiscordBanner = () => {
+    return localStorage.getItem('discordBanner') || false;
   };
+
+  const hideDiscordBanner = () => {
+    localStorage.setItem('discordBanner', true);
+    setShowDiscordBanner(false);
+  }
+
+  const renderDiscordBanner =() => {
+    return (
+      <div className={classNames(styles.discordBanner, isLoggedIn() && styles.withPadding)}>
+        <div className={styles.backgroundWrapper}>
+          <div className={styles.whiteWrapper}>
+            <div className={styles.whiteContainer}>
+              <a
+                href="https://discord.gg/S7ebz6bb"
+                target="_blank"
+                rel="noreferrer"
+              >
+              <DiscordMarker/>
+              </a>
+            </div>
+          </div>
+          <div className={styles.bodyContainer}>
+            <Icon
+              className={styles.closeButton}
+              width={30}
+              height={30}
+              iconType={IconType.close}
+              onClick={hideDiscordBanner}
+            />
+            <p>
+              <a
+                href="https://discord.gg/S7ebz6bb"
+                target="_blank"
+                rel="noreferrer"
+              >
+                Join Discord for early access of Games, News and Airdrops
+              </a>
+            </p>
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   const renderHowTokenWorks = () => {
     return (
@@ -358,12 +387,13 @@ const Home = ({
     );
   };
 
+  const showPopupForUnauthenticated = () => {
+    if (!isLoggedIn()) {
+      startOnboardingFlow();
+    }
+  };
+  
   const renderWelcome = () => {
-    const showPopupForUnauthenticated = () => {
-      if (!isLoggedIn()) {
-        startOnboardingFlow();
-      }
-    };
     return (
       <div className={styles.welcomeContainer}>
         <div className={styles.cardContainer}>
@@ -502,6 +532,34 @@ const Home = ({
     );
   };
 
+  const renderFreeAlpacaOffer = () => {
+    return (
+      <div className={styles.freeAlpacaOfferContainer}>
+        <div className={styles.alpacaImage}>
+          <img src={AlpacaWithShavolImage} alt="alpaca with shavol" />
+        </div>
+
+        <div className={styles.backgroundWrapper}>
+          <span className={styles.title}>
+            To the first 1000 Alpacas <br/>
+            we giveaway <span className={styles.underline}>500 WFAIR for free</span>
+          </span>
+          <div className={styles.bottomInfoWrapper}>
+            <div className={styles.whiteWrapper}>
+              <div className={styles.whiteContainer}>
+                <p>Limited offer:</p>
+                <p className={styles.number}>726/1000</p>
+              </div>
+            </div>
+            <button onClick={showPopupForUnauthenticated}>
+              Register for free
+            </button>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <BaseContainerWithNavbar home loggedIn={isLoggedIn()}>
       {/* {renderHeadline()} */}
@@ -509,10 +567,12 @@ const Home = ({
       <div className={styles.containerWrapper}>
         <div className={styles.container}>
           {!isLoggedIn() && renderWelcome()}
+          {showDiscordBanner && renderDiscordBanner()}
           {renderHouseGames()}
           {renderSlogGames()}
           {renderAboutDescription()}
-          <AmbassadorBanner />
+          {/* {renderFreeAlpacaOffer()} */}
+          {/* <AmbassadorBanner /> */}
           <div className={styles.nftBannerWrapper}>
             <NftBanner />
           </div>
