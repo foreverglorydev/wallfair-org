@@ -36,6 +36,10 @@ import EventActivitiesTabs from 'components/EventActivitiesTabs'
 import { isMobile } from 'react-device-detect';
 import { selectUser } from 'store/selectors/authentication';
 
+import SelectGameModePopup from "../../components/SelectGameModePopup";
+import classNames from 'classnames';
+
+
 const EvoplayGame = ({
   showPopup,
   history,
@@ -140,7 +144,19 @@ const EvoplayGame = ({
               onClick={handleHelpClick}
             />
           </div>
-          {init && <iframe className={styles.mainContainer} src={init}/>}
+
+          {!gameMode && 
+            <div className={classNames(styles.mainContainer, styles.mainContainerPreview)}>
+            <div className={styles.gamePreviewContainer} style={{  
+                backgroundImage: `url(/images/evoplay/${filename}_360x360.jpg)`,
+              }} 
+            />
+              <SelectGameModePopup className={styles.gameModePopup} user={user} setGameMode={setGameMode} />
+            </div>
+          }
+
+          {(gameMode && init) && <iframe title={gameName} className={styles.mainContainer} src={init}/>}
+
           {isMiddleOrLargeDevice ? (
             <div className={styles.bottomWrapper}>
               {renderChat()}
