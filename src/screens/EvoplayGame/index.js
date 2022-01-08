@@ -25,7 +25,7 @@ import { PopupActions } from 'store/actions/popup';
 import TabOptions from '../../components/TabOptions';
 import Routes from 'constants/Routes';
 import { getGameById, ObjectId } from '../../helper/Games';
-import { EVOPLAY_GAMES, GAMES } from '../../constants/Games';
+import { GAMES } from '../../constants/Games';
 import {
   trackAlpacaWheelPlaceBetGuest,
   trackAlpacaWheelPlaceBet,
@@ -35,8 +35,10 @@ import { UserActions } from 'store/actions/user';
 import EventActivitiesTabs from 'components/EventActivitiesTabs'
 import { isMobile } from 'react-device-detect';
 import { selectUser } from 'store/selectors/authentication';
+
 import SelectGameModePopup from "../../components/SelectGameModePopup";
 import classNames from 'classnames';
+
 
 const EvoplayGame = ({
   showPopup,
@@ -50,14 +52,10 @@ const EvoplayGame = ({
   match
 }) => {
   const user = useSelector(selectUser);
-  const [gameMode, setGameMode] = useState(null);
   const gameName = match?.params?.game
   const gameCategory = match?.params?.category
   const gameNumber = match?.params?.number
   const EXTERNAL_GAME_EVENT_ID = ObjectId(gameNumber)//game.id;
-
-  const evoPlayGame = EVOPLAY_GAMES[gameNumber];
-  const filename = evoPlayGame.absolute_name.substring(evoPlayGame.absolute_name.lastIndexOf("\\") + 1);
 
   const dispatch = useDispatch();
   const [init, setInit] = useState(null);
@@ -72,21 +70,17 @@ const EvoplayGame = ({
 
 
   useEffect(() => {
-    if(gameMode) {
-      const demo = gameMode === 'demo' || !user.isLoggedIn;
-      getUrlgame({returnUrl: window.location.origin, demo, UserId: userId, GameType: gameCategory, GameName: gameName, GameNumber: gameNumber, Provider: 'evoplay' })
-        .then(({data}) => {
-          if(data?.url) setInit(data?.url)
-        })
-        .catch(error => {
-          dispatch(AlertActions.showError(error.message));
-        });
-      return () => {
-        setInit(null)
-      }
+    getUrlgame({returnUrl: window.location.origin, demo: !user.isLoggedIn, UserId: userId, GameType: gameCategory, GameName: gameName, GameNumber: gameNumber, Provider: 'evoplay' })
+      .then(({data}) => {
+        if(data?.url) setInit(data?.url)
+      })
+      .catch(error => {
+        dispatch(AlertActions.showError(error.message));
+      });
+    return () => {
+      setInit(null)
     }
-
-  }, [gameMode])
+  }, [])
 
   useEffect(() => {
     console.log("EXTERNAL_GAME_EVENT_ID", EXTERNAL_GAME_EVENT_ID)
@@ -162,6 +156,7 @@ const EvoplayGame = ({
           }
 
           {(gameMode && init) && <iframe title={gameName} className={styles.mainContainer} src={init}/>}
+
           {isMiddleOrLargeDevice ? (
             <div className={styles.bottomWrapper}>
               {renderChat()}

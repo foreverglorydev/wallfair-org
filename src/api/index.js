@@ -15,7 +15,7 @@ const {
 const createInstance = (host, apiPath) => {
   const axiosClient = axios.create({
     baseURL: `${host}${apiPath}`,
-    timeout: 30000,
+    timeout: 60000,
     headers: {
       'content-type': ContentTypes.applicationJSON,
       accept: ContentTypes.applicationJSON,

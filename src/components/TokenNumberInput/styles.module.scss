@@ -58,6 +58,10 @@
       background: #e72d8910;
     }
 
+    @media (min-width: $screen-lg) {
+      margin-left: 30px;
+    }
+
     :first-child {
       font-size: 14px;
     }
