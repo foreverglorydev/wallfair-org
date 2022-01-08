@@ -154,9 +154,6 @@
           justify-content: center;
           align-items: center;
           column-gap: 10px;
-          @media (max-width: $screen-md) {
-            padding: 0;
-          }
         }
         .innerContainer {
           width: 134px;
@@ -215,6 +212,7 @@
     span {
       font-weight: 500;
       font-size: 12px;
+      text-align: justify;
     }
 
     .summaryTotal {

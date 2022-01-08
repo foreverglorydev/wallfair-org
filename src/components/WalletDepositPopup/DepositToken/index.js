@@ -34,8 +34,12 @@ import { TOKEN_NAME } from 'constants/Token';
 import Button from 'components/Button';
 import { trackWalletConnect } from 'config/gtm';
 // import AddTokens from 'components/AddTokens';
+import {ReactComponent as LeftArrow} from '../../../data/icons/deposit/left-arrow.svg';
+import { PopupActions } from 'store/actions/popup';
+import PopupTheme from 'components/Popup/PopupTheme';
+import { TransactionActions } from 'store/actions/transaction';
 
-const DepositToken = ({ user, resetState, setNotSelectedNetwork }) => {
+const DepositToken = ({ user, resetState, setNotSelectedNetwork, showWalletDepositPopup, fetchWalletTransactions }) => {
   const walletAddress = process.env.REACT_APP_DEPOSIT_WALLET;
   const { active, library, account, chainId, deactivate } = useWeb3React();
   const { currentNetwork } = useWeb3Network();
@@ -48,6 +52,11 @@ const DepositToken = ({ user, resetState, setNotSelectedNetwork }) => {
   const [notSelectedNetworkId, setNotSelectedNetworkId] = useState('');
   const [activeNetwork, setActiveNetwork] = useState('');
   const signer = library?.getSigner();
+
+  useEffect(() => {
+    fetchWalletTransactions();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const sendAccountMappingCall = useCallback(async () => {
     if (account && visibleWalletForm && !signingInProcess) {
@@ -130,9 +139,21 @@ const DepositToken = ({ user, resetState, setNotSelectedNetwork }) => {
     setNotSelectedNetworkId(notNetworkId);
   };
 
+  const renderBackButton = () => {
+    return (
+      <div className={styles.chooseOtherMethod} onClick={showWalletDepositPopup}>
+        <LeftArrow />
+        <span>Other payment methods</span>
+      </div>
+    )
+  }
+
   return (
     <>
       <div className={styles.depositTabContainer}>
+
+        {renderBackButton()}
+
         {!!account && !signingInProcess && (
           <>
             <p>Select your preferred network</p>
@@ -213,6 +234,7 @@ const DepositToken = ({ user, resetState, setNotSelectedNetwork }) => {
 
         {!visibleWalletForm && !account && (
           <div className={styles.connectWalletContainer}>
+            <h2>Deposit WFAIR</h2>
             <p>
               You can add {TOKEN_NAME} to your account by connecting your existing wallet with {TOKEN_NAME} tokens. Click the button below to select one of the supported providers.
             </p>
@@ -347,7 +369,14 @@ const mapDispatchToProps = dispatch => {
       ),
     setNotSelectedNetwork: activeNetwork =>
       dispatch(TxDataActions.setNotActiveNetwork(activeNetwork)),
+    showWalletDepositPopup: () => { 
+      dispatch(PopupActions.show({ popupType: PopupTheme.walletDeposit }));
+    },
+    fetchWalletTransactions: () => {
+      dispatch(TransactionActions.fetchWalletTransactions());
+    },
   };
 };
+
 
 export default connect(mapStateToProps, mapDispatchToProps)(DepositToken);

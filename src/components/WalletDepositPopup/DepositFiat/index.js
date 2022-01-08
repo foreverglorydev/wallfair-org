@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import styles from './styles.module.scss';
 import {ReactComponent as LeftArrow} from '../../../data/icons/deposit/left-arrow.svg';
 import Button from 'components/Button';
@@ -6,13 +6,20 @@ import PopupTheme from 'components/Popup/PopupTheme';
 import { connect } from 'react-redux';
 import { PopupActions } from 'store/actions/popup';
 import { trackWalletBuywithfiatRequest } from 'config/gtm';
-import { convertCurrency, sendBuyWithFiat } from 'api';
+import { convertCurrency, generateCryptopayChannel, sendBuyWithFiat } from 'api';
 import { numberWithCommas } from 'utils/common';
 import NumberCommaInput from 'components/NumberCommaInput/NumberCommaInput';
 import Dropdown from 'components/Dropdown';
 import { TOKEN_NAME } from 'constants/Token';
 import useDebounce from 'hooks/useDebounce';
+import useDepositsCounter from 'hooks/useDepositsCounter';
+import { LIMIT_BONUS } from 'constants/Bonus';
+import { TransactionActions } from 'store/actions/transaction';
 
+
+// const stagingGoerliRampURL = "https://ri-widget-staging-goerli2.firebaseapp.com/";
+const productionRampURL = "https://buy.ramp.network/";
+const cryptoTransaction = "BTC";
 
 const CURRENCY_OPTIONS = [
   {
@@ -25,13 +32,21 @@ const CURRENCY_OPTIONS = [
   },
 ];
 
-const DepositFiat = ({user, showWalletDepositPopup}) => {
+const DepositFiat = ({user, showWalletDepositPopup, fetchWalletTransactions}) => {
 
   const [selectedCurrency, setSelectedCurrency] = useState(CURRENCY_OPTIONS[0]);
-  const [currency, setCurrency] = useState(0);
+  const [currency, setCurrency] = useState(100);
   const [WFAIRToken, setWFAIRToken] = useState(0);
   const [bonus, setBonus] = useState(0);
   const [requestSent, setRequestSent] = useState(false);
+  const [address, setAddress] = useState('');
+  const [errorFetchingChannel, setErrorFetchingChannel] = useState(false);
+  const depositCount = useDepositsCounter();
+
+  useEffect(() => {
+    fetchWalletTransactions();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const selectContent = event => {
     event.target.select();
@@ -60,7 +75,9 @@ const DepositFiat = ({user, showWalletDepositPopup}) => {
       let WfairTokenValue = !roundedAmount ? 0 : roundedAmount;
 
       setWFAIRToken(WfairTokenValue);
-      setBonus(WfairTokenValue);
+
+      const expectedBonus = depositCount > 0 ? 0 : Math.min(LIMIT_BONUS, WfairTokenValue);
+      setBonus(expectedBonus);
     }
   }
 
@@ -68,6 +85,23 @@ const DepositFiat = ({user, showWalletDepositPopup}) => {
     onChangeAmount();
   }, [selectedCurrency, currency])
 
+  
+
+  const fetchReceiverAddress = useCallback(async (tab) => {
+    const channel = await generateCryptopayChannel({ currency: cryptoTransaction });
+    
+    if(channel.error) {
+      return setErrorFetchingChannel(true);
+    }
+
+    setErrorFetchingChannel(false);
+    setAddress(channel.address);
+  }, []);
+
+  useEffect(() => {
+    fetchReceiverAddress();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const OnClickContinue = async () => {
     if(currency && WFAIRToken) {
@@ -155,7 +189,7 @@ const DepositFiat = ({user, showWalletDepositPopup}) => {
       <div className={styles.formGroupContainer}>
         <span>Estimate</span>
         <div className={styles.inputContainer}>
-          <input disabled readOnly value={WFAIRToken} />
+          <input disabled readOnly value={numberWithCommas(WFAIRToken)} />
           <div className={styles.inputRightContainer}>
             <div className={styles.coinWrapper}>
               <span>{TOKEN_NAME}</span>
@@ -178,17 +212,23 @@ const DepositFiat = ({user, showWalletDepositPopup}) => {
         </div>
         <hr/>
         <div className={styles.overviewItem}>
-          <span className={styles.total}>Amount</span><span className={styles.total}>{numberWithCommas(parseFloat(WFAIRToken) + parseFloat(bonus))} {TOKEN_NAME}</span>
+          <span className={styles.total}>Total</span><span className={styles.total}>{numberWithCommas(parseFloat(WFAIRToken) + parseFloat(bonus))} {TOKEN_NAME}</span>
         </div>
         <hr/>
       </div>
 
       <div className={styles.summary}>
-        <span>Add to Alpacasino Account in WFAIR</span>
-        <p className={styles.summaryTotal}>{numberWithCommas(parseFloat(WFAIRToken) + parseFloat(bonus))} {TOKEN_NAME}</p>
+        <span>For your safety and convenience, we process money payments via an external provider. Please click the button below to continue. <b>Important</b>: DO NOT change the BTC wallet address provided.</span>
+        {/* <span>Your {cryptoTransaction} Deposit Address: {address}</span> */}
       </div>
 
-      <Button>Deposit {currency > 0 && `${numberWithCommas(currency)} ${selectedCurrency.label}`}</Button>
+      {currency > 0 && user.email && address ?
+        <a target="_blank" rel="noreferrer" href={`${productionRampURL}?swapAsset=${cryptoTransaction}&fiatValue=${currency}&fiatCurrency=${selectedCurrency.label}&userEmailAddress=${user.email}&userAddress=${address}`}>
+          <Button>Proceed with partner</Button>
+        </a>
+        :
+        <Button disabled>Proceed with partner</Button>
+      }
     </div>
   );
 };
@@ -206,6 +246,9 @@ const mapDispatchToProps = dispatch => {
   return { 
     showWalletDepositPopup: () => { 
       dispatch(PopupActions.show({ popupType: PopupTheme.walletDeposit }));
+    },
+    fetchWalletTransactions: () => {
+      dispatch(TransactionActions.fetchWalletTransactions());
     },
   }
 }

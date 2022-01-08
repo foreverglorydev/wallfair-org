@@ -53,6 +53,7 @@ import WalletWithdrawPopup from 'components/WalletBuyWfairPopup/WalletWithdrawPo
 import ToSPopup from 'components/ToSPopup';
 import BanPopup from 'components/BanPopup';
 import WalletDepositPopup from 'components/WalletDepositPopup';
+import SelectGameModePopup from "../SelectGameModePopup";
 
 const Popup = ({ type, visible, options = {}, hidePopup }) => {
   const small = _.get(options, 'small', false);
@@ -170,6 +171,8 @@ const Popup = ({ type, visible, options = {}, hidePopup }) => {
         return <LastGamesDetailPopup data={options?.data} />;
       case PopupTheme.fairnessPopup:
         return <FairnessPopup data={options?.data} />;
+      case PopupTheme.selectGameMode:
+        return <SelectGameModePopup data={options?.data} />;
       case PopupTheme.singleGamesDetail:
         return <SingleGameDetailPopup data={options?.data} />;
       case PopupTheme.loginRegister:
@@ -254,7 +257,7 @@ const Popup = ({ type, visible, options = {}, hidePopup }) => {
       case PopupTheme.walletConnectWallet:
         return <WalletDepositPopup type={PopupTheme.walletConnectWallet} />;
       case PopupTheme.walletWithdraw:
-        return <WalletWithdrawPopup />;
+        return <WalletDepositPopup type={PopupTheme.walletWithdraw}/>;
       case PopupTheme.transakSuccess:
         return <TransakSuccess options={options} />;
       case PopupTheme.txModal:
@@ -283,8 +286,9 @@ const Popup = ({ type, visible, options = {}, hidePopup }) => {
             styles.modalDialog,
             type === PopupTheme.walletBuyWfair ? styles.walletBuyWfair : null,
             type === PopupTheme.walletDeposit ? styles.walletDeposit : null,
-            type === PopupTheme.walletDepositCrypto ? styles.walletDeposit : null,
-            type === PopupTheme.walletDepositFiat ? styles.walletDeposit : null,
+            type === PopupTheme.walletDepositCrypto ? classNames(styles.walletDeposit, styles.depositWider) : null,
+            type === PopupTheme.walletDepositFiat ? classNames(styles.walletDeposit, styles.depositWider) : null,
+            type === PopupTheme.walletWithdraw ? classNames(styles.walletDeposit, styles.depositWider) : null,
             type === PopupTheme.walletConnectWallet ? styles.walletDeposit : null,
             type === PopupTheme.disclaimer ? styles.disclaimerContainer : null,
             type === PopupTheme.explanation
@@ -321,7 +325,8 @@ const Popup = ({ type, visible, options = {}, hidePopup }) => {
                 type !== PopupTheme.walletDeposit &&
                 type !== PopupTheme.walletDepositCrypto &&
                 type !== PopupTheme.walletDepositFiat &&
-                type !== PopupTheme.walletConnectWallet
+                type !== PopupTheme.walletConnectWallet &&
+                type !== PopupTheme.walletWithdraw
               ) && <>
                 <img
                   className={styles.candyTopLeft}
