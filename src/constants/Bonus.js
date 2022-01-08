@@ -4,5 +4,3 @@
 
 export const CURRENT_BONUS_ID = "LAUNCH_PROMO_2021";
 export const AMOUNT_BONUS = "500";
-
-export const LIMIT_BONUS = "100000";

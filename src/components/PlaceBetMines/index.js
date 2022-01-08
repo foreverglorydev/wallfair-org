@@ -28,7 +28,6 @@ import Timer from '../RosiGameAnimation/Timer';
 import { TOKEN_NAME } from 'constants/Token';
 import { MinesInput, ClearedInput} from "./MinesInput";
 import { trackMinesPlaceBet, trackMinesPlaceBetGuest } from "../../config/gtm"
-import { OnboardingActions } from 'store/actions/onboarding';
 
 import {
   FormGroup,
@@ -215,16 +214,15 @@ const PlaceBetMines = ({
   };
 
   const showLoginPopup = () => {
-    dispatch(OnboardingActions.start());
-    // dispatch(
-    //   PopupActions.show({
-    //     popupType: PopupTheme.auth,
-    //     options: {
-    //       small: false,
-    //       authenticationType: AuthenticationType.register,
-    //     },
-    //   })
-    // );
+    dispatch(
+      PopupActions.show({
+        popupType: PopupTheme.auth,
+        options: {
+          small: false,
+          authenticationType: AuthenticationType.register,
+        },
+      })
+    );
   };
 
   const renderButton = () => {
