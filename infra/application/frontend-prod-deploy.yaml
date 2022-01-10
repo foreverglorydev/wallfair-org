@@ -15,41 +15,40 @@ spec:
         app: frontend
     spec:
       containers:
-      - image: registry.digitalocean.com/wallfair/frontend_k8s
-        imagePullPolicy: Always
-        resources:
-          limits:
-            cpu: 1000m 
-          requests:
-            cpu: 400m
-            memory: 1024Mi
-        livenessProbe:
-          httpGet:
-            path: /
-            port: 3000
-          initialDelaySeconds: 2
-          periodSeconds: 10
-        readinessProbe:
-          httpGet:
-            path: /
-            port: 3000
-          initialDelaySeconds: 2
-          periodSeconds: 3
-        name: frontend
-        envFrom:
-        - configMapRef:
-            name: frontend-config
-        - configMapRef:
-            name: frontend-app-secrets
-        ports:
-          - containerPort: 3000
+        - image: registry.digitalocean.com/wallfair/frontend_playmoney
+          imagePullPolicy: Always
+          resources:
+            limits:
+              cpu: 1000m
+            requests:
+              cpu: 400m
+              memory: 1024Mi
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 3000
+            initialDelaySeconds: 2
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 3000
+            initialDelaySeconds: 2
+            periodSeconds: 3
+          name: frontend
+          envFrom:
+            - configMapRef:
+                name: frontend-config
+            - configMapRef:
+                name: frontend-app-secrets
+          ports:
+            - containerPort: 3000
 
 ---
-
 apiVersion: autoscaling/v1
 kind: HorizontalPodAutoscaler
 metadata:
-  namespace: staging 
+  namespace: staging
   name: frontend
 spec:
   maxReplicas: 10
@@ -60,9 +59,7 @@ spec:
     name: frontend
   targetCPUUtilizationPercentage: 50
 
-
 ---
-
 apiVersion: v1
 kind: Service
 metadata:
