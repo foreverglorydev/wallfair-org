@@ -8,7 +8,5 @@ spec:
       containers:
         - name: frontend
           envFrom:
-          - configMapRef:
-              name: frontend-app-secrets
-          - configMapRef:
-              name: frontend-production-values
+            - configMapRef:
+                name: frontend-app-secrets
