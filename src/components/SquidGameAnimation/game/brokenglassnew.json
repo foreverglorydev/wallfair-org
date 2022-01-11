@@ -1,0 +1,95 @@
+{"frames": {
+
+"glass_anim_1.png":
+{
+	"frame": {"x":835,"y":1,"w":137,"h":150},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":3,"y":3,"w":137,"h":150},
+	"sourceSize": {"w":150,"h":162}
+},
+"glass_anim_2.png":
+{
+	"frame": {"x":140,"y":1,"w":137,"h":151},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":3,"y":3,"w":137,"h":151},
+	"sourceSize": {"w":150,"h":162}
+},
+"glass_anim_3.png":
+{
+	"frame": {"x":279,"y":1,"w":137,"h":151},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":3,"y":3,"w":137,"h":151},
+	"sourceSize": {"w":150,"h":162}
+},
+"glass_anim_4.png":
+{
+	"frame": {"x":279,"y":1,"w":137,"h":151},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":3,"y":3,"w":137,"h":151},
+	"sourceSize": {"w":150,"h":162}
+},
+"glass_anim_5.png":
+{
+	"frame": {"x":418,"y":1,"w":137,"h":151},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":3,"y":3,"w":137,"h":151},
+	"sourceSize": {"w":150,"h":162}
+},
+"glass_anim_6.png":
+{
+	"frame": {"x":418,"y":1,"w":137,"h":151},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":3,"y":3,"w":137,"h":151},
+	"sourceSize": {"w":150,"h":162}
+},
+"glass_anim_7.png":
+{
+	"frame": {"x":557,"y":1,"w":137,"h":151},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":3,"y":3,"w":137,"h":151},
+	"sourceSize": {"w":150,"h":162}
+},
+"glass_anim_8.png":
+{
+	"frame": {"x":557,"y":1,"w":137,"h":151},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":3,"y":3,"w":137,"h":151},
+	"sourceSize": {"w":150,"h":162}
+},
+"glass_anim_9.png":
+{
+	"frame": {"x":696,"y":1,"w":137,"h":151},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":3,"y":3,"w":137,"h":151},
+	"sourceSize": {"w":150,"h":162}
+},
+"glass_anim_10.png":
+{
+	"frame": {"x":1,"y":1,"w":137,"h":151},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":3,"y":3,"w":137,"h":151},
+	"sourceSize": {"w":150,"h":162}
+}},
+"animations": {
+	"glass_anim": ["glass_anim_1.png","glass_anim_2.png","glass_anim_3.png","glass_anim_4.png","glass_anim_5.png","glass_anim_6.png","glass_anim_7.png","glass_anim_8.png","glass_anim_9.png","glass_anim_10.png"]
+},
+"meta": {
+	"app": "https://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "brokenglassnew.png",
+	"format": "RGBA8888",
+	"size": {"w":973,"h":153},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:88ad65765605b6a60faa036bc3b4ad96:ac98da2a2a7a11bb90c37189a75c0a89:e9fe09b98f49dbfb13bc550b9a61d896$"
+}
+}

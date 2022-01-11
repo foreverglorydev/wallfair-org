@@ -2355,6 +2355,13 @@ export const NEW_SLOTS_GAMES = [
     subtitle: '',
     active: true,
     linkTo: '/games/alpacannon',
+  },
+  {
+    background: gameCardElon,
+    title: `Squid game`,
+    subtitle: '',
+    active: true,
+    linkTo: '/games/squid-game',
   }
   /*,
   {
@@ -2512,7 +2519,14 @@ export const GAMES = {
         name: 'Alpacannon',
         url: process.env.REACT_APP_CASINO_GAMES_BACKEND_URL,
         verificationTool: 'https://jsfiddle.net/alpacasino/tga04Lpr/show'
-    }
+    },
+    squidGame: {
+      id: '61dd8e6bead745a5c2d84d06',
+      slug: 'squid-game',
+      name: `Squid game`,
+      url: process.env.REACT_APP_CASINO_GAMES_BACKEND_URL,
+      verificationTool: 'https://jsfiddle.net/alpacasino/w32sLogm/show'
+    },
 };
 
 export const TOP_GAMES = [

@@ -52,11 +52,12 @@ export default {
   resetPassword: '/reset-password',
   user: '/user/:userId?',
   minesGame: '/games/mines',
+  squidGame: '/games/squid-game',
   provablyfair: '/provablyfair',
   terms: '/termsandconditions',
   responsibleGambling: '/responsiblegambling',
   kyc: '/kycpolicy',
   privacy: '/privacypolicy',
   imprint: '/imprint',
-  oauth: '/oauth/:provider',
+  oauth: '/oauth/:provider'
 };

@@ -22,6 +22,7 @@ import PlinkoGame from './screens/PlinkoGame';
 import AlpacannonGame from './screens/AlpacannonGame';
 import RouletteGame from './screens/RouletteGame';
 import MinesGame from './screens/MinesGame';
+import SquidGame from './screens/SquidGame';
 import { PersistGate } from 'redux-persist/integration/react';
 import Games from './screens/Games';
 import UserWallet from './screens/UserWallet'
@@ -69,7 +70,7 @@ const App = () => {
   if (isLoading) {
     return null;
   }
-  
+
   return (
     <div id={'main-scroll-container'}>
       <Provider store={store}>
@@ -102,6 +103,7 @@ const App = () => {
                 path={Routes.rouletteGame}
                 component={RouletteGame}
               />
+              <Route exact path={Routes.squidGame} component={SquidGame} />
               <Route exact path={Routes.minesGame} component={MinesGame} />
               <Route exact path={Routes.plinkoGame} component={PlinkoGame} />
               <Route exact path={Routes.alpacannonGame} component={AlpacannonGame} />
