@@ -33,17 +33,15 @@ const initGame = (canvas, options) => {
   APP.app = new PIXI.Application({
     width: options.width,
     height: options.height,
-    // resolution: 2,
+    resolution: 2,
     view: canvas,
-    backgroundColor: 0x12132e,
-    resizeTo: canvas.parentElement,
-    resolution: 1,
     antialias: true,
   });
 
   // document.body.appendChild(APP.app.view);
 
   APP.preloader = new PIXI.Container()
+  APP.preloader.name = "PRELOADER";
   APP.app.stage.addChild(APP.preloader)
   APP.progressBarContainer = new PIXI.Container();
   APP.preloader.addChild(APP.progressBarContainer)
@@ -108,10 +106,15 @@ function updateLoadingProgress(data) {
 // SETUP GAME AFTER 1ST LOAD
 function setup() {
   APP.app.stage.removeChild(APP.preloader)
+  //return;
   APP.countdown = setInterval(update, 1000)
   APP.container = new PIXI.Container();
   APP.container.name = "GAME";
   APP.app.stage.addChild(APP.container);
+  APP.container.x = 284;
+  APP.container.y = 225;
+  APP.container.scale.x = 1.13;
+  APP.container.scale.y = 0.93;
   APP.bgimage = new PIXI.Sprite(PIXI.Texture.from(bgn));
   APP.bgimage.x = -251;
   APP.bgimage.y = -243;
@@ -123,12 +126,6 @@ function setup() {
   APP.text.x = -68;
   // Create a new texture
   APP.alpacaImg = new PIXI.Sprite(PIXI.Texture.from(alpaca));
-  // Move container to the center
-  APP.container.x = 650;
-  APP.container.y = 470;
-  // Center glass sprite in local APP.container coordinates
-  APP.container.pivot.x = APP.container.width / 2;
-  APP.container.pivot.y = APP.container.height / 2;
   let sheet = APP.loader.resources[brokenglass].spritesheet;
   APP.cells = [];
   for (let z = 0; z < 7; z++) {

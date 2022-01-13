@@ -8,7 +8,7 @@ import * as Sound from '@pixi/sound';
 
 //game deps
 import {initGame} from './game/container';
-
+window.PIXI = PIXI;
 
 PIXI.utils.skipHello();
 
