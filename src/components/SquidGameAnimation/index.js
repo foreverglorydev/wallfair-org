@@ -11,7 +11,7 @@ import AnimationController from "../SquidGameAnimation/AnimationController";
 import {AlertActions} from "../../store/actions/alert";
 import { selectUser } from '../../store/selectors/authentication';
 
-const MinesGameAnimation = ({
+const SquidGameAnimation = ({
   connected,
   muteButtonClick,
   setMines,
@@ -223,50 +223,57 @@ const MinesGameAnimation = ({
   }
 
   useEffect(() => {
-    // const configBase = _.cloneDeep(gameConfigBase);
-    // configBase.isLoggedIn = user.isLoggedIn;
-    //
-    // if(user.isLoggedIn) {
-    //   gameApi.getCurrentMines()
-    //     .then(response => {
-    //       const {data} = response;
-    //       const {game_payload} = data;
-    //
-    //       if(data?._inProgress) {
-    //         setGameInProgress(true);
-    //         setBet((bet)=>{return{
-    //           ...bet,
-    //           pending: false,
-    //           done: true
-    //         }});
-    //         _.set(configBase, 'initialReveal', getTranslatedReveal(game_payload.clientBoard));
-    //
-    //         const tries = data._tries;
-    //         setOutcomes(data?._outcomes);
-    //         setCurrentStep(tries);
-    //       } else {
-    //         setGameInProgress(false);
-    //         setBet((bet)=>{return{
-    //           ...bet,
-    //           pending: false,
-    //           done: false
-    //         }});
-    //       }
-    //
-    //       setGameConfig({
-    //         ...configBase
-    //       })
-    //     }).catch(error => {
-    //     dispatch(AlertActions.showError(error.message));
-    //   });
-    // } else {
-    //   //init demo rounds / show grid
-    //   configBase.setGridManually = false;
-    //
-    //   setGameConfig({
-    //     ...configBase
-    //   })
-    // }
+    const configBase = _.cloneDeep({
+      testCfg: 'test'
+    });
+    configBase.isLoggedIn = user.isLoggedIn;
+
+    if(user.isLoggedIn) {
+
+      setGameConfig({
+        ...configBase
+      })
+
+      // gameApi.getCurrentMines()
+      //   .then(response => {
+      //     const {data} = response;
+      //     const {game_payload} = data;
+      //
+      //     if(data?._inProgress) {
+      //       setGameInProgress(true);
+      //       setBet((bet)=>{return{
+      //         ...bet,
+      //         pending: false,
+      //         done: true
+      //       }});
+      //       _.set(configBase, 'initialReveal', getTranslatedReveal(game_payload.clientBoard));
+      //
+      //       const tries = data._tries;
+      //       setOutcomes(data?._outcomes);
+      //       setCurrentStep(tries);
+      //     } else {
+      //       setGameInProgress(false);
+      //       setBet((bet)=>{return{
+      //         ...bet,
+      //         pending: false,
+      //         done: false
+      //       }});
+      //     }
+      //
+      //     setGameConfig({
+      //       ...configBase
+      //     })
+      //   }).catch(error => {
+      //   dispatch(AlertActions.showError(error.message));
+      // });
+    } else {
+      // //init demo rounds / show grid
+      // configBase.setGridManually = false;
+      //
+      // setGameConfig({
+      //   ...configBase
+      // })
+    }
 
 
   }, [user.isLoggedIn])
@@ -274,33 +281,26 @@ const MinesGameAnimation = ({
   useEffect(()=> {
     let audioInstance = null;
 
+    console.log('gameConfig', gameConfig);
+
     if(!_.isEmpty(gameConfig)) {
       //avoid attaching multiple click events, when re-init
       // if(gameInstance) {
       //   gameInstance.game.controller.removeListeners();
       // }
-      // const applicationConfig = {
-      //   width: backgroundRef.current.clientWidth,
-      //   height: backgroundRef.current.clientHeight,
-      //   "antialias": false,
-      //   "backgroundColor": 0xffffff,
-      //   view: canvasRef.current
-      // }
+      const applicationConfig = {
+        width: backgroundRef.current.clientWidth,
+        height: backgroundRef.current.clientHeight,
+        "antialias": false,
+        "backgroundColor": 0xffffff,
+        view: canvasRef.current
+      }
 
-      // const { audio, that } = AnimationController.init(canvasRef.current, {
-      //   width: applicationConfig.width,
-      //   height: applicationConfig.height,
-      //   gameConfig,
-      //   layoutManagerConfig,
-      //   applicationConfig,
-      //   resourcesConfig,
-      //   gameViewConfig,
-      //   amount,
-      //   cellClickHandler,
-      //   checkSelectedCell,
-      //   loseDemo,
-      //   checkDemo
-      // });
+      const { audio, that } = AnimationController.init(canvasRef.current, {
+        width: applicationConfig.width,
+        height: applicationConfig.height,
+        applicationConfig
+      });
       // setGameInstance(that);
       setAudio(audio);
       audioInstance = audio;
@@ -349,11 +349,11 @@ const MinesGameAnimation = ({
       </div>
 
       <div>
-        {(!bet.done && !bet.autobet) && <div className={classNames(styles.notBetYetScreen)}>
-          <div className={classNames(styles.notBetYetText)}>Place a bet in order to start the game!</div>
-        </div>}
-        <canvas id="mines-canvas" className={classNames(styles.canvas, {
-          [styles.notClickable]: !bet.done || bet.pending
+        {/*{(!bet.done && !bet.autobet) && <div className={classNames(styles.notBetYetScreen)}>*/}
+        {/*  <div className={classNames(styles.notBetYetText)}>Place a bet in order to start the game!</div>*/}
+        {/*</div>}*/}
+        <canvas id="squid-canvas" className={classNames(styles.canvas, {
+          [styles.notClickable]: false
         })} ref={canvasRef}></canvas>
       </div>
 
@@ -379,4 +379,4 @@ const mapDispatchToProps = dispatch => {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(React.memo(MinesGameAnimation));
+)(React.memo(SquidGameAnimation));

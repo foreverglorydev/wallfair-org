@@ -7,8 +7,12 @@ import '@pixi/sound';
 import * as Sound from '@pixi/sound';
 
 //game deps
+import {initGame} from './game/container';
+
 
 PIXI.utils.skipHello();
+
+
 
 export class AudioController {
   constructor(bgmIndex = 0) {
@@ -151,11 +155,11 @@ export class AudioController {
 
 class AnimationController {
   init(canvas, options) {
-    const {gameConfig, layoutManagerConfig, applicationConfig, resourcesConfig, gameViewConfig} = options;
-    // this.game = new Game();
+    const {applicationConfig, width, height} = options;
+    this.game = initGame(canvas, options);
     this.canvas = canvas;
-    this.canvas.width = options.width;
-    this.canvas.height = options.height;
+    this.canvas.width = width;
+    this.canvas.height = height;
     this.audio = new AudioController(0);
     this.audio.startBgm();
 
