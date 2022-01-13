@@ -227,7 +227,6 @@ const ActivitiesTracker = ({
           <div className={styles.activitiesSwiperButtonPrev}></div>
         </div>
         <Swiper
-          navigation={true}
           slidesPerView={8}
           spaceBetween={0}
           pagination={{

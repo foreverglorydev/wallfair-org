@@ -103,11 +103,11 @@ export default class Model {
   /** To check whether game has been won
    * @return {Boolean} */
   get isGameWon() {
-    return
-    const mines = this.allMines.flat();
-    const cellsLeft = this.cellsToRevealed.flat();
-    console.log(mines.length+"--"+cellsLeft.length);
-    return (cellsLeft.length - 30 ) === 0;
+    return true;
+    // const mines = this.allMines.flat();
+    // const cellsLeft = this.cellsToRevealed.flat();
+    // console.log(mines.length+"--"+cellsLeft.length);
+    // return (cellsLeft.length - 30 ) === 0;
   }
 
   /** To clean model before destroying */

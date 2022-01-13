@@ -102,7 +102,6 @@ const TokenSlider = ({
 
   return (
     <TSlider
-      valueLabelDisplay="auto"
       aria-label="pretto slider"
       min={1}
       max={maxValue}

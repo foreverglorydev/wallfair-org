@@ -212,7 +212,7 @@ const UserWallet = ({
               <div className={styles.currentBalanceCard}>
                 <p className={styles.currentbalanceHeading}>Current balance:</p>
                 <p className={classNames(styles.currentbalanceWFair, fontStyling)}>
-                  <span>{balanceFixed}</span><span>{currency}</span> 
+                  <span>{balanceFixed}</span><span>{currency}</span>
                 </p>
                 <Button
                   className={classNames(styles.button, styles.buttonDeposit)}
@@ -228,7 +228,6 @@ const UserWallet = ({
             className={styles.balanceCard}
             item
             justifyContent="flex-start"
-            item
             lg={6}
             md={6}
             xs={12}
@@ -241,10 +240,10 @@ const UserWallet = ({
                 </p>
               </div>
 
-              {/* 
+              {/*
               <div className={styles.buttonContainer}>
                 <p className={styles.label}>In case of any questions please <span onClick={() => {window.fcWidget.open()}}>click here</span> to contact our Support.</p>
-              </div> 
+              </div>
               */}
 
               {/* <div className={styles.buttonContainer}>
@@ -255,12 +254,12 @@ const UserWallet = ({
                 >
                   Request test tokens
                 </Button>
-              </div> 
+              </div>
               */}
             </div>
           </Grid>
         </Grid>
-        
+
         { depositCount != null && depositCount === 0 &&
           <Grid
             className={styles.balanceCard}
@@ -275,7 +274,7 @@ const UserWallet = ({
             </div>
           </Grid>
         }
-        
+
         {!user.emailConfirmed &&
           <Grid
             className={styles.balanceCard}
@@ -338,7 +337,7 @@ const UserWallet = ({
             </div>
           </Grid>
         }
-          
+
         <Grid container alignContent="center" spacing={1}>
           <Grid
             className={styles.balanceCard}
@@ -384,7 +383,7 @@ Your WFAIR is automatically credited in your account.
                   >
                     Deposit WFAIR
                   </Button>
-                  {/* {!user.emailConfirmed ? 
+                  {/* {!user.emailConfirmed ?
                     <>
                       <p className={styles.label}>You must confirm your email to be able to withdraw your tokens.</p>
 
@@ -397,7 +396,7 @@ Your WFAIR is automatically credited in your account.
                         {!emailSent ? 'Resend Email' : 'Email sent'}
                       </Button>
                     </>
-                    : null 
+                    : null
                   } */}
                 </div>
               </div>
@@ -408,7 +407,6 @@ Your WFAIR is automatically credited in your account.
             className={styles.balanceCard}
             item
             justifyContent="flex-start"
-            item
             lg={4}
             md={4}
             xs={12}
@@ -434,7 +432,7 @@ Your WFAIR is automatically credited in your account.
                   >
                     Withdraw
                   </Button>
-                
+
                   {/* {
                   showStartButton() && (
                     <div className={styles.buttonContainer}>
