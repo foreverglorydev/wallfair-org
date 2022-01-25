@@ -178,32 +178,30 @@ function EventsContent({
           />
         </div>
       </section>
-      <AdminOnly>
-        <section className={styles.main}>
-          <div
-            className={styles.newEventLink}
-            onClick={() => {
-              dispatch(
-                PopupActions.show({
-                  popupType: PopupTheme.newEvent,
-                  options: {
-                    eventType,
-                  },
-                })
-              );
-            }}
-          >
-            <Icon
-              className={styles.newEventIcon}
-              iconType={IconType.addYellow}
-              iconTheme={IconTheme.white}
-              height={25}
-              width={25}
-            />
-            <span>New Event</span>
-          </div>
-        </section>
-      </AdminOnly>
+      <section className={styles.main}>
+        <div
+          className={styles.newEventLink}
+          onClick={() => {
+            dispatch(
+              PopupActions.show({
+                popupType: PopupTheme.newEvent,
+                options: {
+                  eventType,
+                },
+              })
+            );
+          }}
+        >
+          <Icon
+            className={styles.newEventIcon}
+            iconType={IconType.addYellow}
+            iconTheme={IconTheme.white}
+            height={25}
+            width={25}
+          />
+          <span>New Event</span>
+        </div>
+      </section>
       <section
         className={classNames([
           styles.main,

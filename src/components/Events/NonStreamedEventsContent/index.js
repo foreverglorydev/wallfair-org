@@ -151,21 +151,19 @@ const NonStreamedEventsContent = ({
         <StatusTabs onSelect={setStatus} />
 
         <div className={styles.nonStreamed}>
-          <AdminOnly>
-            <div
-              className={styles.newEventLink}
-              onClick={() => showPopup(PopupTheme.newEvent, { eventType })}
-            >
-              <Icon
-                className={styles.newEventIcon}
-                iconType={IconType.addYellow}
-                iconTheme={IconTheme.white}
-                height={25}
-                width={25}
-              />
-              <span>New Event</span>
-            </div>
-          </AdminOnly>
+          <div
+            className={styles.newEventLink}
+            onClick={() => showPopup(PopupTheme.newEvent, { eventType })}
+          >
+            <Icon
+              className={styles.newEventIcon}
+              iconType={IconType.addYellow}
+              iconTheme={IconTheme.white}
+              height={25}
+              width={25}
+            />
+            <span>New Event</span>
+          </div>
 
           {filteredBets
             .filter(item => item.eventSlug && item.slug)
