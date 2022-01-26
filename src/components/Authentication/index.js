@@ -121,9 +121,8 @@ const Authentication = ({
 
   const validateInput = options => {
     let error;
-    const notAllowed = NOT_ALLOWED_COUNTRIES.findIndex(
-      c => c.value === country?.value || c.value === country
-    );
+    const notAllowed = NOT_ALLOWED_COUNTRIES.includes(country);
+
     if (isSignUp() && !forgotPassword && !legalAuthorizationAgreed) {
       error = 'Confirm that you agree with Terms and Conditions';
       fooRef = acceptRef;
@@ -479,7 +478,6 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     signUp: payload => {
-      console.log('payload', payload);
       dispatch(AuthenticationActions.signUp(payload));
     },
     login: payload => {
