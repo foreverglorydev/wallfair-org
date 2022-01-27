@@ -91,7 +91,7 @@ const UserWallet = ({
   };
 
   const [activityTab, setActivityTab] = useState(
-    showNewFeatures ? { name: 'FIAT DEPOSITS', index: 0 } : { name: 'WFAIR DEPOSITS', index: 1 }
+    { name: 'FIAT DEPOSITS', index: 0 }
   );
 
   const [activityTabOptions, setActivityTabOptions] = useState([
@@ -156,13 +156,7 @@ const UserWallet = ({
         <Grid item xs={12}>
           <div className={styles.activityWrapper}>
             <TabOptions
-              options={
-                activityTabOptions
-                  ? activityTabOptions.filter(
-                      ({ name }) => ((name !== 'FIAT DEPOSITS') || (name === 'FIAT DEPOSITS' && showNewFeatures))
-                    )
-                  : []
-              }
+              options={activityTabOptions}
               className={styles.tabLayout}
             >
               {(option) => {
