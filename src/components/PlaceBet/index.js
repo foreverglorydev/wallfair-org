@@ -29,7 +29,6 @@ import InfoBox from 'components/InfoBox';
 import IconType from '../Icon/IconType';
 import AuthenticationType from 'components/Authentication/AuthenticationType';
 import Timer from '../RosiGameAnimation/Timer';
-import { TOKEN_NAME } from 'constants/Token';
 import { calcCrashFactorFromElapsedTime } from '../RosiGameAnimation/canvas/utils';
 import {
   trackElonChangeAutoCashout,
@@ -43,6 +42,7 @@ import {
 } from '../../config/gtm';
 import { useHistory, useParams } from 'react-router';
 import { GAMES } from 'constants/Games';
+import { GAMES_CURRENCY_DEFAULT_BET } from '../../constants/Currency';
 import Button from 'components/Button';
 import ButtonTheme from 'components/Button/ButtonTheme';
 import Routes from 'constants/Routes';
@@ -53,7 +53,8 @@ const PlaceBet = ({ connected, onBet, onCashout, onCancel }) => {
 
   const user = useSelector(selectUser);
   const userBalance = parseInt(user?.balance || 0, 10);
-  const sliderMinAmount = 50;
+  const gamesCurrency = user.gamesCurrency;
+  const sliderMinAmount = GAMES_CURRENCY_DEFAULT_BET;
   // const sliderMaxAmount = Math.min(500, userBalance);
   const isGameRunning = useSelector(selectHasStarted);
   const gameStartedTimeStamp = useSelector(selectTimeStarted);
@@ -191,7 +192,7 @@ const PlaceBet = ({ connected, onBet, onCashout, onCancel }) => {
             (autobet.win ? 1 + autobet.wincrease : 1 + autobet.lincrease)
         ),
       };
-      console.log('newautobet', newautobet);
+
       if (
         newautobet.profit > newautobet.accumulated &&
         newautobet.loss > -newautobet.accumulated
@@ -219,6 +220,7 @@ const PlaceBet = ({ connected, onBet, onCashout, onCancel }) => {
       lincrease: lossbutton ? 0 : Number(lincrease) / 100,
       multiplier: crashFactor,
       accumulated: autobet.accumulated,
+      gamesCurrency
     };
 
     if (slug === GAMES['elonGame'].slug) {
@@ -239,6 +241,7 @@ const PlaceBet = ({ connected, onBet, onCashout, onCancel }) => {
     const payload = {
       amount,
       crashFactor: 999,
+      gamesCurrency
     };
     const result = onBet(payload, crashFactor);
   };
@@ -254,6 +257,7 @@ const PlaceBet = ({ connected, onBet, onCashout, onCancel }) => {
       wincrease: winbutton ? 0 : Number(wincrease) / 100,
       lincrease: lossbutton ? 0 : Number(lincrease) / 100,
       crashFactor: 999,
+      gamesCurrency
     };
 
     if (slug === GAMES['elonGame'].slug) {
@@ -513,13 +517,14 @@ const PlaceBet = ({ connected, onBet, onCashout, onCancel }) => {
             showIncome
             pause={!isGameRunning}
             startTimeMs={gameStartedTime}
+            currency={gamesCurrency}
           />
         </div>
       );
     } else {
       return (
         <div className={styles.profitPlaceholder} data-wg-notranslate>
-          <span>+0 {TOKEN_NAME}</span>
+          <span>+0 {gamesCurrency}</span>
         </div>
       );
     }
@@ -625,7 +630,7 @@ const PlaceBet = ({ connected, onBet, onCashout, onCancel }) => {
               // LOGGED IN + MANUAL SELECTOR
               <TokenNumberInput
                 value={amount}
-                currency={TOKEN_NAME}
+                currency={gamesCurrency}
                 setValue={onTokenNumberChange}
                 minValue={0}
                 decimalPlaces={0}
@@ -654,7 +659,7 @@ const PlaceBet = ({ connected, onBet, onCashout, onCancel }) => {
                   max={'10000'}
                 />
                 <span className={styles.eventTokenLabel}>
-                  <span>{TOKEN_NAME}</span>
+                  <span>{gamesCurrency}</span>
                 </span>
                 <div className={styles.buttonWrapper}>
                   <span
@@ -715,7 +720,7 @@ const PlaceBet = ({ connected, onBet, onCashout, onCancel }) => {
               // LOGGED IN + AUTOPLAY SELECTOR
               <TokenNumberInput
                 value={amount}
-                currency={TOKEN_NAME}
+                currency={gamesCurrency}
                 setValue={onTokenNumberChange}
                 minValue={0}
                 decimalPlaces={0}
@@ -744,7 +749,7 @@ const PlaceBet = ({ connected, onBet, onCashout, onCancel }) => {
                   max={'10000'}
                 />
                 <span className={styles.eventTokenLabel}>
-                  <span>{TOKEN_NAME}</span>
+                  <span>{gamesCurrency}</span>
                 </span>
                 <div className={styles.buttonWrapper}>
                   <span
@@ -815,7 +820,7 @@ const PlaceBet = ({ connected, onBet, onCashout, onCancel }) => {
                   max={'100'}
                 />
                 <span className={styles.eventTokenLabel}>
-                  <span>{TOKEN_NAME}</span>
+                  <span>{gamesCurrency}</span>
                 </span>
               </div>
             </div>
@@ -836,7 +841,7 @@ const PlaceBet = ({ connected, onBet, onCashout, onCancel }) => {
                 max={'100'}
               />
               <span className={styles.eventTokenLabel}>
-                <span>{TOKEN_NAME}</span>
+                <span>{gamesCurrency}</span>
               </span>
             </div>
             <label className={classNames(styles.label)}>On Win</label>
@@ -965,14 +970,14 @@ const PlaceBet = ({ connected, onBet, onCashout, onCancel }) => {
               className={autobet.accumulated > 0 ? styles.reward : styles.lost}
               data-wg-notranslate
             >
-              {Math.floor(autobet.accumulated)} {TOKEN_NAME}
+              {Math.floor(autobet.accumulated)} {gamesCurrency}
             </span>
             accumulated
           </div>
           <div className={styles.spinsleft}>
             Current bet:
             <span className={styles.neutral} data-wg-notranslate>
-              {Math.floor(autobet.amount)} {TOKEN_NAME}
+              {Math.floor(autobet.amount)} {gamesCurrency}
             </span>
           </div>
         </>

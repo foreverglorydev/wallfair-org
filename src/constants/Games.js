@@ -20,8 +20,50 @@ import gameCardAlpacannon from '../data/images/house-games/card-alpacannon.png';
 
 //
 
-export const SOFTSWISS_GAMES = 
+const softswissAcceptanceTests = [
+  {
+    "title": "Acceptance test 1",
+    "identifier": "acceptance:test",
+    "identifier2": "acceptance:test",
+    "provider": "acceptance",
+    "producer": "softswiss",
+    "category": "slots",
+    "has_freespins": true,
+    "feature_group": "basic",
+    "devices": [
+      "desktop",
+      "mobile"
+    ],
+    "restrictions": {
+      "default": {
+        "blacklist": []
+      }
+    }
+  },
+  {
+    "title": "Acceptance test 2",
+    "identifier": "acceptance:secondary_test",
+    "identifier2": "acceptance:secondary_test",
+    "provider": "acceptance",
+    "producer": "softswiss",
+    "category": "slots",
+    "has_freespins": true,
+    "feature_group": "basic",
+    "devices": [
+      "desktop",
+      "mobile"
+    ],
+    "restrictions": {
+      "default": {
+        "blacklist": []
+      }
+    }
+  }
+];
+
+export const SOFTSWISS_GAMES =
     [
+      ...softswissAcceptanceTests,
         {
             "title": "All Lucky Clovers",
             "identifier": "softswiss:AllLuckyClover",
@@ -46,102 +88,102 @@ export const SOFTSWISS_GAMES =
                 }
             }
         },
-        {
-            "title": "All Lucky Clovers 100",
-            "identifier": "softswiss:AllLuckyClover100",
-            "identifier2": "AllLuckyClover100",
-            "provider": "softswiss",
-            "producer": "bgaming",
-            "category": "slots",
-            "has_freespins": true,
-            "feature_group": "new",
-            "devices": [
-                "desktop",
-                "mobile"
-            ],
-            "lines": 100,
-            "payout": 97,
-            "volatility_rating": "high",
-            "hd": true,
-            "multiplier": 3000,
-            "restrictions": {
-                "default": {
-                    "blacklist": []
-                }
-            }
-        },
-        {
-            "title": "All Lucky Clovers 20",
-            "identifier": "softswiss:AllLuckyClover20",
-            "identifier2": "AllLuckyClover20",
-            "provider": "softswiss",
-            "producer": "bgaming",
-            "category": "slots",
-            "has_freespins": true,
-            "feature_group": "new",
-            "devices": [
-                "desktop",
-                "mobile"
-            ],
-            "lines": 20,
-            "payout": 97,
-            "volatility_rating": "high",
-            "hd": true,
-            "multiplier": 3000,
-            "restrictions": {
-                "default": {
-                    "blacklist": []
-                }
-            }
-        },
-        {
-            "title": "All Lucky Clovers 40",
-            "identifier": "softswiss:AllLuckyClover40",
-            "identifier2": "AllLuckyClover40",
-            "provider": "softswiss",
-            "producer": "bgaming",
-            "category": "slots",
-            "has_freespins": true,
-            "feature_group": "new",
-            "devices": [
-                "desktop",
-                "mobile"
-            ],
-            "lines": 40,
-            "payout": 97,
-            "volatility_rating": "high",
-            "hd": true,
-            "multiplier": 3000,
-            "restrictions": {
-                "default": {
-                    "blacklist": []
-                }
-            }
-        },
-        {
-            "title": "All Lucky Clovers 5",
-            "identifier": "softswiss:AllLuckyClover5",
-            "identifier2": "AllLuckyClover5",
-            "provider": "softswiss",
-            "producer": "bgaming",
-            "category": "slots",
-            "has_freespins": true,
-            "feature_group": "new",
-            "devices": [
-                "desktop",
-                "mobile"
-            ],
-            "lines": 5,
-            "payout": 97,
-            "volatility_rating": "medium",
-            "hd": true,
-            "multiplier": 3000,
-            "restrictions": {
-                "default": {
-                    "blacklist": []
-                }
-            }
-        },
+        // {
+        //     "title": "All Lucky Clovers 100",
+        //     "identifier": "softswiss:AllLuckyClover100",
+        //     "identifier2": "AllLuckyClover100",
+        //     "provider": "softswiss",
+        //     "producer": "bgaming",
+        //     "category": "slots",
+        //     "has_freespins": true,
+        //     "feature_group": "new",
+        //     "devices": [
+        //         "desktop",
+        //         "mobile"
+        //     ],
+        //     "lines": 100,
+        //     "payout": 97,
+        //     "volatility_rating": "high",
+        //     "hd": true,
+        //     "multiplier": 3000,
+        //     "restrictions": {
+        //         "default": {
+        //             "blacklist": []
+        //         }
+        //     }
+        // },
+        // {
+        //     "title": "All Lucky Clovers 20",
+        //     "identifier": "softswiss:AllLuckyClover20",
+        //     "identifier2": "AllLuckyClover20",
+        //     "provider": "softswiss",
+        //     "producer": "bgaming",
+        //     "category": "slots",
+        //     "has_freespins": true,
+        //     "feature_group": "new",
+        //     "devices": [
+        //         "desktop",
+        //         "mobile"
+        //     ],
+        //     "lines": 20,
+        //     "payout": 97,
+        //     "volatility_rating": "high",
+        //     "hd": true,
+        //     "multiplier": 3000,
+        //     "restrictions": {
+        //         "default": {
+        //             "blacklist": []
+        //         }
+        //     }
+        // },
+        // {
+        //     "title": "All Lucky Clovers 40",
+        //     "identifier": "softswiss:AllLuckyClover40",
+        //     "identifier2": "AllLuckyClover40",
+        //     "provider": "softswiss",
+        //     "producer": "bgaming",
+        //     "category": "slots",
+        //     "has_freespins": true,
+        //     "feature_group": "new",
+        //     "devices": [
+        //         "desktop",
+        //         "mobile"
+        //     ],
+        //     "lines": 40,
+        //     "payout": 97,
+        //     "volatility_rating": "high",
+        //     "hd": true,
+        //     "multiplier": 3000,
+        //     "restrictions": {
+        //         "default": {
+        //             "blacklist": []
+        //         }
+        //     }
+        // },
+        // {
+        //     "title": "All Lucky Clovers 5",
+        //     "identifier": "softswiss:AllLuckyClover5",
+        //     "identifier2": "AllLuckyClover5",
+        //     "provider": "softswiss",
+        //     "producer": "bgaming",
+        //     "category": "slots",
+        //     "has_freespins": true,
+        //     "feature_group": "new",
+        //     "devices": [
+        //         "desktop",
+        //         "mobile"
+        //     ],
+        //     "lines": 5,
+        //     "payout": 97,
+        //     "volatility_rating": "medium",
+        //     "hd": true,
+        //     "multiplier": 3000,
+        //     "restrictions": {
+        //         "default": {
+        //             "blacklist": []
+        //         }
+        //     }
+        // },
         {
             "title": "Aloha King Elvis",
             "identifier": "softswiss:AlohaKingElvis",
@@ -1834,7 +1876,7 @@ export const SOFTSWISS_GAMES =
             }
         }
     ]
- 
+
 export const EVOPLAY_GAMES = {
     "556": {
         "name": "Egypt Gods",
