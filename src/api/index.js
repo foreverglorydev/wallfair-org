@@ -66,7 +66,7 @@ const setToken = token => {
   EventsServiceApi.defaults.headers.common['Authorization'] = authentication;
 };
 
-const sendSms = (phone) => {
+const sendSms = phone => {
   return Api.post(ApiUrls.API_AUTHENTICATION_SEND_SMS, {
     phone,
   })
@@ -245,7 +245,9 @@ const getSellOutcomes = (betId, amount) => {
 const pullOutBet = (betId, outcome) => {
   return EventsServiceApi.post(`/bets/${betId}/sell`, {
     outcome,
-  }).catch(error => {
+  })
+  .then(res => res.data)
+  .catch(error => {
     console.log('[API Error] called: pullOutBet', error);
     throw error;
   });
@@ -742,7 +744,7 @@ const openDispute = (betId, payload) => {
     });
 };
 
-const getDisputes = (betId) => {
+const getDisputes = betId => {
   return EventsServiceApi.get(`/bets/${betId}/disputes`)
     .then(res => res.data)
     .catch(err => {
@@ -753,12 +755,12 @@ const getDisputes = (betId) => {
 
 const claimTokens = () => {
   return Api.post('/api/user/tokens')
-    .then((res) => res.data)
-    .catch((e) => {
+    .then(res => res.data)
+    .catch(e => {
       console.log('[API-Error]: claimTokens ', e);
       throw e;
     });
-}
+};
 
 export {
   Api,
