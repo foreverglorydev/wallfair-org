@@ -28,6 +28,7 @@ import ButtonTheme from 'components/Button/ButtonTheme';
 import { UserActions } from 'store/actions/user';
 import { TOKEN_NAME } from 'constants/Token';
 import { selectUser } from 'store/selectors/authentication';
+import DiscordWidget from 'components/DiscordWidget';
 
 const Home = (
   authState,
@@ -78,6 +79,12 @@ const Home = (
   //     startOnboardingFlow();
   //   }
   // };
+
+  useEffect(() => {
+    if (isLoggedIn && !userState.phoneConfirmed) {
+      dispatch(OnboardingActions.addPhoneNumber());
+    }
+  }, [isLoggedIn, userState.phoneConfirmed]);
 
   useEffect(() => {
     // if (isMount) {
@@ -146,6 +153,7 @@ const Home = (
       <CustomCarousel carouselType={'landingpage'} />
       
       <div className={styles.container}>
+        <DiscordWidget />
         <EventsCarouselContainer 
           title={'🔥 Most popular Events'}
           titleLink={'Show all events'}
@@ -173,6 +181,7 @@ const mapStateToProps = state => {
     tags: state.event.tags,
     events: state.event.events,
     userId: state.authentication.userId,
+    phoneConfirmed: state.phoneConfirmed,
   };
 };
 
