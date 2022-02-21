@@ -36,7 +36,7 @@ jobs:
       - name: Set robots.txt (playmoney)
         if: github.ref == 'refs/heads/playm'
         run: |
-          cp public/robots_staging.txt public/robots.txt
+          cp public/robots_production.txt public/robots.txt
       - name: Set robots.txt (production)
         if: github.ref == 'refs/heads/production'
         run: |
