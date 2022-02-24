@@ -28,6 +28,7 @@ import BuyWFAIRWidget from 'components/BuyWFAIRWidget';
 import EventActivitiesTabs from 'components/EventActivitiesTabs';
 import { LOGGED_IN } from 'constants/AuthState';
 import { getMarketEvents } from 'api';
+import { isMobileOnly } from 'react-device-detect';
 
 const NonStreamedEventsContent = ({
   categories,
@@ -50,7 +51,7 @@ const NonStreamedEventsContent = ({
   const [status, setStatus] = useState('current');
   const [searchTerm, setSearchTerm] = useState('');
   const [page, setPage] = useState(0);
-  const [limit, setLimit] = useState(10);
+  const [limit, setLimit] = useState(isMobileOnly ? 10 : 40);
 
   // const { fetchFilteredEvents, resetDefaultParamsValues } =
   //   useMappedActions(eventType);
@@ -112,7 +113,7 @@ const NonStreamedEventsContent = ({
         limit,
         search
       ).then(res => {
-        setEvents(res);
+        setEvents(res.events);
       });
     },
     [status, page, category, searchTerm]
@@ -135,7 +136,7 @@ const NonStreamedEventsContent = ({
       limit,
       searchTerm
     ).then(res => {
-      setEvents([...events, ...res]);
+      setEvents([...events, ...res.events]);
     });
   }, [page, events, status]);
 
@@ -254,9 +255,11 @@ const NonStreamedEventsContent = ({
             ))}
         </div>
 
-        <Button onClick={loadMoreEvents} theme={ButtonTheme.secondaryButton}>
-          Load more
-        </Button>
+        <div className={styles.loadMore}>
+          <Button onClick={loadMoreEvents} theme={ButtonTheme.secondaryButton}>
+            Load more
+          </Button>
+        </div>
 
         <BuyWFAIRWidget />
 
