@@ -55,7 +55,7 @@ const BetView = ({
   // Slider is also using 2800 as max value
   const BALANCE_NOT_LOGGED = 2800;
   const { currency, balance } = useSelector(selectUser);
-  const defaultBetValue = 50;
+  const defaultBetValue = 10;
   const bet = event.bet;
   const state = _.get(bet, 'status');
   const auth = useSelector(state => state.authentication);
@@ -551,7 +551,7 @@ const BetView = ({
           {isResolved && (
             <AuthedOnly>
               <div className={styles.disputeButtonContainer}>
-                {!disputes.find(d => d.user_id === auth.userId) && !isAdmin && (
+                {!disputes.find(d => d.user_id === auth.userId) && !isAdmin && !isCreator && (
                   <ButtonSmall
                     text="Dispute"
                     butonTheme={ButtonSmallTheme.red}
@@ -628,7 +628,7 @@ const BetView = ({
               // styles.nonStreamedQuestion
             )}
           >
-            <span>{bet.market_question}</span>
+            <span className={styles.eventTitle}>{bet.market_question}</span>
             <div className={styles.betDescription}>{bet.description}</div>
           </div>
           {renderStateConditionalContent()}
