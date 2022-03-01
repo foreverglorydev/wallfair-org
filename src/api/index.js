@@ -684,7 +684,7 @@ const deleteMarketEvent = id => {
 const getMarketEvents = (category, statuses, page = null, limit, name = '', orderBy = 'created_at', order = 'DESC') => {
   // additionaly provide params for status, search by name sorting, pagination etc
   return EventsServiceApi.get(
-    `/events/market-events?category=${category}&statuses=${statuses.join(
+    `/events/market-events?categories=${category}&statuses=${statuses.join(
       ','
     )}&name=${name}&limit=${limit}&page=${page}&orderBy=${orderBy}&order=${order}`
   )
@@ -761,6 +761,15 @@ const claimTokens = () => {
       throw e;
     });
 }
+
+const uploadImage = (payload) => {
+  return Api.post('/api/user/upload-image', payload)
+    .then(res => res.data)
+    .catch(e => {
+      console.log('[API-Error]: uploadImage ', e);
+      throw e;
+    });
+};
 
 export {
   Api,
@@ -848,4 +857,5 @@ export {
   openDispute,
   getDisputes,
   claimTokens,
+  uploadImage,
 };

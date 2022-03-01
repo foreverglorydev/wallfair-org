@@ -1,5 +1,4 @@
 import _ from 'lodash';
-import ReactCanvasConfetti from 'react-canvas-confetti';
 import styles from './styles.module.scss';
 import { PopupActions } from 'store/actions/popup';
 import PopupTheme from '../Popup/PopupTheme';
@@ -9,20 +8,23 @@ import { Link, useLocation } from 'react-router-dom';
 import BetCard from 'components/BetCard';
 import ShareType from 'components/Share/ShareType';
 import { FacebookIcon, FacebookShareButton, TelegramIcon, TelegramShareButton, TwitterIcon, TwitterShareButton } from 'react-share';
-import ConfirmCongrat from '../../data/images/confirm-congrat.png';
+import ConfirmCongrat from '../../data/images/coins-popup.png';
+import ShadowAmount from '../../data/images/cashout-amount-shadow.png';
+import { TOKEN_NAME } from 'constants/Token';
+import { currencyDisplay } from 'helper/Currency';
 import { useEffect, useState } from 'react';
-import { useIsMount } from 'components/hoc/useIsMount';
 import { shortenerTinyUrl } from 'api';
+import { useIsMount } from 'components/hoc/useIsMount';
 
-const EventConfirmationView = ({ authentication, visible, hidePopup, options }) => {
+const CashoutPopupView = ({ authentication, visible, hidePopup, options }) => {
   const defaultSharing = ['facebook', 'twitter', 'discord'];
-  const { getAnimationInstance, canvasStyles } = useConfettiAnimation({
-    visible,
-  });
-
   const [shortUrl, setShortUrl] = useState('');
+  // const { getAnimationInstance, canvasStyles } = useConfettiAnimation({
+  //   visible,
+  // });
+  
+  const { multiplier, amount, game } = options;
 
-  const {event} = options;
   const location = useLocation();
   const isMounted = useIsMount();
 
@@ -31,9 +33,9 @@ const EventConfirmationView = ({ authentication, visible, hidePopup, options }) 
 
   const userId = _.get(authentication, 'userId');
 
-  let realUrl = new URL(urlOrigin + urlPath);
-  
   let isNativeShare = false;
+
+  const shareMessage = `I have won ${amount} ${currencyDisplay(TOKEN_NAME)} with a multiple of ${multiplier}x! Play ${game} now!`;
 
   useEffect(() => {
     (async () => {
@@ -50,42 +52,6 @@ const EventConfirmationView = ({ authentication, visible, hidePopup, options }) 
       }
     })();
   }, [isMounted]);
-
-  const renderBetCard = () => {
-    const bet = event?.bet;
-    const betId = _.get(event?.bet, 'id');
-    const eventSlug = _.get(event, 'slug');
-    const tags = _.get(event, 'tags');
-    const marketQuestion = _.get(bet, 'market_question');
-    const outcomes = _.get(bet, 'outcomes');
-
-    return (
-      <Link
-        key={betId}
-        to={{
-          pathname: `/trade/${eventSlug}`,
-          state: { fromLocation: location },
-        }}
-        className={styles.eventLink}
-      >
-        <BetCard
-          key={betId}
-          betId={betId}
-          title={marketQuestion}
-          organizer={''}
-          image={event?.preview_image_url}
-          eventEnd={bet?.end_date}
-          outcomes={outcomes}
-          eventCardClass={styles.eventCardHome}
-          category={event?.category ? event.category : 'all'}
-          isBookmarked={!!bet?.bookmarks?.includes(userId)}
-          tags={tags}
-          onBookmark={() => {}}
-          onBookmarkCancel={() => {}}
-        />
-      </Link>
-    );
-  };
   
   const renderShareIcon = shareIconType => {
     const iconSize = 26;
@@ -95,9 +61,9 @@ const EventConfirmationView = ({ authentication, visible, hidePopup, options }) 
       case ShareType.facebook:
         return (
           <FacebookShareButton
-            quote={''}
+            quote={`${shareMessage} #wallfair`}
             url={shortUrl}
-            tag={'wallfair'}
+            hashtag="wallfair"
             openShareDialogOnClick={isNativeShare ? false : true}
             // beforeOnClick={handleNativeShare}
           >
@@ -107,9 +73,9 @@ const EventConfirmationView = ({ authentication, visible, hidePopup, options }) 
       case ShareType.twitter:
         return (
           <TwitterShareButton
-            title={''}
+            title={shareMessage}
             url={shortUrl}
-            hashtags={['wallfair']}
+            hashtags={["wallfair"]}
             openShareDialogOnClick={isNativeShare ? false : true}
             // beforeOnClick={handleNativeShare}
           >
@@ -119,7 +85,7 @@ const EventConfirmationView = ({ authentication, visible, hidePopup, options }) 
       case ShareType.discord:
         return (
           <TelegramShareButton
-            title={''}
+            title={`${shareMessage} #wallfair`}
             url={shortUrl}
             openShareDialogOnClick={isNativeShare ? false : true}
             // beforeOnClick={handleNativeShare}
@@ -138,28 +104,37 @@ const EventConfirmationView = ({ authentication, visible, hidePopup, options }) 
     ));
   };
 
-  
   return (
-    <div className={styles.eventCreateContainer}>
+    <div className={styles.cashoutPopupContainer}>
       <span className={styles.headLine}>
-        Awesome! <br />
-        Share your new event to your <br />
-        friends
+        Congratulations! <br />
+        You have won
       </span>
 
-      <div className={styles.eventOverview}>
-        {renderBetCard()}
-        <img src={ConfirmCongrat} alt='confirm-congrat' />
+      <div className={styles.cashoutContent}>
+        <span className={styles.cashoutAmount}>
+          <img src={ShadowAmount} className={styles.shadow} alt="amount" />
+          <span className={styles.amount}>{`${amount} ${currencyDisplay(TOKEN_NAME)}`}</span>
+        </span>
+        <span className={styles.multiplier}>
+          {multiplier}x
+        </span>
+        <img className={styles.congratsConfetti} src={ConfirmCongrat} alt='confirm-congrat' />
       </div>
 
-      <div className={styles.shareButtons}>{renderShareIcons()}</div>
+      <div className={styles.shareContainer}>
+        <span>Share your success:</span>
+        <div className={styles.shareButtons}>
+          {renderShareIcons()}
+        </div>
+      </div>
       
-      <span className={styles.skipButton} onClick={hidePopup}>Skip for now</span>
+      <span className={styles.skipButton} onClick={hidePopup}>Keep playing</span>
 
-      <ReactCanvasConfetti
+      {/* <ReactCanvasConfetti
         refConfetti={getAnimationInstance}
         style={canvasStyles}
-      />
+      /> */}
     </div>
   );
 };
@@ -180,4 +155,4 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(EventConfirmationView);
+export default connect(mapStateToProps, mapDispatchToProps)(CashoutPopupView);
