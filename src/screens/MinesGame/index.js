@@ -31,9 +31,10 @@ import EventActivitiesTabs from 'components/EventActivitiesTabs'
 import {getLastCashoutsMines} from "../../api/casino-games";
 import MinesAlpaca from '../../data/images/mines/mines-alpaca.png';
 
+import {GAMES_CURRENCY_DEFAULT_BET} from '../../constants/Currency';
+
 import {trackMinesCashout} from "../../config/gtm";
 import classNames from "classnames";
-
 const outcomeMultipliers = [
   [1.03, 1.09, 1.15, 1.21, 1.28, 1.35, 1.42, 1.5, 1.58, 1.67, 1.76, 1.86, 1.96, 2.07, 2.18, 2.3, 2.43, 2.56, 2.7, 2.85, 3.01, 3.18, 3.35, 3.53],
   [1.08, 1.14, 1.2, 1.27, 1.34, 1.41, 1.49, 1.57, 1.66, 1.75, 1.85, 1.95, 2.06, 2.17, 2.29, 2.42, 2.55, 2.69, 2.84, 3, 3.17, 3.34, 3.52],
@@ -60,6 +61,7 @@ const outcomeMultipliers = [
   [12.38, 16.47],
   [24.75]
 ];
+window.PIXI = PIXI;
 
 const Game = ({
   showPopup,
@@ -93,7 +95,7 @@ const Game = ({
   });
   const [outcomes, setOutcomes] = useState([]);
   const [gameOver, setGameOver] = useState(false);
-  const [amount, setAmount] = useState(50);
+  const [amount, setAmount] = useState(GAMES_CURRENCY_DEFAULT_BET);
   const [multiplier, setMultiplier] = useState('0.00');
   const [profit, setProfit] = useState();
   const [gameInstance, setGameInstance] = useState();
@@ -185,10 +187,8 @@ const Game = ({
 
   useEffect(() => {
     if(currentStep === 0) {
-      if(currentStep === 0) {
-        setMultiplier();
-        setProfit();
-      }
+      setMultiplier();
+      setProfit();
     } else {
       setMultiplier((multi) => {
         const currentMulti = outcomes[currentStep-1];
@@ -258,10 +258,14 @@ const Game = ({
         if(!bet.autobet){
           setBet((bet)=> {return{
             ...bet,
+            profit: data.profit,
             pending: false,
             done: false
           }});
         }
+
+        setProfit(data.profit);
+
         trackMinesCashout({
           amount: data.reward,
           multiplier: data.crashFactor,
@@ -324,7 +328,7 @@ const Game = ({
       <div className={styles.container}>
         <div className={styles.content}>
           <div className={styles.headlineWrapper}>
-            <BackLink to="/games" text={GAME_NAME} />
+            <BackLink to="/" text={GAME_NAME} />
             <Share popupPosition="right" className={styles.shareButton} />
             <Icon
               className={styles.questionIcon}

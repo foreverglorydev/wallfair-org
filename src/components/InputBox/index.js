@@ -36,6 +36,7 @@ const InputBox = ({
   onKeyDown,
   showDeleteIcon = true,
   disabled = false,
+  maxlength,
 }) => {
   const inputRef = useRef(null);
 
@@ -112,6 +113,7 @@ const InputBox = ({
         reference={inputRef}
         disabled={disabled}
         autoFocus={type === 'email'}
+        maxLength={maxlength}
       />
     );
   };
@@ -142,7 +144,7 @@ const InputBox = ({
       );
     }
 
-    if (theme === InputBoxTheme.copyToClipboardInputWhite || theme === InputBoxTheme.copyToClipboardInputTransparentWhite) {
+    if (theme === InputBoxTheme.copyToClipboardInputWhite || theme === InputBoxTheme.copyToClipboardInputTransparentWhite || theme === InputBoxTheme.copyToClipboardInputBoxSmall) {
       return (
         <div
           className={styles.inputDeleteIconContainer}
@@ -192,6 +194,7 @@ const InputBox = ({
             [InputBoxTheme.dashedBorderTransparent]:
               styles.dashedBorderTransparent,
             [InputBoxTheme.modalInput]: styles.modalInput,
+            [InputBoxTheme.copyToClipboardInputBoxSmall]: styles.copyToClipboardInputBoxSmall,
           }),
           className
         )}

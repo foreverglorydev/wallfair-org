@@ -40,7 +40,7 @@ export const trackNonstreamedEventPlaceTrade = dataLayerProps => {
     dataLayer: {
       ...dataLayerProps,
       pageUrl: window.location.href,
-      event: 'nonstreamedEventPlaceTrade',
+      event: 'placeBet',
     },
   };
 
@@ -58,12 +58,35 @@ export const trackApproveCashout = dataLayerProps => {
   TagManager.dataLayer(tagManagerArgs);
 };
 
+export const trackCreateEvent = ({slug, ...dataLayerProps}) => {
+  const tagManagerArgs = {
+    dataLayer: {
+      ...dataLayerProps,
+      eventTitle: slug,
+      event: 'createEvent',
+    },
+  };
+
+  TagManager.dataLayer(tagManagerArgs);
+};
+
 export const trackSignup = ({ method, ...dataLayerProps }) => {
   const tagManagerArgs = {
     dataLayer: {
       ...dataLayerProps,
       method,
       event: 'signUp',
+    },
+  };
+
+  TagManager.dataLayer(tagManagerArgs);
+};
+
+export const trackSignupPhone = ({...dataLayerProps }) => {
+  const tagManagerArgs = {
+    dataLayer: {
+      ...dataLayerProps,
+      event: 'signUpPhone',
     },
   };
 
@@ -585,16 +608,7 @@ export const trackAlpacannonStopAutobet = ({ amount, multiplier, autobet, profit
 /* WALLET */
 /**********/
 
-export const trackWalletConnect = () => {
-  const tagManagerArgs = {
-    dataLayer: {
-      event: 'walletConnect',
-    },
-  };
-
-  TagManager.dataLayer(tagManagerArgs);
-}
-
+// deprecated
 export const trackWalletDepositTab = () => {
   const tagManagerArgs = {
     dataLayer: {
@@ -605,6 +619,7 @@ export const trackWalletDepositTab = () => {
   TagManager.dataLayer(tagManagerArgs);
 }
 
+// deprecated
 export const trackWalletBuywfairTab = () => {
   const tagManagerArgs = {
     dataLayer: {
@@ -615,6 +630,7 @@ export const trackWalletBuywfairTab = () => {
   TagManager.dataLayer(tagManagerArgs);
 }
 
+// deprecated
 export const trackWalletbuywithcryptoTab = () => {
   const tagManagerArgs = {
     dataLayer: {
@@ -625,6 +641,7 @@ export const trackWalletbuywithcryptoTab = () => {
   TagManager.dataLayer(tagManagerArgs);
 }
 
+// deprecated
 export const trackWalletBuywfairLink = () => {
   const tagManagerArgs = {
     dataLayer: {
@@ -635,6 +652,7 @@ export const trackWalletBuywfairLink = () => {
   TagManager.dataLayer(tagManagerArgs);
 }
 
+// deprecated
 export const trackWalletBuywithcryptoConfirm = () => {
   const tagManagerArgs = {
     dataLayer: {
@@ -645,6 +663,7 @@ export const trackWalletBuywithcryptoConfirm = () => {
   TagManager.dataLayer(tagManagerArgs);
 }
 
+// deprecated
 export const trackWalletBuywithfiatRequest = () => {
   const tagManagerArgs = {
     dataLayer: {
@@ -655,6 +674,9 @@ export const trackWalletBuywithfiatRequest = () => {
   TagManager.dataLayer(tagManagerArgs);
 }
 
+
+
+// Track wallet deposit popup
 export const trackWalletAddWfair = () => {
   const tagManagerArgs = {
     dataLayer: {
@@ -665,6 +687,18 @@ export const trackWalletAddWfair = () => {
   TagManager.dataLayer(tagManagerArgs);
 }
 
+// Track wallet buy wfair (deposit token)
+export const trackWalletBuyWfair = () => {
+  const tagManagerArgs = {
+    dataLayer: {
+      event: 'walletBuyWfair',
+    },
+  };
+
+  TagManager.dataLayer(tagManagerArgs);
+}
+
+// Track Wallet Icon on header
 export const trackWalletIcon = () => {
   const tagManagerArgs = {
     dataLayer: {
@@ -675,10 +709,66 @@ export const trackWalletIcon = () => {
   TagManager.dataLayer(tagManagerArgs);
 }
 
+// Withdraw Button
 export const trackWalletWithdraw = () => {
   const tagManagerArgs = {
     dataLayer: {
       event: 'walletWithdraw',
+    },
+  };
+
+  TagManager.dataLayer(tagManagerArgs);
+}
+
+// Click on Crypto Button
+export const trackWalletBuyWithCryptoButton = () => {
+  const tagManagerArgs = {
+    dataLayer: {
+      event: 'walletBuyWithCryptoButton',
+    },
+  };
+
+  TagManager.dataLayer(tagManagerArgs);
+}
+
+// Click on Buy USD/EUR Button 
+export const trackWalletBuyWithFiatButton = () => {
+  const tagManagerArgs = {
+    dataLayer: {
+      event: 'walletBuyWithFiatButton',
+    },
+  };
+
+  TagManager.dataLayer(tagManagerArgs);
+}
+
+// Click on Deposit Header Button 
+export const trackWalletDepositIcon = () => {
+  const tagManagerArgs = {
+    dataLayer: {
+      event: 'walletDepositIcon',
+    },
+  };
+
+  TagManager.dataLayer(tagManagerArgs);
+}
+
+// Connect Wallet Button
+export const trackWalletConnect = () => {
+  const tagManagerArgs = {
+    dataLayer: {
+      event: 'walletConnect',
+    },
+  };
+
+  TagManager.dataLayer(tagManagerArgs);
+}
+
+// Proceed with fiat partner button
+export const trackWalletFiatProceedPartner = () => {
+  const tagManagerArgs = {
+    dataLayer: {
+      event: 'walletBuywithfiatProceed',
     },
   };
 

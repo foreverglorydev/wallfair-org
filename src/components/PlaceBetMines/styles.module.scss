@@ -42,12 +42,12 @@
     }
     .selected {
       color: #000;
-      font-family: $fontOmnes;
+      font-family: $fontDMSans;
       font-weight: bold;
     }
     .deselected {
       color: #fff;
-      font-family: $fontOmnes;
+      font-family: $fontDMSans;
     }
   }
 }
@@ -78,6 +78,7 @@
 .spinsleft {
   margin: 5px;
   text-align: center;
+  color: $colorWhite;
   .reward {
     margin: 3px;
     color: $colorGreen;
@@ -93,6 +94,7 @@
     font-weight: bold;
   }
 }
+
 .container {
   position: relative;
   background: $colorBlue80;
@@ -109,7 +111,7 @@
   display: inline-block;
   color: $colorWhite;
   opacity: 0.8;
-  font-family: $fontOmnes;
+  font-family: $fontDMSans;
   font-size: 12px;
   font-weight: 500;
   letter-spacing: 0;
@@ -169,7 +171,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  font-family: monospace $fontOmnes;
+  font-family: monospace $fontDMSans;
   .empty {
     cursor: default;
     pointer-events: none;
@@ -200,7 +202,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  font-family: monospace $fontOmnes;
+  font-family: monospace $fontDMSans;
   cursor: default;
   pointer-events: none;
   user-select: none;
@@ -227,7 +229,7 @@
     margin-right: 9px;
     min-width: 10px !important;
     width: 6ch !important;
-    font-family: $fontOmnes;
+    font-family: $fontDMSans;
     font-style: normal;
     font-weight: bold;
     font-size: 21px;
@@ -241,7 +243,7 @@
       margin-right: 9px;
       min-width: 10px !important;
       width: 6ch !important;
-      font-family: $fontOmnes;
+      font-family: $fontDMSans;
       font-style: normal;
       font-weight: bold;
       font-size: 21px;
@@ -307,7 +309,7 @@
   @media screen and (max-width: $screen-xs) {
     margin-top: 10px;
   }
-  font-family: $fontOmnes;
+  font-family: $fontDMSans;
   width: 10em;
   display: flex;
   align-items: center;
@@ -341,7 +343,7 @@
 .placebidTitle {
   color: #120e27;
   text-align: center;
-  font-family: 'PlusJakarta-Bold';
+  font-family: $fontDMSans;
   font-size: 20px;
   font-style: normal;
   font-weight: 500;
@@ -389,7 +391,7 @@
     min-width: 10px !important;
     width: 6ch;
     color: $colorLightYellow;
-    font-family: $fontOmnes;
+    font-family: $fontDMSans;
     font-style: normal;
     font-weight: bold;
     font-size: 21px;
@@ -408,7 +410,7 @@
 
   .eventTokenLabel {
     color: $colorWhite;
-    font-family: $fontOmnes;
+    font-family: $fontDMSans;
     font-size: 20px;
     font-style: normal;
     font-weight: 400;
@@ -438,7 +440,7 @@
     }
     .buttonItem {
       margin-left: 12px;
-      font-family: $fontOmnes;
+      font-family: $fontDMSans;
       cursor: pointer;
     }
   }
@@ -479,7 +481,7 @@
     }
     .selected {
       color: #000;
-      font-family: $fontOmnes;
+      font-family: $fontDMSans;
     }
   }
 }
@@ -504,7 +506,7 @@
 }
 
 .tooltip {
-  font-family: $fontOmnes;
+  font-family: $fontDMSans;
   background-color: $colorPrimary45 !important;
   text-align: left !important;
 }
@@ -535,7 +537,8 @@
   text-align: center;
 }
 
-.currentMultiplier, .currentProfit {
+.currentMultiplier,
+.currentProfit {
   width: 100%;
   padding: 0 10px;
   color: $colorWhite;

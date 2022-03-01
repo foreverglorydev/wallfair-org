@@ -11,12 +11,14 @@ import { createSocket, websocket } from '../../api/websockets';
 import { createMatchSelector } from 'connected-react-router';
 import Routes from '../../constants/Routes';
 import { matchPath } from 'react-router';
-import { UNIVERSAL_EVENTS_ROOM_ID } from 'constants/Activities';
+import { UNIVERSAL_EVENTS_ROOM_ID, API_INFO_CHANNEL } from 'constants/Activities';
 import { EventActions } from '../actions/event';
+import {InfoChannelActions, infoChannelActions} from '../actions/info-channel';
 import trackedActivities from '../../components/ActivitiesTracker/trackedActivities';
 import { GAMES } from '../../constants/Games';
 import { UserActions } from '../actions/user';
 import { ObjectId } from '../../helper/Games';
+import * as Api from '../../api';
 
 function createSocketChannel(socket) {
   return eventChannel(emit => {
@@ -124,6 +126,15 @@ function createSocketChannel(socket) {
       emit(message);
     };
 
+    const infoChannelHandler = (data) => {
+      const message = {
+        type: 'INFO_CHANNEL',
+        eventName: data.type,
+        data: data?.data,
+      };
+      emit(message);
+    };
+
     const onAnyListener = (eventName, data) => {
       const message = {
         type: 'any',
@@ -147,6 +158,7 @@ function createSocketChannel(socket) {
     socket.on('CASINO_REWARD', casinoRewardHandler);
     socket.on('EVENT_BET_STARTED', betStartedHandler);
     socket.on('CASINO_CANCEL', casinoBetCanceledHandler);
+    socket.on('INFO_CHANNEL', infoChannelHandler);
     socket.onAny(onAnyListener);
 
     const unsubscribe = () => {
@@ -161,6 +173,7 @@ function createSocketChannel(socket) {
       socket.off('CASINO_REWARD', casinoRewardHandler);
       socket.off('EVENT_BET_STARTED', betStartedHandler);
       socket.off('CASINO_CANCEL', casinoBetCanceledHandler);
+      socket.off('INFO_CHANNEL', infoChannelHandler);
       socket.offAny(onAnyListener);
     };
 
@@ -187,6 +200,7 @@ export function* init() {
         const payload = yield take(socketChannel);
         const type = _.get(payload, 'type');
         let uid;
+
         switch (type) {
           case 'connect':
             if (socket && socket.connected) {
@@ -253,17 +267,12 @@ export function* init() {
             );
             break;
           case ChatMessageType.placeBet:
-            const events = yield select(state => state.event.events);
-            const event = events.find(e => e._id === payload.roomId);
-
-            if (event?.type === 'non-streamed') {
-              const chartParams = yield select(
-                state => state.event.chartParams
-              );
-              yield put(
-                EventActions.initiateFetchChartData(payload.betId, chartParams)
-              );
-            }
+            const chartParams = yield select(
+              state => state.chartParams
+            );
+            yield put(
+              EventActions.initiateFetchChartData(payload.betId, chartParams)
+            );
             yield put(
               ChatActions.addMessage({
                 roomId: payload.roomId,
@@ -273,6 +282,7 @@ export function* init() {
             break;
           case 'notification':
           case UserNotificationTypes.BET_RESOLVED:
+          case UserNotificationTypes.BET_CLOSED:
           case UserNotificationTypes.EVENT_BET_CANCELLED:
           case UserNotificationTypes.EVENT_CANCEL:
           case UserNotificationTypes.EVENT_RESOLVE:
@@ -291,6 +301,9 @@ export function* init() {
             break;
           case notificationTypes.EVENT_BET_STARTED:
             yield put(EventActions.fetchAll());
+            break;
+          case 'INFO_CHANNEL':
+            yield put(InfoChannelActions.setPrices(payload.data))
             break;
           case 'any':
             if (trackedActivities.indexOf(payload.eventName) > -1) {
@@ -329,6 +342,8 @@ const isExternalPage = (currentAction, pathSlugs) =>
 const isEvoplayPage = (currentAction, pathSlugs) =>
   (currentAction[0] === 'evoplay-game' || pathSlugs[0] === 'evoplay-game') &&
   (pathSlugs.length > 2 || currentAction.length > 2);
+const isSoftswissPage = (currentAction, pathSlugs) =>
+  (currentAction[0] === 'softswiss-game' || pathSlugs[0] === 'softswiss-game');
 
 export function* joinOrLeaveRoomOnRouteChange(action) {
   const ready = yield select(state => state.websockets.init);
@@ -348,11 +363,8 @@ export function* joinOrLeaveRoomOnRouteChange(action) {
 
   if (currentAction[0] === 'trade' || pathSlugs[0] === 'trade') {
     const eventSlug = pathSlugs[1];
-    const events = yield select(state => state.event.events);
-    const event = events.find(
-      e => e.slug === (!!currentAction[1] ? currentAction[1] : eventSlug)
-    );
-    if (event) newRoomsToJoin.push(event._id);
+    const event = yield call(Api.getEventBySlug, !!currentAction[1] ? currentAction[1] : eventSlug);
+    if (event) newRoomsToJoin.push(event.id);
   }
 
   if (
@@ -379,6 +391,14 @@ export function* joinOrLeaveRoomOnRouteChange(action) {
     newRoomsToJoin.push(ObjectId(pathSlugs[1]));
     newRoomsToJoin.push(UNIVERSAL_EVENTS_ROOM_ID);
   }
+
+  if (isSoftswissPage(currentAction, pathSlugs)) {
+    newRoomsToJoin.push(pathSlugs[1]);
+    newRoomsToJoin.push(UNIVERSAL_EVENTS_ROOM_ID);
+  }
+
+  //JOIN TO API INFO CHANNEL
+  newRoomsToJoin.push(API_INFO_CHANNEL);
 
   // leave all non active rooms except UserMessageRoomId
   for (let roomIdToLeave of currentRooms) {
@@ -410,11 +430,11 @@ export function* joinOrLeaveRoomOnRouteChange(action) {
 
 export function* connected() {
   const location = yield select(state => state.router.location);
-  const matchesTradeRoute = matchPath(location.pathname, Routes.bet);
+  const matchesTradeRoute = matchPath(location.pathname, Routes.event);
 
   if (matchesTradeRoute) {
     const { params } = yield select(state =>
-      createMatchSelector({ path: Routes.bet })(state)
+      createMatchSelector({ path: Routes.event })(state)
     );
     const { eventId } = params;
 

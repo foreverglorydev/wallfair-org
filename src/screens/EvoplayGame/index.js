@@ -26,16 +26,12 @@ import TabOptions from '../../components/TabOptions';
 import Routes from 'constants/Routes';
 import { getGameById, ObjectId } from '../../helper/Games';
 import { EVOPLAY_GAMES, GAMES } from '../../constants/Games';
-import {
-  trackAlpacaWheelPlaceBetGuest,
-  trackAlpacaWheelPlaceBet,
-  trackAlpacaWheelCashout,
-} from '../../config/gtm';
 import { UserActions } from 'store/actions/user';
 import EventActivitiesTabs from 'components/EventActivitiesTabs'
 import { isMobile } from 'react-device-detect';
 import { selectUser } from 'store/selectors/authentication';
 import SelectGameModePopup from "../../components/SelectGameModePopup";
+import classNames from 'classnames';
 
 const EvoplayGame = ({
   showPopup,
@@ -75,7 +71,15 @@ const EvoplayGame = ({
       const demo = gameMode === 'demo' || !user.isLoggedIn;
       getUrlgame({returnUrl: window.location.origin, demo, UserId: userId, GameType: gameCategory, GameName: gameName, GameNumber: gameNumber, Provider: 'evoplay' })
         .then(({data}) => {
-          if(data?.url) setInit(data?.url)
+          if(data?.url) {
+            const gameUrl = data?.url;
+            if(isMobile) {
+              history.push('/')
+              window.location = gameUrl;
+            }else{
+              setInit(gameUrl);
+            }
+          }
         })
         .catch(error => {
           dispatch(AlertActions.showError(error.message));
@@ -138,7 +142,7 @@ const EvoplayGame = ({
       <div className={styles.container}>
         <div className={styles.content}>
           <div className={styles.headlineWrapper}>
-            <BackLink to="/games" text={gameName} />
+            <BackLink to="/" text={gameName} />
             <Share popupPosition="right" className={styles.shareButton} />
             <Icon
               className={styles.questionIcon}
@@ -150,37 +154,17 @@ const EvoplayGame = ({
             />
           </div>
 
-          {/* {!gameMode && 
-          <div 
-          // style={{  
-          //   backgroundImage: `url(/images/evoplay/${gameName}_360x360.jpg)`,
-          //   backgroundPosition: 'center',
-          //   backgroundSize: 'cover',
-          //   backgroundRepeat: 'no-repeat',
-          //   overflow: 'hidden',
-          // }}
-          className={styles.mainContainer}>
-            <SelectGameModePopup user={user} setGameMode={setGameMode}/>
-          </div>} */}
+          {!gameMode &&
+            <div className={classNames(styles.mainContainer, styles.mainContainerPreview)}>
+            <div className={styles.gamePreviewContainer} style={{
+                backgroundImage: `url(/images/evoplay/${filename}_360x360.jpg)`,
+              }}
+            />
+              <SelectGameModePopup className={styles.gameModePopup} user={user} setGameMode={setGameMode} />
+            </div>
+          }
 
-          {!gameMode && 
-          <div className={styles.mainContainer} style={{position: 'relative', overflow: 'hidden'}}>
-          <div style={{  
-            backgroundImage: `url(/images/evoplay/${filename}_360x360.jpg)`,
-            backgroundPosition: 'center',
-            backgroundSize: 'cover',
-            backgroundRepeat: 'no-repeat',
-            filter: 'blur(5px) brightness(0.4)',
-            width: '100%',
-            height: '100%',
-            position: 'absolute',
-            zIndex: '-1',
-          }} />
-          
-            <SelectGameModePopup user={user} setGameMode={setGameMode} style={{position:'relative', zIndex: '1',}} />
-          </div>}
-
-          {(gameMode && init) && <iframe className={styles.mainContainer} src={init}/>}
+          {(gameMode && init) && <iframe allowFullScreen title={gameName} className={styles.mainContainer} src={init}/>}
           {isMiddleOrLargeDevice ? (
             <div className={styles.bottomWrapper}>
               {renderChat()}

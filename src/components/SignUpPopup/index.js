@@ -1,17 +1,15 @@
 import Icon from '../Icon';
-import LogoMini from '../../data/images/alpaca-logo-mini.svg';
+import LogoMini from '../../data/images/wfair-logo-splash.png';
 import IconType from '../Icon/IconType';
 import React from 'react';
 import styles from './styles.module.scss';
 import { connect, useSelector } from 'react-redux';
 import Button from '../Button';
-import { PopupActions } from '../../store/actions/popup';
 import { LOGGED_IN } from 'constants/AuthState';
 import { TOKEN_NAME } from '../../constants/Token';
-import PopupTheme from '../Popup/PopupTheme';
-import AuthenticationType from '../Authentication/AuthenticationType';
 import { selectTotalUsers } from '../../store/selectors/leaderboard';
 import { OnboardingActions } from 'store/actions/onboarding';
+import { currencyDisplay } from 'helper/Currency';
 
 const SignUpPopup = ({ authState, startOnboarding }) => {
   const totalUsers = useSelector(selectTotalUsers);
@@ -19,10 +17,10 @@ const SignUpPopup = ({ authState, startOnboarding }) => {
   const renderWelcomeText = () => {
     return (
       <div className={styles.welcomeTextContainer}>
-        <img className={styles.logoMini} src={LogoMini} />
+        <img className={styles.logoMini} src={LogoMini} alt="logo" />
         <span className={styles.welcomeTextText}>Sign up now and get</span>
         <span className={styles.welcomeTextHeadline}>
-          5,000 {TOKEN_NAME} for testing.
+          100 {currencyDisplay(TOKEN_NAME)} for testing.
           <span className={styles.welcomeTextHeadlineUnderline}></span>
         </span>
         <ul className={styles.featureList}>

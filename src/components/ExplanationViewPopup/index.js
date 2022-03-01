@@ -31,6 +31,7 @@ import eventsStep4 from '../../data/images/explanations-popups/events_step4.png'
 import classNames from 'classnames';
 import { ACTIVITIES_TO_TRACK } from '../../constants/Activities';
 import React from 'react';
+import { currencyDisplay } from 'helper/Currency';
 
 const ExplanationViewPopup = ({ closed, hidePopup }) => {
   const { pathname } = useLocation();
@@ -45,15 +46,15 @@ const ExplanationViewPopup = ({ closed, hidePopup }) => {
 
         <span className={styles.explanationText}>
           <p>
-            Alpacasino's Live Events bring an added layer of entertainment to all
-            live streams out there. While watching any live stream on Alpacasino,
+            Wallfair's Live Events bring an added layer of entertainment to all
+            live streams out there. While watching any live stream on Wallfair,
             you can now bet on various exciting events while enjoying the
             stream!
           </p>
 
           <p>
             To participate, simply choose an event that has an active live
-            stream, enter an amount of {TOKEN_NAME} you'd like to wager and finally
+            stream, enter an amount of {currencyDisplay(TOKEN_NAME)} you'd like to wager and finally
             choose your desired outcome(s)!
           </p>
 
@@ -64,7 +65,7 @@ const ExplanationViewPopup = ({ closed, hidePopup }) => {
           </p>
 
           <p>
-            Alpacasino allows you to place a bet anywhere and anytime, while
+            Wallfair allows you to place a bet anywhere and anytime, while
             granting you the flexibility to trade your positions in the event!
           </p>
 

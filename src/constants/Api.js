@@ -7,6 +7,7 @@ export const CRASH_GAMES_BACKEND_URL = process.env.REACT_APP_CASINO_GAMES_BACKEN
 export const SECOND_CRASH_GAME_BACKEND_URL = process.env.REACT_APP_SECOND_CRASH_GAME_BACKEND_URL;
 export const ACCOUNT_MAPPING = process.env.REACT_APP_ACCOUNT_MAPPER_URL;
 export const WITHDRAW_SERVICE_URL = process.env.REACT_APP_WITHDRAW_SERVICE_URL;
+export const EVENTS_SERVICE_URL = process.env.REACT_APP_EVENTS_SERVICE_URL;
 
 export const NEWS_API_URL = 'https://gnews.io/api/v4/search';
 export const NEWS_API_KEY = process.env.REACT_APP_NEWS_API_KEY;
@@ -14,10 +15,10 @@ export const NEWS_API_SSL_MODE = process.env.REACT_APP_NEWS_API_SSL_MODE === 'tr
 export const RECAPTCHA_KEY = process.env.REACT_APP_RECAPTCHA_KEY;
 
 // Services
-export const API_AUTHENTICATION_REQUEST_SMS_URL = 'api/user/login';
+export const API_AUTHENTICATION_SEND_SMS = 'api/user/send-sms';
+export const API_AUTHENTICATION_VERIFY_SMS = 'api/user/verify-sms';
 export const API_AUTHENTICATION_SAVE_ADD_INFO_URL =
   'api/user/saveAdditionalInformation';
-export const API_AUTHENTICATION_VERIFY_SMS_URL = 'api/user/verifyLogin';
 export const API_AUTHENTICATION_VERIFY_EMAIL =
   'api/user/confirm-email/?userId=:userId&code=:code';
 export const API_AUTHENTICATION_RESEND_EMAIL_VERIFICATION =
@@ -99,6 +100,7 @@ export const API_WITHDRAW = 'withdraw';
 export const API_WITHDRAW_STATUS = 'withdraw/status/:id';
 export const API_SET_EVOPLAY_SESSION = '/api/evoplay/new-session';
 export const API_GET_EVOPLAY_URLGAME = '/api/evoplay/urlgame';
+export const API_GET_SOFTSWISS_URLGAME = '/api/softswiss/urlgame';
 export const API_GET_EVOPLAY_GAMES = '/api/evoplay/listgames';
 
 //3rd parties
@@ -113,8 +115,9 @@ export const KYC_START_FOR_USER = 'api/user/:userId/kyc-start';
 export const KYC_DATA_FOR_USER = 'api/user/:userId/kyc-data';
 export const KYC_REFRESH_STATUS = 'api/user/kyc/refresh';
 export const RANDOM_USERNAME = 'api/user/random-username';
-export const SEND_BUY_WITH_CRYPTO = 'api/user/buy-with-crypto'
-export const SEND_BUY_WITH_FIAT = 'api/user/buy-with-fiat'
+export const SEND_BUY_WITH_CRYPTO = 'api/user/buy-with-crypto';
+export const SEND_BUY_WITH_FIAT = 'api/user/buy-with-fiat';
+export const GENERATE_MOONPAY_URL = 'api/user/moonpay/url';
 export const GENERATE_CRYPTOPAY_CHANNEL = 'api/user/cryptopay/channel';
 export const ACCEPT_TOS = 'api/user/consent';
 export const USER_COUNT = 'api/user/count';

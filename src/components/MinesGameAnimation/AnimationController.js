@@ -11,7 +11,6 @@ import Game from "./game/index.js";
 import {Application} from "./sources/extensions/index.js";
 import {LayoutManager, ResourceLoader} from "./sources/libs/index.js";
 import {applicationConfig} from "./configs";
-
 PIXI.utils.skipHello();
 
 export class AudioController {
@@ -257,6 +256,12 @@ class AnimationController {
 
   async clickCell(props) {
     return this.game.clickCell(props)
+  }
+  async overCell(props) {
+    return this.game.overCell(props)
+  }
+  async outCell(props) {
+    return this.game.outCell(props)
   }
 
   restart() {

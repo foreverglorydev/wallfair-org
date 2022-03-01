@@ -15,6 +15,7 @@ import TokenNumberInput from 'components/TokenNumberInput';
 import { StandardInput, ToggleInput } from '../PlaceBetCasino/components';
 import PopupTheme from '../Popup/PopupTheme';
 import Input from '../Input';
+import ButtonTheme from 'components/Button/ButtonTheme';
 import { round } from 'lodash/math';
 import _ from 'lodash';
 /*import {
@@ -29,6 +30,7 @@ import { TOKEN_NAME } from 'constants/Token';
 import { MinesInput, ClearedInput} from "./MinesInput";
 import { trackMinesPlaceBet, trackMinesPlaceBetGuest } from "../../config/gtm"
 import { OnboardingActions } from 'store/actions/onboarding';
+import { GAMES_CURRENCY_MAX_BET } from '../../constants/Currency';
 
 import {
   FormGroup,
@@ -38,6 +40,7 @@ import {
 import Button from 'components/Button';
 import Routes from 'constants/Routes';
 import { useHistory } from 'react-router';
+import { currencyDisplay } from 'helper/Currency';
 
 const PlaceBetMines = ({
   connected,
@@ -63,6 +66,7 @@ const PlaceBetMines = ({
   const dispatch = useDispatch();
   const user = useSelector(selectUser);
   const userBalance = parseInt(user?.balance || 0, 10);
+  const gamesCurrency = user.gamesCurrency;
   const [wincrease, setWincrease] = useState(0)
   const [lincrease, setLincrease] = useState(0)
   const [lossbutton, setLossbutton] = useState(false)
@@ -85,13 +89,13 @@ const PlaceBetMines = ({
   const onGuestAmountChange = event => {
     let value = _.get(event, 'target.value', 0);
     const amount = round(value, 0);
-    setAmount(amount <= 10000 ? amount : 10000);
+    setAmount(amount <= GAMES_CURRENCY_MAX_BET ? amount : GAMES_CURRENCY_MAX_BET);
   };
 
   const onBetAmountChanged = multiplier => {
     const changedValue = _.floor(amount * multiplier, 0);
-    if (changedValue > 10000) {
-      setAmount(10000);
+    if (changedValue > GAMES_CURRENCY_MAX_BET) {
+      setAmount(GAMES_CURRENCY_MAX_BET);
     } else if (changedValue < 1) {
       setAmount(1);
     } else {
@@ -105,7 +109,8 @@ const PlaceBetMines = ({
     setConfetti(false);
     const payload = {
       amount,
-      minesCount: mines
+      minesCount: mines,
+      gamesCurrency
     }
 
     trackMinesPlaceBet({ amount, mines });
@@ -125,7 +130,8 @@ const PlaceBetMines = ({
       wincrease: winbutton?0:Number(wincrease)/100,
       lincrease: lossbutton?0:Number(lincrease)/100,
       minesCount: mines,
-      accumulated
+      accumulated,
+      gamesCurrency
     };
     setAccumulated(0)
     setBet((bet) => {
@@ -140,31 +146,30 @@ const PlaceBetMines = ({
 
   useEffect(() => {
     if(bet.autobet && !bet.done){
-      let prof = 0
       if(bet.win) {
-        prof = profit + bet.amount
         handleCashout()
         //document.getElementById('mines-cashout-btn').click();
-        const acc = prof + accumulated
-        setAccumulated((a)=> {return prof+ a})
-        if(bet.profitStop >= 0 && bet.profitStop > acc && bet.lossStop >= 0 && bet.lossStop > -acc){
+
+        if(bet.profitStop >= 0 && bet.profitStop > accumulated && bet.lossStop >= 0 && bet.lossStop > -accumulated){
           const newamount = bet.profitStop > 0 && Math.floor(winbutton ? amount : bet.amount*(1+bet.wincrease))
-          if(newamount < 1) setBet({autobet: false, pending: false})
-          else {
-            setTimeout(()=> {
-              setAccumulated((a)=> {return a- newamount})
+
+          if(newamount < 1) {
+            setBet({autobet: false, pending: false})
+          } else {
+            // setTimeout(()=> {
+            //   setAccumulated((a)=> {return a- newamount})
               setBet((bet) => {return{...bet, amount: newamount }})
               onBet({...bet, amount: newamount, done: true})
-            }, 1000)
+            // }, 1000)
           }
+
+          setAccumulated((a)=> {return a + profit})
         }
         else {
           setBet({autobet: false, pending: false})
         }
       }else{
-        const acc = accumulated - bet.amount
-        setAccumulated(acc)
-        if(bet.profitStop >= 0 && bet.profitStop > acc && bet.lossStop >= 0 && bet.lossStop > -acc){
+        if(bet.profitStop >= 0 && bet.profitStop > accumulated && bet.lossStop >= 0 && bet.lossStop > -accumulated){
           const newamount = bet.lossStop >= 0 && Math.floor(lossbutton ? amount : bet.amount*(1+bet.lincrease))
           if(newamount < 1) setBet({autobet: false, pending: false})
           else {
@@ -175,6 +180,9 @@ const PlaceBetMines = ({
         else {
           setBet({autobet: false, pending: false})
         }
+
+        setAccumulated((a)=> {return a - bet.amount})
+
       }
     }else if(!bet.autobet && bet.stopped){
       setTimeout(()=> {
@@ -257,7 +265,8 @@ const PlaceBetMines = ({
             role="button"
             tabIndex="0"
             style={{display: bet.autobet ? 'auto':'none'}}
-            className={classNames(styles.button, styles.cancel)}
+            className={styles.button}
+            theme={ButtonTheme.redButton}
             onClick={() => setBet({...bet, autobet: false, stopped: true})}
             data-tracking-id={
               user.isLoggedIn ? null : 'alpacawheel-showloginpopup'
@@ -266,7 +275,7 @@ const PlaceBetMines = ({
             <p>Stop Autobet</p>
           </Button>}
 
-          <Button
+          {!bet.autobet && <Button
             id={"mines-cashout-btn"}
             role="button"
             tabIndex="0"
@@ -278,7 +287,7 @@ const PlaceBetMines = ({
             onClick={currentStep === 0 ? ()=>{} : handleCashout }
           >
             Cashout
-          </Button>
+          </Button>}
         </>
       )
     }
@@ -367,14 +376,11 @@ const PlaceBetMines = ({
             {user?.isLoggedIn ? (
               <TokenNumberInput
                 value={amount}
-                currency={user?.currency}
+                currency={gamesCurrency}
                 setValue={onTokenNumberChange}
                 minValue={0}
                 decimalPlaces={0}
-                // maxValue={formatToFixed(
-                //   user.balance > 10000 ? 10000 : user.balance
-                // )}
-                maxValue={10000}
+                maxValue={GAMES_CURRENCY_MAX_BET}
                 dataTrackingIds={{
                   inputFieldHalf: 'alpacawheel-input-field-half',
                   inputFieldDouble: 'alpacawheel-input-field-double',
@@ -396,10 +402,10 @@ const PlaceBetMines = ({
                   onChange={onGuestAmountChange}
                   step={0.01}
                   min="1"
-                  max={'10000'}
+                  max={GAMES_CURRENCY_MAX_BET}
                 />
                 <span className={styles.eventTokenLabel}>
-                  <span>{TOKEN_NAME}</span>
+                  <span>{currencyDisplay(gamesCurrency)}</span>
                 </span>
                 <div className={styles.buttonWrapper}>
                   <span
@@ -419,7 +425,7 @@ const PlaceBetMines = ({
                   <span
                     className={styles.buttonItem}
                     data-tracking-id="alpacawheel-input-field-allin"
-                    onClick={() => setAmount(10000)}
+                    onClick={() => setAmount(GAMES_CURRENCY_MAX_BET)}
                   >
                     Max
                   </span>
@@ -445,12 +451,12 @@ const PlaceBetMines = ({
             {user?.isLoggedIn ? (
               <TokenNumberInput
                 value={amount}
-                currency={user?.currency}
+                currency={gamesCurrency}
                 setValue={(v)=>setAmount(v)}
                 minValue={1}
                 decimalPlaces={0}
                 maxValue={formatToFixed(
-                  user.balance > 10000 ? 10000 : user.balance
+                  user.balance > GAMES_CURRENCY_MAX_BET ? GAMES_CURRENCY_MAX_BET : user.balance
                 )}
                 dataTrackingIds={{
                   inputFieldHalf: 'alpacawheel-input-field-half',
@@ -472,10 +478,10 @@ const PlaceBetMines = ({
                   onChange={onGuestAmountChange}
                   step={0.01}
                   min="1"
-                  max={'10000'}
+                  max={GAMES_CURRENCY_MAX_BET}
                 />
                 <span className={styles.eventTokenLabel}>
-                  <span>{TOKEN_NAME}</span>
+                  <span>{currencyDisplay(gamesCurrency)}</span>
                 </span>
                 <div className={styles.buttonWrapper}>
                   <span
@@ -495,7 +501,7 @@ const PlaceBetMines = ({
                   <span
                     className={styles.buttonItem}
                     data-tracking-id="alpacawheel-input-field-allin"
-                    onClick={() => setAmount(10000)}
+                    onClick={() => setAmount(GAMES_CURRENCY_MAX_BET)}
                   >
                     Max
                   </span>
@@ -526,14 +532,14 @@ const PlaceBetMines = ({
                 <MinesInput mines={mines} setMines={(m)=>{setMines(m);m > 25-cleared && setCleared(25-m)}}/>
               </div>
             </div>
-            <StandardInput title={'Stop on Profit'} setValue={setProfit1} value={profit1} />
-            <StandardInput title={'Stop on Loss'} setValue={setLoss} value={loss} />
+            <StandardInput title={'Stop on Profit'} setValue={setProfit1} value={profit1} currency={gamesCurrency}/>
+            <StandardInput title={'Stop on Loss'} setValue={setLoss} value={loss} currency={gamesCurrency}/>
             <ToggleInput title={'On Win'} setValue={setWincrease} value={wincrease} setToggle={setWinbutton} toggle={winbutton} />
             <ToggleInput title={'On Loss'} setValue={setLincrease} value={lincrease} setToggle={setLossbutton} toggle={lossbutton} />
             {bet.autobet &&
               <div className={styles.spinsleft}>
                 <span className={accumulated > 0 ? styles.reward : styles.lost}>
-                {Math.floor(accumulated)} {TOKEN_NAME}
+                {Math.floor(accumulated)} {currencyDisplay(gamesCurrency)}
                 </span>
                 accumulated
               </div>
@@ -542,7 +548,7 @@ const PlaceBetMines = ({
               <div className={styles.spinsleft}>
                 Current bet:
                 <span className={styles.neutral}>
-                {Math.floor(bet.amount)} {TOKEN_NAME}
+                {Math.floor(bet.amount)} {currencyDisplay(gamesCurrency)}
                 </span>
               </div>
             }

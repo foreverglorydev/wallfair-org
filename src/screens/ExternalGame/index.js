@@ -25,7 +25,7 @@ import EventActivitiesTabs from 'components/EventActivitiesTabs'
 import { isMobile } from 'react-device-detect';
 import { selectUser } from 'store/selectors/authentication';
 import SelectGameModePopup from "../../components/SelectGameModePopup";
-import { Hidden } from '@material-ui/core';
+import classNames from 'classnames';
 
 const portal = process.env.REACT_APP_SMARTSOFT_PORTALNAME
 const urlLauncher = process.env.REACT_APP_SMARTSOFT_LAUNCHER_URL
@@ -62,9 +62,14 @@ const RouletteGame = ({
 
 
   useEffect(() => {
+    //do nothing until we select game mode
+    if(!gameMode) {
+      return;
+    }
+
     if(!user.isLoggedIn || gameMode === 'demo'){
       if(isMobile) {
-        history.push('/games')
+        history.push('/')
         window.location = `https://server.ssg-public.com/GameLauncher/Loader.aspx?Token=DEMO&GameCategory=${gameCategory}&GameName=${gameName}&ReturnUrl=${window.location.origin}&Lang=en&PortalName=DEMO`
       }else{
         setInit('faebb4a9-eca3-4720-b6fd-82540f55486a')
@@ -73,7 +78,7 @@ const RouletteGame = ({
       setInitialSession({UserId: userId, GameName: gameName, GameType: gameCategory, Provider: 'smartsoft' })
         .then(({data}) => {
           if(isMobile) {
-            history.push('/games')
+            history.push('/')
             window.location = `${urlLauncher}?GameCategory=${gameCategory}&GameName=${gameName}&Token=${data.TokenID}&PortalName=${portal}&ReturnUrl=${window.location.origin}`
           }else{
             console.log("data.TokenID", data.TokenID)
@@ -87,7 +92,7 @@ const RouletteGame = ({
     return () => {
       setInit(null)
     }
-  }, [])
+  }, [gameMode])
 
   useEffect(() => {
     dispatch(ChatActions.fetchByRoom({ roomId: EXTERNAL_GAME_EVENT_ID }));
@@ -159,7 +164,7 @@ const RouletteGame = ({
       <div className={styles.container}>
         <div className={styles.content}>
           <div className={styles.headlineWrapper}>
-            <BackLink to="/games" text={gameName} />
+            <BackLink to="/" text={gameName} />
             <Share popupPosition="right" className={styles.shareButton} />
             <Icon
               className={styles.questionIcon}
@@ -171,25 +176,17 @@ const RouletteGame = ({
             />
           </div>
 
-          {!gameMode && 
-          <div className={styles.mainContainer} style={{position: 'relative', overflow: 'hidden'}}>
-          <div style={{  
-            backgroundImage: `url(https://www.smartsoftgaming.com/Content/Images/GameIcons/${gameName}.jpg)`,
-            backgroundPosition: 'center',
-            backgroundSize: 'cover',
-            backgroundRepeat: 'no-repeat',
-            filter: 'blur(5px) brightness(0.4)',
-            width: '100%',
-            height: '100%',
-            position: 'absolute',
-            zIndex: '-1',
-          }} />
-          
-            <SelectGameModePopup user={user} setGameMode={setGameMode} style={{position:'relative', zIndex: '1',}} />
-          </div>}
+          {!gameMode &&
+          <div className={classNames(styles.mainContainer, styles.mainContainerPreview)}>
+            <div className={styles.gamePreviewContainer} style={{
+              backgroundImage: `url(https://www.smartsoftgaming.com/Content/Images/GameIcons/${gameName}.jpg)`,
+            }} />
+              <SelectGameModePopup className={styles.gameModePopup} user={user} setGameMode={setGameMode} />
+            </div>
+          }
 
           {(gameMode && init) &&
-            <iframe title={gameName} onLoad={() => console.log("URL changed:", contentRef?.contentWindow?.location?.href)} ref={contentRef} className={styles.mainContainer} src={(user.isLoggedIn && gameMode !== 'demo') ?url:urltest} />
+            <iframe allowFullScreen title={gameName} onLoad={() => console.log("URL changed:", contentRef?.contentWindow?.location?.href)} ref={contentRef} className={classNames(styles.mainContainer,gameName === 'JetX' ? styles.jetXContainer : null)} src={(user.isLoggedIn && gameMode !== 'demo') ?url:urltest} />
           }
           {isMiddleOrLargeDevice ? (
             <div className={styles.bottomWrapper}>

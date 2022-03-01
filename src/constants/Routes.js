@@ -43,9 +43,11 @@ export default {
   plinkoGame: '/games/plinko',
   alpacannonGame: '/games/alpacannon',
   elonGame: '/games/elon-game',
+  pumpdumpGame: '/games/pump-dump',
   rouletteGame: '/games/alpaca-wheel',
   elonWallpaper: '/games/elon-wallpaper',
   evoplayGame: '/evoplay-game/:game/:category/:number',
+  softswissGame: '/softswiss-game/:game',
   verify: '/verify',
   chart: 'event/bet/:betId/history/chart',
   rewards: '/rewards',
@@ -59,4 +61,5 @@ export default {
   privacy: '/privacypolicy',
   imprint: '/imprint',
   oauth: '/oauth/:provider',
+  winners: '/winners',
 };

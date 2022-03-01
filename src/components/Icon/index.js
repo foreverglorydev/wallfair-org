@@ -4,7 +4,6 @@ import IconType from './IconType';
 import React from 'react';
 import SelectionHelper from '../../helper/SelectionHelper';
 import styles from './styles.module.scss';
-import { ReactComponent as IconAlpaca } from '../../data/icons/alpaca-icon.svg';
 import { ReactComponent as IconActivities } from '../../data/icons/activities.svg';
 import { ReactComponent as IconAddBet } from '../../data/icons/add-bet.svg';
 import { ReactComponent as IconAddYellow } from '../../data/icons/add-yellow.svg';
@@ -21,13 +20,13 @@ import { ReactComponent as IconAvatarUpload } from '../../data/icons/avatar-uplo
 import { ReactComponent as IconBell } from '../../data/icons/bell.svg';
 import { ReactComponent as IconBet } from '../../data/icons/bet.svg';
 import { ReactComponent as IconBet2 } from '../../data/icons/bet-2.svg';
-import { ReactComponent as IconBuildAlpaca } from '../../data/icons/build-alpaca.svg';
 import { ReactComponent as IconCalendar } from '../../data/icons/calendar.svg';
 import { ReactComponent as IconCamera } from '../../data/icons/camera.svg';
 import { ReactComponent as IconChat } from '../../data/icons/chat.svg';
 import { ReactComponent as IconChat2 } from '../../data/icons/chat2.svg';
 import { ReactComponent as IconChecked } from '../../data/icons/checked.svg';
 import { ReactComponent as IconClose } from '../../data/icons/close.svg';
+import { ReactComponent as IconCloseCoin } from '../../data/icons/close-coin.svg';
 import { ReactComponent as IconCollapseSidebar } from '../../data/icons/collapse-sidebar.svg';
 import { ReactComponent as IconConfettiLeft } from '../../data/icons/confetti-left.svg';
 import { ReactComponent as IconConfettiRight } from '../../data/icons/confetti-right.svg';
@@ -65,6 +64,7 @@ import { ReactComponent as IconQuestion } from '../../data/icons/question.svg';
 import { ReactComponent as IconTwitch } from '../../data/icons/twitch.svg';
 import { ReactComponent as IconWallet } from '../../data/icons/wallet.svg';
 import { ReactComponent as IconWallet2 } from '../../data/icons/wallet-2.svg';
+import { ReactComponent as IconWallet3 } from '../../data/icons/wallet-3.svg';
 import { ReactComponent as IconWithdrawal } from '../../data/icons/withdrawal.svg';
 import { ReactComponent as NewsIcon } from '../../data/icons/news-icon.svg';
 import { ReactComponent as ShareIcon } from '../../data/icons/share-solid-fa.svg';
@@ -82,6 +82,7 @@ import { ReactComponent as IconEmail } from '../../data/icons/email.svg';
 import { ReactComponent as IconUserProfile } from '../../data/icons/user-profile.svg';
 import { ReactComponent as BalanceScaleSolid } from '../../data/icons/balance-scale-solid.svg';
 import { ReactComponent as IconDiscord } from '../../data/icons/discord.svg';
+import { ReactComponent as GiftIcon } from '../../data/icons/gift-icon.svg';
 
 const Icon = ({
   className,
@@ -97,7 +98,6 @@ const Icon = ({
 }) => {
   const renderIcon = () => {
     return SelectionHelper.get(iconType, {
-      [IconType.alpaca]: <IconAlpaca />,
       [IconType.activities]: <IconActivities />,
       [IconType.addBet]: <IconAddBet />,
       [IconType.addYellow]: <IconAddYellow />,
@@ -117,13 +117,13 @@ const Icon = ({
       [IconType.bell]: <IconBell />,
       [IconType.bet]: <IconBet />,
       [IconType.bet2]: <IconBet2 />,
-      [IconType.buildAlpaca] : <IconBuildAlpaca />,
       [IconType.calendar]: <IconCalendar />,
       [IconType.camera]: <IconCamera style={{ transform: 'rotate(-10deg)' }} />,
       [IconType.chat]: <IconChat />,
       [IconType.chat2]: <IconChat2 />,
       [IconType.checked]: <IconChecked />,
       [IconType.close]: <IconClose />,
+      [IconType.closeCoin]: <IconCloseCoin />,
       [IconType.collapseSidebar]: <IconCollapseSidebar />,
       [IconType.confettiLeft]: <IconConfettiLeft />,
       [IconType.confettiRight]: <IconConfettiRight />,
@@ -155,6 +155,7 @@ const Icon = ({
       [IconType.twitch]: <IconTwitch />,
       [IconType.wallet]: <IconWallet />,
       [IconType.wallet2]: <IconWallet2 />,
+      [IconType.wallet3]: <IconWallet3 />,
       [IconType.info]: <IconInfo />,
       [IconType.infoReverse]: <IconInfoReverse />,
       [IconType.success]: <IconSuccess />,
@@ -177,7 +178,8 @@ const Icon = ({
       [IconType.email]: <IconEmail />,
       [IconType.balanceScaleSolid]: <BalanceScaleSolid />,
       [IconType.userProfile]: <IconUserProfile />,
-      [IconType.discord]: <IconDiscord />
+      [IconType.discord]: <IconDiscord />,
+      [IconType.gift]: <GiftIcon />
     });
   };
 

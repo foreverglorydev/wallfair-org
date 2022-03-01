@@ -4,7 +4,7 @@ import { AuthenticationActions } from '../actions/authentication';
 import { call } from 'redux-saga/effects';
 import { put } from 'redux-saga/effects';
 import { select } from 'redux-saga/effects';
-import { UserActions, UserTypes } from '../actions/user';
+import { UserActions } from '../actions/user';
 import { LOGGED_IN } from 'constants/AuthState';
 import { AlertActions } from 'store/actions/alert';
 
@@ -58,6 +58,7 @@ const fetchSucceeded = function* (action) {
     } else {
       const profilePicture = user.profilePicture;
       const balance = user.balance;
+      const balances = user.balances;
       const username = user.username;
       const name = user.name;
       const admin = user.admin;
@@ -69,13 +70,14 @@ const fetchSucceeded = function* (action) {
       const preferences = user.preferences;
       const aboutMe = user.aboutMe;
       const notificationSettings = user.notificationSettings;
-      const alpacaBuilderProps = user.alpacaBuilderProps;
       const kyc = user.kyc;
       const emailConfirmed = user.emailConfirmed;
+      const phoneConfirmed = user.phoneConfirmed;
       yield put(
         AuthenticationActions.updateData({
           profilePicture,
           balance,
+          balances,
           username,
           name,
           admin,
@@ -87,9 +89,9 @@ const fetchSucceeded = function* (action) {
           preferences,
           aboutMe,
           notificationSettings,
-          alpacaBuilderProps,
           kyc,
           emailConfirmed,
+          phoneConfirmed,
         })
       );
     }
@@ -114,7 +116,7 @@ const updatePreferences = function* (action) {
       })
     );
   } else {
-    yield put(AlertActions.showError(error));
+    yield put(AlertActions.showError({message: error}));
   }
 };
 

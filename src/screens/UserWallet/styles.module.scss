@@ -19,6 +19,32 @@
   @media (min-width: $screen-lg) {
     max-width: 1300px;
   }
+  .titleSection {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 100px auto 0;
+    padding: 0 16px;
+
+    @media (max-width: $screen-sm) {
+      flex-direction: column;
+    }
+    h1 {
+      font-family: $fontDMSans;
+      font-size: 30px;
+      color: $colorWhite;
+    }
+    .depositeNumber {
+      display: flex;
+      align-items: center;
+      p {
+        margin-left: 8px;
+        font-family: $fontDMSans;
+        font-size: 12px;
+        color: $colorWhite;
+      }
+    }
+  }
 }
 
 .bottomWrapper {
@@ -54,7 +80,7 @@
     align-items: center;
     justify-content: space-between;
     color: $colorWhite;
-    font-family: $fontOmnes;
+    font-family: $fontDMSans;
     font-size: 24px;
     margin-bottom: 20px;
 
@@ -124,7 +150,7 @@
       display: inline-block;
       padding: 1px 4px;
       border-radius: 6px;
-      font-family: $fontRegular;
+      font-family: $fontDMSans;
       background-color: $mainAction;
       font-size: 9px;
       padding: 1px 4px;
@@ -169,7 +195,7 @@
   display: flex;
   align-items: flex-end;
   color: $colorWhite;
-  font-family: $fontOmnes;
+  font-family: $fontDMSans;
   font-style: normal;
   font-weight: bold;
   font-size: 14px;
@@ -194,40 +220,12 @@
 }
 /* ACTIVITY TRACKER */
 .activities {
-  margin-top: 20px;
+  margin-top: 4px;
   padding: 0 10px;
   position: relative;
 
   @media (max-width: $screen-xs) {
     padding: 0;
-  }
-
-  &::before {
-    position: absolute;
-    content: '';
-    background-image: url('../../data/images/wallet-left-image.svg');
-    background-repeat: no-repeat;
-    background-size: contain;
-    width: 100%;
-    height: 100%;
-    bottom: 320px;
-    transform: rotate(-20deg);
-    left: -70px;
-    background-position: bottom left;
-    z-index: -1;
-  }
-  &::after {
-    position: absolute;
-    content: '';
-    background-image: url('../../data/images/wallet-right-image.svg');
-    background-repeat: no-repeat;
-    background-size: contain;
-    width: 100px;
-    height: 80%;
-    bottom: 50px;
-    right: -50px;
-    background-position: bottom right;
-    z-index: -1;
   }
 
   @media (max-width: $screen-md) {
@@ -258,7 +256,7 @@
 }
 
 .currentBalanceSection {
-  margin: 30px auto 0;
+  margin: 12px auto 0;
   border-radius: 12px;
   border: 1px solid transparent;
   display: flex;
@@ -268,7 +266,7 @@
 
   @media (max-width: $screen-sm) {
     justify-content: center;
-    margin: 80px 0 0;
+    margin: 12px 0 0;
   }
 
   .currentBalanceCard {
@@ -322,40 +320,110 @@
       }
     }
 
-    .currentbalanceHeading {
-      font-family: $fontOmnes;
-      color: $colorWhite;
-      font-weight: 600;
-      font-size: 24px;
-      line-height: 20px;
-    }
-
-    .currentbalanceWFair {
+    .balanceContainer {
+      width: 100%;
       display: flex;
-
-      box-sizing: border-box;
-      font-family: $fontOmnes;
-      font-size: 50px;
-      font-weight: 600;
-      text-align: center;
-      color: $colorLightYellow;
-      line-height: 40px;
-
-      gap: 10px;
-
-      &.font30 {
-        font-size: 30px;
-      }
-      &.font50 {
-        font-size: 50px;
-      }
-      &.font20 {
-        font-size: 20px;
-      }
-
-      @media (max-width: $screen-xs) {
-        margin: 10px auto 20px;
+      justify-content: space-between;
+      padding: 50px 50px;
+      @media (max-width: $screen-sm) {
         flex-direction: column;
+        padding: 30px 0px;
+      }
+      .leftCard {
+        display: flex;
+        @media (max-width: $screen-sm) {
+          justify-content: center;
+        }
+        .wfairLogo {
+          width: 64px;
+          height: 64px;
+        }
+        .balanceTextContainer {
+          margin-left: 25px;
+          .currentbalanceHeading {
+            font-family: $fontDMSans;
+            color: $colorWhite;
+            font-weight: 600;
+            font-size: 11px;
+            opacity: 0.41;
+          }
+          .balanceBottomContainer {
+            margin-top: 7px;
+            display: flex;
+            .currentbalanceWFair {
+              display: flex;
+
+              box-sizing: border-box;
+              font-family: $fontDMSans;
+              font-size: 44px;
+              font-weight: 600;
+              text-align: center;
+              color: $colorWhite;
+              line-height: 40px;
+
+              gap: 10px;
+
+              &.font30 {
+                font-size: 30px;
+              }
+              &.font50 {
+                font-size: 50px;
+              }
+              &.font20 {
+                font-size: 20px;
+              }
+            }
+            .symbolContainer {
+              font-family: $fontDMSans;
+              font-size: 16px;
+              font-weight: 600;
+              text-align: center;
+              color: $colorWhite;
+            }
+          }
+        }
+      }
+      .rightCard {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        @media (max-width: $screen-sm) {
+          margin-top: 20px;
+        }
+
+        .buttonDeposit {
+          width: 240px;
+        }
+        .presentText {
+          margin-top: 10px;
+          font-size: 11px;
+          font-weight: 500;
+          color: #696e82;
+          text-align: center;
+        }
+      }
+    }
+    .depositCardContainer {
+      width: 100%;
+      cursor: pointer;
+      .depositTitle {
+        font-family: $fontDMSans;
+        font-size: 20px;
+        font-weight: 600;
+        color: $colorWhite;
+      }
+      .depositDescriptionSection {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .depositDescription {
+        font-family: $fontDMSans;
+        font-size: 12px;
+        font-weight: 600;
+        color: #dbe0ff;
+        opacity: 0.5;
       }
     }
   }
@@ -369,7 +437,7 @@
 
     object-fit: cover;
     margin: 0 auto;
-    margin-right: 10px;
+    margin-right: 8px;
     border-radius: 12px;
 
     @media (max-width: $screen-xs) {
@@ -405,9 +473,9 @@
       border-radius: 12px;
     }
 
-    @media (max-width: $screen-md) {
-      padding: 10px;
-    }
+    // @media (max-width: $screen-md) {
+    //   padding: 10px;
+    // }
 
     @media (max-width: $screen-xs) {
       &::after {
@@ -456,7 +524,7 @@
         line-height: 24px;
         padding: 0 40px 10px;
         margin: 0 auto;
-        font-family: $fontOmnes;
+        font-family: $fontDMSans;
         font-size: 14px;
         font-weight: 500;
         color: $colorWhite;
@@ -480,7 +548,7 @@
         margin-top: 0px;
         // margin-bottom: 20px;
         width: 240px;
-        font-family: $fontOmnes;
+        font-family: $fontDMSans;
 
         &.buttonDeposit {
           margin-top: 10px;
@@ -491,5 +559,45 @@
         }
       }
     }
+  }
+}
+
+.walletPreferencesSection {
+  position: relative;
+  //color: white;
+  z-index: 5;
+  padding: 14px;
+
+  .boxContainer {
+    background: rgba($colorBlue80, 0.6);
+    border: 1px solid $colorBlueBorder;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: left;
+    width: 100%;
+    height: 100%;
+    padding: 20px;
+  }
+
+  .inputSelect {
+    width: 200px;
+  }
+
+  .settingsLabel {
+    color: white;
+    font-weight: bold;
+    margin-bottom: 5px;
+  }
+
+  .settingsMainHeader {
+    color: white;
+    font-weight: bold;
+    font-size: 20px;
+    margin-bottom: 10px;
+  }
+
+  @media (max-width: $screen-sm) {
   }
 }

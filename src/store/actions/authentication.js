@@ -42,7 +42,6 @@ export const AuthenticationTypes = {
   UPDATE_STATUS: 'Authentication/UPDATE_STATUS',
   LOGIN_EXTERNAL: 'Authentication/LOGIN_EXTERNAL',
   LOGIN_EXTERNAL_FAIL: 'Authentication/LOGIN_EXTERNAL_FAIL',
-  SET_ALPACA_BUILDER_DATA: 'Authentication/SET_ALPACA_BUILDER_DATA',
   ACCEPT_TOS_CONSENT: 'Authentication/ACCEPT_TOS_CONSENT',
   FAILED_TOS_CONSENT: 'Authentication/FAILED_TOS_CONSENT',
 };
@@ -61,23 +60,6 @@ const fetchReferralsSucceeded = makeActionCreator(
 );
 const logout = makeActionCreator(AuthenticationTypes.LOGOUT);
 const forcedLogout = makeActionCreator(AuthenticationTypes.FORCED_LOGOUT);
-
-const requestSms = makeActionCreator(AuthenticationTypes.REQUEST_SMS);
-
-const requestSmsFailed = makeActionCreator(
-  AuthenticationTypes.REQUEST_SMS_FAILED,
-  {
-    phone: null,
-  }
-);
-
-const requestSmsSucceeded = makeActionCreator(
-  AuthenticationTypes.REQUEST_SMS_SUCCEEDED,
-  {
-    phone: null,
-    smsStatus: null,
-  }
-);
 
 const downgradeState = makeActionCreator(
   AuthenticationTypes.DOWNGRADE_AUTH_STATE
@@ -117,6 +99,7 @@ const setReferral = makeActionCreator(AuthenticationTypes.SET_REFERRAL, {
 
 const updateData = makeActionCreator(AuthenticationTypes.UPDATE_DATA, {
   balance: null,
+  balances: null,
   profilePicture: null,
   username: null,
   name: null,
@@ -127,8 +110,8 @@ const updateData = makeActionCreator(AuthenticationTypes.UPDATE_DATA, {
   toNextRank: null,
   preferences: null,
   aboutMe: null,
-  alpacaBuilderProps: null,
   emailConfirmed: null,
+  phoneConfirmed: null
 });
 
 const verifySms = makeActionCreator(AuthenticationTypes.VERIFY_SMS, {
@@ -261,6 +244,7 @@ const loginExternal = makeActionCreator(AuthenticationTypes.LOGIN_EXTERNAL, {
   sid: null,
   cid: null,
   emailConfirmed: false,
+  phoneConfirmed: false,
 });
 
 
@@ -268,15 +252,6 @@ const loginExternalFail = makeActionCreator(
   AuthenticationTypes.LOGIN_EXTERNAL_FAIL,
   {
     message: null,
-  }
-);
-
-const setAlpacaBuilderData = makeActionCreator(
-  AuthenticationTypes.SET_ALPACA_BUILDER_DATA,
-  {
-    base64: null,
-    fileName: null,
-    alpacaBuilderProps: null
   }
 );
 
@@ -298,9 +273,6 @@ export const AuthenticationActions = {
   fetchReferralsSucceeded,
   logout,
   forcedLogout,
-  requestSms,
-  requestSmsFailed,
-  requestSmsSucceeded,
   saveAdditionalInfoFailed,
   saveAdditionalInfoSucceeded,
   setEmail,
@@ -333,7 +305,6 @@ export const AuthenticationActions = {
   updateStatus,
   loginExternal,
   loginExternalFail,
-  setAlpacaBuilderData,
   acceptToSConsent,
   failedToSConsent,
 };

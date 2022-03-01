@@ -31,6 +31,7 @@
     "chartjs-adapter-moment": "^1.0.0",
     "chartjs-plugin-datalabels": "^2.0.0",
     "classnames": "^2.3.1",
+    "compressorjs": "^1.1.1",
     "connected-react-router": "^6.9.1",
     "crypto-js": "^4.1.1",
     "dateformat": "^5.0.1",
@@ -124,6 +125,7 @@
     "lint-staged": "^11.1.2",
     "node-sass": "^5.0.0",
     "prettier": "^2.3.2",
+    "react-error-overlay": "6.0.9",
     "redux-immutable-state-invariant": "^2.1.0",
     "sass-loader": "^11.0.1"
   },
@@ -131,6 +133,6 @@
     "*.{js,css,md}": "prettier --write"
   },
   "engines": {
-    "node": "14.15.0"
+    "node": "14.18.2"
   }
 }

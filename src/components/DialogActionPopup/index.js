@@ -9,6 +9,8 @@ import { Input, InputLabel } from 'components/Form';
 import { useState } from 'react';
 import actions from './DialogActions';
 import { EventActions } from 'store/actions/event';
+import { useHistory } from 'react-router-dom';
+import Routes from 'constants/Routes';
 
 const actionTypes = {
   [actions.cancelBet]: {
@@ -16,8 +18,14 @@ const actionTypes = {
     text: 'Are you sure you want to cancel the bet?',
     acceptLabel: 'Cancel Bet',
     declineLabel: "Don't Cancel",
-    onAccept: (bet, { hidePopup }, data) =>
-      Api.cancelBet(bet._id, data).then(() => hidePopup()),
+    onAccept: ({ bet, event }, _actions, data, history) =>
+      Api.cancelBet(bet.id, data).then(() =>
+        history.push(
+          Routes.getRouteWithParameters(Routes.event, {
+            eventSlug: event.slug,
+          })
+        )
+      ),
     form: (_, setData, setValid) => {
       const setForm = reason => {
         setData({ reasonOfCancellation: reason });
@@ -36,15 +44,16 @@ const actionTypes = {
     text: 'Are you sure you want to delete the bet?',
     acceptLabel: 'Delete',
     declineLabel: 'Cancel',
-    onAccept: (bet, { hidePopup }) =>
-      Api.deleteBet(bet._id).then(() => hidePopup()),
+    onAccept: (bet, _actions, _form, history) =>
+      Api.deleteBet(bet.id).then(() => history.push('/events')),
   },
   [actions.deleteEvent]: {
     title: 'Delete Event',
     text: 'Are you sure you want to delete the event?',
     acceptLabel: 'Delete',
     declineLabel: 'Cancel',
-    onAccept: ({ _id }, { deleteEvent }) => deleteEvent(_id),
+    onAccept: ({ slug }, _actions, _form, history) =>
+      Api.deleteEvent(slug).then(() => history.push('/events')),
     getBody: e => (
       <p className={styles.text}>
         Are you sure you want to delete the event?
@@ -53,7 +62,7 @@ const actionTypes = {
     ),
   },
   [actions.disableSharing]: {
-    title: 'Alpacasino',
+    title: 'Wallfair',
     text: 'Sharing is disabled during closed testing',
     acceptLabel: 'Ok',
     declineLabel: 'Disabled',
@@ -68,6 +77,8 @@ const DialogActionPopup = ({ data, actionType, actionDispatchers }) => {
   const [formData, setFormData] = useState({});
   const [isFormValid, setIsFormValid] = useState(!form);
 
+  const history = useHistory();
+
   if (!actionTypes[actionType]) {
     return;
   }
@@ -77,7 +88,7 @@ const DialogActionPopup = ({ data, actionType, actionDispatchers }) => {
   ) : (
     <p className={styles.text}>
       {text}
-      {declineLabel !== 'Disabled' && <strong>"{data?.marketQuestion}"</strong>}
+      {declineLabel !== 'Disabled' && <strong>"{data?.market_question}"</strong>}
     </p>
   );
 
@@ -104,7 +115,7 @@ const DialogActionPopup = ({ data, actionType, actionDispatchers }) => {
           highlightType={HighlightType.highlightModalButton}
           withoutBackground={true}
           disabled={!isFormValid}
-          onClick={() => onAccept(data, actionDispatchers, formData)}
+          onClick={() => onAccept(data, actionDispatchers, formData, history)}
         >
           {acceptLabel}
         </Button>

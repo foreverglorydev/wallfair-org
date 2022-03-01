@@ -23,11 +23,12 @@ import InfoBox from 'components/InfoBox';
 import IconType from '../Icon/IconType';
 import AuthenticationType from 'components/Authentication/AuthenticationType';
 import Timer from '../RosiGameAnimation/Timer';
-import { TOKEN_NAME } from 'constants/Token';
+import { GAMES_CURRENCY_MAX_BET } from '../../constants/Currency';
 import Button from 'components/Button';
 import ButtonTheme from 'components/Button/ButtonTheme';
 import Routes from 'constants/Routes';
 import { useHistory } from 'react-router';
+import { currencyDisplay } from 'helper/Currency';
 
 const PlaceBetCasino = ({
   gameName,
@@ -44,6 +45,7 @@ const PlaceBetCasino = ({
   const history = useHistory();
   const user = useSelector(selectUser);
   const userBalance = parseInt(user?.balance || 0, 10);
+  const gamesCurrency = user.gamesCurrency;
 
   const [ngame, setNgame] = useState(1);
   const [profit, setProfit] = useState(0);
@@ -59,18 +61,21 @@ const PlaceBetCasino = ({
   const [selector, setSelector] = useState('manual')
   const userUnableToBet = amount < 1;
 
+  const winBtnActive = winbutton ? false : true;
+  const lossBtnActive = lossbutton ? false : true;
+
   const numberOfDemoPlays = Number(localStorage.getItem('numberOfElonGameDemoPlays')) || 0;
 
   const onGuestAmountChange = event => {
     let value = _.get(event, 'target.value', 0);
     const amount = round(value, 0);
-    setAmount(amount <= 10000 ? amount : 10000);
+    setAmount(amount <= GAMES_CURRENCY_MAX_BET ? amount : GAMES_CURRENCY_MAX_BET);
   };
 
   const onBetAmountChanged = multiplier => {
     const changedValue = _.floor(amount * multiplier, 0);
-    if (changedValue > 10000) {
-      setAmount(10000);
+    if (changedValue > GAMES_CURRENCY_MAX_BET) {
+      setAmount(GAMES_CURRENCY_MAX_BET);
     } else {
       setAmount(changedValue);
     }
@@ -87,9 +92,11 @@ const PlaceBetCasino = ({
     const payload = {
       amount,
       ngame: ngame - 1,
-      riskFactor: risk
+      riskFactor: risk,
+      gamesCurrency: user?.gamesCurrency
     }
-    const bet = await onBet(payload)
+
+    await onBet(payload)
   }
 
   const placeAutoBet = async () => {
@@ -104,7 +111,8 @@ const PlaceBetCasino = ({
       lincrease: lossbutton?0:Number(lincrease)/100,
       ngame: null,
       riskFactor: risk,
-      accumulated
+      accumulated,
+      gamesCurrency: user?.gamesCurrency
     };
     setAccumulated(0)
     const bet = await onBet(payload)
@@ -137,15 +145,27 @@ const PlaceBetCasino = ({
       const acc = bet.profit + accumulated
       setAccumulated(acc)
       if(bet.profitStop >= 0 && bet.profitStop > acc && bet.lossStop >= 0 && bet.lossStop > -acc){
-        const newamount = bet.profitStop > 0 ? Math.floor(winbutton ? amount : bet.amount*(1+bet.wincrease)) : Math.floor(lossbutton ? amount : bet.amount*(1+bet.lincrease))
-        if(newamount < 1) setBet({autobet: false, ngame: 0, ready: true})
-        else onBet({...bet, amount: newamount, ngame: bet.ngame ? bet.ngame -1 : bet.ngame})
+          let newAmount = bet.amount;
+
+          if(bet.profit >= 0) {
+            if(winBtnActive) {
+              newAmount = Math.floor(bet.amount * (1 + bet.wincrease))
+            }
+          } else {
+            if(lossBtnActive) {
+              newAmount = Math.floor(bet.amount*(1+bet.lincrease))
+            }
+          }
+
+        if(newAmount < 1) setBet({autobet: false, ngame: 0, ready: true})
+        else onBet({...bet, amount: newAmount, ngame: bet.ngame ? bet.ngame -1 : bet.ngame})
       }
       else {
         setBet({autobet: false, ngame: 0, ready: true})
       }
     }
   }, [bet])
+
   const showLoginPopup = () => {
     dispatch(OnboardingActions.start());
     // dispatch(
@@ -196,7 +216,7 @@ const PlaceBetCasino = ({
             role="button"
             tabIndex="0"
             className={styles.button}
-            theme={ButtonTheme.secondaryButton}
+            theme={ButtonTheme.redButton}
             onClick={() => bet.autobet ? setBet({...bet, autobet: false, ready: gameName === 'plinko' ? true: false}) : setBet({...bet, ngame: 0})}
             data-tracking-id={
               user.isLoggedIn ? null : 'alpacawheel-showloginpopup'
@@ -276,11 +296,11 @@ const PlaceBetCasino = ({
             {user?.isLoggedIn ? (
               <TokenNumberInput
                 value={amount}
-                currency={user?.currency}
+                currency={user.gamesCurrency}
                 setValue={(v)=>setAmount(v)}
                 minValue={0}
                 decimalPlaces={0}
-                maxValue={10000}
+                maxValue={GAMES_CURRENCY_MAX_BET}
                 dataTrackingIds={{
                   inputFieldHalf: 'alpacawheel-input-field-half',
                   inputFieldDouble: 'alpacawheel-input-field-double',
@@ -301,10 +321,10 @@ const PlaceBetCasino = ({
                   onChange={onGuestAmountChange}
                   step={0.01}
                   min="1"
-                  max={'10000'}
+                  max={GAMES_CURRENCY_MAX_BET}
                 />
                 <span className={styles.eventTokenLabel}>
-                  <span>{TOKEN_NAME}</span>
+                  <span>{currencyDisplay(gamesCurrency)}</span>
                 </span>
                 <div className={styles.buttonWrapper}>
                   <span
@@ -324,7 +344,7 @@ const PlaceBetCasino = ({
                   <span
                     className={styles.buttonItem}
                     data-tracking-id="alpacawheel-input-field-allin"
-                    onClick={() => setAmount(10000)}
+                    onClick={() => setAmount(GAMES_CURRENCY_MAX_BET)}
                   >
                     Max
                   </span>
@@ -340,12 +360,12 @@ const PlaceBetCasino = ({
             {user?.isLoggedIn ? (
               <TokenNumberInput
                 value={amount}
-                currency={user?.currency}
+                currency={gamesCurrency}
                 setValue={(v)=>setAmount(v)}
                 minValue={1}
                 decimalPlaces={0}
                 maxValue={formatToFixed(
-                  user.balance > 10000 ? 10000 : user.balance
+                  user.balance > GAMES_CURRENCY_MAX_BET ? GAMES_CURRENCY_MAX_BET : user.balance
                 )}
                 dataTrackingIds={{
                   inputFieldHalf: 'alpacawheel-input-field-half',
@@ -367,10 +387,10 @@ const PlaceBetCasino = ({
                   onChange={onGuestAmountChange}
                   step={0.01}
                   min="1"
-                  max={'10000'}
+                  max={GAMES_CURRENCY_MAX_BET}
                 />
                 <span className={styles.eventTokenLabel}>
-                  <span>{TOKEN_NAME}</span>
+                  <span>{currencyDisplay(gamesCurrency)}</span>
                 </span>
                 <div className={styles.buttonWrapper}>
                   <span
@@ -390,7 +410,7 @@ const PlaceBetCasino = ({
                   <span
                     className={styles.buttonItem}
                     data-tracking-id="alpacawheel-input-field-allin"
-                    onClick={() => setAmount(10000)}
+                    onClick={() => setAmount(GAMES_CURRENCY_MAX_BET)}
                   >
                     Max
                   </span>
@@ -398,14 +418,14 @@ const PlaceBetCasino = ({
               </div>
             )}
             {gameName !== 'cannon' && <RiskInput disable={!bet.ready || bet.autobet || bet?.ball > 0} number={gameName==='plinko'?3:7} risk={risk} setRisk={setRisk} />}
-            <StandardInput title={'Stop on Profit'} setValue={setProfit} value={profit} />
-            <StandardInput title={'Stop on Loss'} setValue={setLoss} value={loss} />
+            <StandardInput title={'Stop on Profit'} setValue={setProfit} value={profit} currency={gamesCurrency}/>
+            <StandardInput title={'Stop on Loss'} setValue={setLoss} value={loss} currency={gamesCurrency}/>
             <ToggleInput title={'On Win'} setValue={setWincrease} value={wincrease} setToggle={setWinbutton} toggle={winbutton} />
             <ToggleInput title={'On Loss'} setValue={setLincrease} value={lincrease} setToggle={setLossbutton} toggle={lossbutton} />
             {bet.autobet &&
               <div className={styles.spinsleft}>
                 <span className={accumulated > 0 ? styles.reward : styles.lost}>
-                {Math.floor(accumulated)} {TOKEN_NAME}
+                {Math.floor(accumulated)} {currencyDisplay(gamesCurrency)}
                 </span>
                 accumulated
               </div>
@@ -414,7 +434,7 @@ const PlaceBetCasino = ({
               <div className={styles.spinsleft}>
                 Current bet:
                 <span className={styles.neutral}>
-                {Math.floor(bet.amount)} {TOKEN_NAME}
+                {Math.floor(bet.amount)} {currencyDisplay(gamesCurrency)}
                 </span>
               </div>
             }

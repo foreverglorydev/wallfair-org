@@ -2,11 +2,8 @@ import React from 'react';
 import styles from './styles.module.scss';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
-import ContentFooter from 'components/ContentFooter';
-import HeaderVideo from 'data/videos/header-video.mp4'
-import AlpacaHeader from 'data/images/alpaca-header.png';
-import CustomCarousel from 'components/CustomCarousel/CustomCarousel';
-
+// import ContentFooter from 'components/ContentFooter';
+import ContentFooter from 'components/ContentFooterV2';
 
 const BaseContainerWithNavbar = ({
   children,
@@ -16,7 +13,8 @@ const BaseContainerWithNavbar = ({
   loggedIn,
   home = false,
   user,
-  carousel=false
+  carouselType=null,
+  backgroundVideo = true,
 }) => {
   return (
     <>
@@ -29,21 +27,12 @@ const BaseContainerWithNavbar = ({
       )}
     >
       <div className={classNames(styles.headerBackground, loggedIn || !home ? styles.withTransparent : null,
-        carousel && styles.withHalfTransparent,
-        carousel && styles.zIndexheaderBackground
+        carouselType && styles.withHalfTransparent,
+        carouselType === 'landingpage' && styles.solid,
+        carouselType && styles.zIndexheaderBackground
         )}>
-         {! carousel ?
-         <div className={styles.headerContianer}>
-            <video loop autoPlay muted playsInline id="myVideo">
-                <source src={HeaderVideo} type="video/mp4" />
-            </video>
-            <div className={styles.gradientLayer}></div>
-            <img className={styles.aplacaHeader} src={AlpacaHeader} alt="Alpaca-header"/>
-          </div>
-          : <CustomCarousel />
-          } 
       </div>
-      {children}      
+      {children}
     </div>
     <ContentFooter className={styles.betFooter} />
     </>

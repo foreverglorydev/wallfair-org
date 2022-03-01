@@ -3,7 +3,10 @@ import Cell from "./Cell.js";
 import Popup from "./Popup.js";
 import Header from "./Header.js";
 import { isMobile } from 'react-device-detect';
+import { result } from "lodash";
+import * as PIXI from 'pixi.js';
 
+PIXI.settings.PRECISION = 'highp';
 /**
  * @class View
  * @extends PIXI.Container
@@ -52,18 +55,18 @@ export default class View extends Factory.Container {
 
   /** @param {Number} delta time which is set by PIXI.Tiker*/
   update(delta = 1) {
-    if ( this.isPause ) return;
+    if (this.isPause) return;
     /* To make sure that it was long tap to reveal the cell
     * timePassed must be less than flagTimeout */
-    if ( this.isPointerdown ) {
-      this.timePassed += ( delta * 16.777 ); // to convert it to ms
-      this.isFlagRequested = ( this.timePassed > this.flagTimeout );
+    if (this.isPointerdown) {
+      this.timePassed += (delta * 16.777); // to convert it to ms
+      this.isFlagRequested = (this.timePassed > this.flagTimeout);
     }
 
-    if ( this.isGameOver ) {
-        this.pause();
-        // this.resume();
-        this.emit("restartGame");
+    if (this.isGameOver) {
+      this.pause();
+      // this.resume();
+      this.emit("restartGame");
     }
 
     //this.header.update(delta);
@@ -96,7 +99,7 @@ export default class View extends Factory.Container {
     this.pause();
 
     this.createPopup("menu", (name) => {
-      switch ( name ) {
+      switch (name) {
         case "restartGame": this.emit("restartGame");
           break;
         case "continueGame":
@@ -121,7 +124,7 @@ export default class View extends Factory.Container {
    * @param {Function} cb */
   createPopup(name, cb) {
     const { popups } = this.viewConfig;
-    const config = popups[ name ];
+    const config = popups[name];
     this.popUp = Popup.fromConfig(popups, config, cb);
 
     this.addChild(this.popUp);
@@ -137,35 +140,39 @@ export default class View extends Factory.Container {
    * @param {Object} model data for the grid */
   creteGrid({ collection, rows, columns, gridSize }) {
     this.grid = new Factory.Container();
-    
+
     const texture = this.resPack.get("closed");
 
     const { width, height } = texture;
-    const gridWidth = ( ( columns * width ) - width );
-    const gridHeight = ( ( rows * height ) - height );
-    if(isMobile) {
+    const gridWidth = ((columns * width) - width);
+    const gridHeight = ((rows * height) - height);
+    if (isMobile) {
       //this.grid.x = 8;
       gridSize = 240;
-    }  
+    }
     this.grid.scale.set(gridSize / gridWidth);
     this.addChild(this.grid);
 
     this.grid.cells = collection.map((row, i) => {
       return row.map((cellModel, j) => {
-        const x = -( gridWidth / 2 ) + ( width * j );
-        const y = -( gridHeight / 2 ) + ( height * i );
+        const x = -(gridWidth / 2) + (width * j);
+        const y = -(gridHeight / 2) + (height * i);
         const cell = new Cell(texture, cellModel);
         cell.position.set(x, y);
-        cell.position.set(x, y);
-        //cell.on("mouseover", this.onMouseOver, this);
-        //cell.on("mouseout", this.onMouseOut, this);
-        cell.interactive=true;
+        cell.buttonMode=true;
+        cell.on("mouseover", this.onMouseOver, this);
+        cell.on("mouseout", this.onMouseOut, this);
+        cell.interactive = true;
+        
         return cell;
       });
     });
 
     this.grid.cells.forEach(row => {
-      row.forEach(cell => this.grid.addChild(cell));
+      
+      row.forEach(
+        cell => this.grid.addChild(cell)
+      );
     });
 
 
@@ -199,6 +206,10 @@ export default class View extends Factory.Container {
 
     /* PC events */
     this.grid.on("click", this.onClick, this);
+    // this.grid.on("mouseover", this.onMouseOver, this);
+    // this.grid.on("mouseout", this.onMouseOut, this);
+    //this.grid.on("mousemove", this.onMouseMove, this);
+
 
   }
 
@@ -214,7 +225,7 @@ export default class View extends Factory.Container {
   /** For touch start event on mobile devices
    * @param {Event} */
   onTouchStart({ data }) {
-    if ( this.isPointerdown ) return;
+    if (this.isPointerdown) return;
     this.isPointerdown = true;
 
     this.pointersIDs.push(data.pointerId);
@@ -223,7 +234,7 @@ export default class View extends Factory.Container {
   /** For touch end event on mobile devices
    * @param {Event} */
   onTouchEnd({ data }) {
-    if ( !this.pointersIDs.includes(data.pointerId) ) return;
+    if (!this.pointersIDs.includes(data.pointerId)) return;
     this.isPointerdown = false;
     this.pointersIDs = [];
     this.timePassed = 0;
@@ -231,15 +242,15 @@ export default class View extends Factory.Container {
     const { x, y } = data.getLocalPosition(this.grid);
     const { row, col } = this.convertLocToIndex(x, y);
 
-      this.emit("clickOnCell", { row, col });
+    this.emit("clickOnCell", { row, col });
   }
 
   /** For mouse left click on PC
    *  @param {Event} */
   onClick({ data }) {
-    const { x, y } = data.getLocalPosition(this.grid);
-    const { row, col } = this.convertLocToIndex(x, y);
-    this.emit("clickOnCell", { row, col });
+    // const { x, y } = data.getLocalPosition(this.grid);
+    // const { row, col } = this.convertLocToIndex(x, y);
+    this.emit("clickOnCell", this.overCell);
   }
 
   /** For mouse right click on PC
@@ -251,15 +262,28 @@ export default class View extends Factory.Container {
     this.emit("flagRequested", { row, col });
   }
   onMouseOver({ data }) {
+    this.grid.children.forEach(element => {
+      if (element.isRevealed === false) {
+        element.tint = 0x999999;
+      }  
+    });
+   
+    
     const { x, y } = data.getLocalPosition(this.grid);
     const { row, col } = this.convertLocToIndex(x, y);
-    this.emit("overOnCell", { row, col });
+    const cell = this.grid.cells[row][col];
+    this.overCell = { row, col };
+    this.scaledCell = cell;
+    cell.tint = 0xffffff;
+    cell.scale.set(1.1);
   }
   onMouseOut({ data }) {
-    const { x, y } = data.getLocalPosition(this.grid);
-    const { row, col } = this.convertLocToIndex(x, y);
-    this.emit("outOnCell", { row, col });
+    this.grid.children.forEach(element => {
+      element.tint = 0xffffff;
+    });
+    this.scaledCell.scale.set(1);
   }
+
 
   /** To convert coordinated where user has clicked to an actual row and col of
    * a cell on the grid
@@ -270,13 +294,13 @@ export default class View extends Factory.Container {
     const { width, height, cells, scale } = this.grid;
 
     const rows = cells.length;
-    const columns = cells[ 0 ].length;
+    const columns = cells[0].length;
 
     const yPitch = height / rows;
     const xPitch = width / columns;
 
-    const translatedX = ( width / 2 ) + ( x * scale.x );
-    const translatedY = ( height / 2 ) + ( y * scale.y );
+    const translatedX = (width / 2) + (x * scale.x);
+    const translatedY = (height / 2) + (y * scale.y);
 
     const row = Math.floor(translatedY / yPitch);
     const col = Math.floor(translatedX / xPitch);
@@ -288,31 +312,16 @@ export default class View extends Factory.Container {
    * @param {Array} cells */
   revealCells(cells) {
     cells.forEach(({ row, col }) => {
-      const cell = this.grid.cells[ row ][ col ];
+      const cell = this.grid.cells[row][col];
       cell.reveal(this.resPack, this.viewConfig.styles, this.viewConfig.handlers);
     });
   }
-  /** To reveal all cells which were collected by engine
-   * @param {Array} cells */
-   overCell(cells) {
-    cells.forEach(({ row, col }) => {
-      const cell = this.grid.cells[ row ][ col ];
-      cell.scale.set(1.1);
-    });
-  }
-/** To reveal all cells which were collected by engine
-   * @param {Array} cells */
- outCell(cells) {
-  cells.forEach(({ row, col }) => {
-    const cell = this.grid.cells[ row ][ col ];
-    cell.scale.set(1);
-  });
-}
+  
   /** Toggle a single cell (not) to be flagged
    * @param {Number} row
    * @param {Number} col */
   toggleCellFlag(row, col) {
-    const cell = this.grid.cells[ row ][ col ];
+    const cell = this.grid.cells[row][col];
     cell.toggleFlag(this.resPack);
   }
 

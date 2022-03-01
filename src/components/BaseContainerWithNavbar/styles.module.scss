@@ -1,16 +1,17 @@
 @import '../../styles/all';
 
 .baseContainer {
+  margin: 0 auto;
   position: relative;
   min-height: 100%;
   overflow: hidden;
   padding-bottom: 40px;
 
   &.baseContainerWithPaddingTop {
-    padding-top: 150px;
+    padding-top: 20px;
 
     @media (max-width: $screen-sm) {
-      padding-top: 80px;
+      padding-top: 20px;
     }
   }
 
@@ -93,5 +94,9 @@
   }
   .withHalfTransparent {
     opacity: 0.7;
+  }
+
+  .solid {
+    opacity: 1;
   }
 }
